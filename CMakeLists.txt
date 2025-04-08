@@ -13,7 +13,7 @@ FetchContent_Declare(SFML
 FetchContent_MakeAvailable(SFML)
 
 add_executable(TacticSFML
-    src/my_drawing_0.cpp
+    "src/main.cpp"
     src/mapUtilities.cpp
-    src/button.cpp)
+    src/button.cpp  "src/headers/state.h")
 target_link_libraries(TacticSFML PRIVATE SFML::Graphics)
