@@ -10,7 +10,7 @@ struct state
 {
     sf::RenderWindow window;
     int menubar_Cunit_x = window_width - 200;
-    int menubar_attack_y = window_height - 260;
+    int menubar_attack_y = window_height - 200;
 
     // Matrice di bottoni per la mappa
     std::vector<std::vector<Button>> Map;

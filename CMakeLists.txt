@@ -12,6 +12,11 @@ FetchContent_Declare(SFML
     SYSTEM)
 FetchContent_MakeAvailable(SFML)
 
+# Aggiungi il file PNG alla directory di outputs
+file(COPY ${CMAKE_SOURCE_DIR}/resources
+    DESTINATION ${CMAKE_BINARY_DIR}/bin/)
+   
+
 add_executable(TacticSFML
     "src/main.cpp"
     src/mapUtilities.cpp
