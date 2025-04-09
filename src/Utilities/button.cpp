@@ -1,8 +1,8 @@
-#include "headers/button.h"
+#include "../headers/button.h"
 
 std::optional<Button> Button::isAnyButtonPressed = std::nullopt;
 
-Button::Button(Vector2f Pos, Vector2f size, Sprite& spr) : sprite(spr)
+Button::Button(Vector2f Pos, Vector2f size, Sprite spr) : sprite(spr)
 {
 	shape.setSize(size);
 	shape.setPosition(Pos);

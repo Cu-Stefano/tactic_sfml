@@ -19,6 +19,6 @@ file(COPY ${CMAKE_SOURCE_DIR}/resources
 
 add_executable(TacticSFML
     "src/main.cpp"
-    src/mapUtilities.cpp
-    src/button.cpp  "src/headers/state.h")
+    src/Map/mapBuilder.cpp
+    src/Utilities/button.cpp src/Headers/state.h)
 target_link_libraries(TacticSFML PRIVATE SFML::Graphics)
