@@ -19,9 +19,9 @@ class Button
 
     public:
         static std::optional<Button> isAnyButtonPressed;
-		Sprite sprite;
+		//Sprite sprite;
         RectangleShape shape;
-        Button(Vector2f Pos, Vector2f size, Sprite& spr);
+        Button(Vector2f Pos, Vector2f size);
 
 		bool is_pressed() const; //averlo a const ottimiza il programma a livello del compialtore e indica che non viene modifcato alcun valore al suo interno
 		bool is_hover() const;

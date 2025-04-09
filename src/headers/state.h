@@ -1,7 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include "headers/button.h"
+#include "button.h"
 
 const unsigned window_width = 1400;
 const unsigned window_height = 840;
