@@ -2,7 +2,7 @@
 
 #include <functional>
 #include <SFML/Graphics.hpp>
-
+#include <optional>
 using namespace sf;
 
 enum button_state
@@ -14,7 +14,7 @@ enum button_state
 
 class Button
 {
-	int Maptate;
+	button_state state;
 	std::function<void()> onClick;
 
     public:

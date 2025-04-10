@@ -1,5 +1,6 @@
 #include "../headers/mapBuilder.h"
 #include <iostream>
+#include <random>
 
 const Texture texture("resources/Tiles/FullTileset.png");
 constexpr Vector2i texture_tile_size(16, 16);
@@ -26,8 +27,6 @@ std::vector<std::vector<int>> map_generator()
         { 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
     };
 }
-
-#include <random> // Per la generazione di numeri casuali
 
 void initialize_Map(state& gs)
 {
