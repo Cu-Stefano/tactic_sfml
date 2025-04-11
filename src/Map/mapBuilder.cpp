@@ -11,20 +11,20 @@ std::vector<std::vector<int>> map_generator()
     {
         {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
         {1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-        {1, 1, 1, 0, 1, 1, 1, -1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1, 1, 1, -1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 1, 1, 1, 1, 1, -1, -2, 1, 1},
+        {1, 0, 0, 1, 2, 2, 2, 1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
         {1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-        {1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-        {1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-        {1, 1, 1, 1, 1, 1, 1, 1, 1, -1, -1, 1, 1, 1, 3, 3, 3, 3, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 1, 1, 1, 1, -1, -1, 1, 1, 1},
+        {1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1, 1, 1, 2, 1, -1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
         {1, 1, 1, 1, 1, 1, 1, 1, 1, -1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-        {1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-		{ 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-        { 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, -1, 1, 1, 1, 1, 1, 1, -1, 2, 1, 1},
+        {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1},
+        {1, 1, 0, 1, 1, 1, 1, 1, 1, 3, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1},
+		{ 1, 1, 0, 1, 1, 1, 1, 1, 3, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, -1, 1},
+        { 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
     };
 }
 
@@ -35,48 +35,80 @@ void initialize_Map(state& gs)
 
     auto map = map_generator();
 
-    std::random_device rd; 
-    std::mt19937 gen(rd()); 
+    std::random_device rd;
+    std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(0, 3);
     int offset;
+    int allay_index = 0;
+    int enemy_index = 1;
 
     for (size_t i = 0; i < map.size(); ++i)
     {
-        std::vector<Button> row;
+        std::vector<Tile> row;
         x = 0.0f;
+        
         for (size_t j = 0; j < map[i].size(); ++j)
         {
-            Vector2i tile;
+            sf::Vector2i tile;
+            std::string tileName;
+            bool walkable = true;
+			Unit* unit;
+
             switch (map[i][j])
             {
+            case -2:
+                //boss
+                unit = enemy_list.at(0);
+                unit->set_sprite_pos({ static_cast<int>(x), static_cast<int>(y) });
+                unit->an_sprite.sprite->setScale({3, 3});
+                unit->an_sprite.sprite->move({ -16, -21 });
+
+                tileName = "grass";
+                walkable = true;
+                break;
+            case -1:
+                //enemy
+                unit = enemy_list.at(enemy_index);
+                unit->set_sprite_pos({ static_cast<int>(x), static_cast<int>(y) });
+                enemy_index++;
+
+                tileName = "grass";
+                walkable = true;
+                break;
+			case 0:
+                //alleato
+                unit = allay_list.at(allay_index);
+                unit->set_sprite_pos({ static_cast<int>(x), static_cast<int>(y) });
+                allay_index++;
+
+                tileName = "grass";
+                walkable = true;
+				break;
             case 2:
-                offset = dis(gen) * 16; 
-                tile = { offset, 0 };
+                tileName = "water";
+                walkable = false;
                 break;
             case 3:
-                offset = dis(gen) * 16;
-                tile = { offset, 208 };
+                tileName = "mountain";
+                walkable = false;
                 break;
             default:
-                offset = dis(gen) * 16; 
-                tile = { offset, 32 };
+                tileName = "grass";
+                walkable = true;
                 break;
             }
 
-            Sprite grass_sprite = Sprite(texture);
-            grass_sprite.setTextureRect(IntRect(tile, texture_tile_size));
-            grass_sprite.setScale({ 2.48, 2.48 });
-            grass_sprite.setPosition({ x, y });
-            grass_sprite.move({ 0.5, 0.5 });
+            sf::Sprite grass_sprite = sf::Sprite(texture);
+			set_tile_sprite(grass_sprite, tileName, { x, y });
 
-            Button button({ x, y }, { tileSize, tileSize }, grass_sprite);
+            Tile new_tile(tileName, walkable, unit, { x, y }, { tileSize, tileSize }, grass_sprite);
 
             // Evento di prova
-            button.set_click_function([i, j]() {
-                std::cout << "Button clicked at (" << i << ", " << j << ")" << std::endl;
+            new_tile.set_click_function([i, j]() {
+                std::cout << "Tile clicked at (" << i << ", " << j << ")" << std::endl;
                 });
 
-            row.push_back(button);
+            row.push_back(new_tile);
             x += tileSize;
         }
         gs.Map.push_back(row);
@@ -84,15 +116,76 @@ void initialize_Map(state& gs)
     }
 }
 
-
 void draw_map(state& gs)
 {
     for (auto& row : gs.Map)
     {
         for (auto& button : row)
         {
-            button.update(gs.window);
             button.draw(gs.window);
         }
     }
+
+    for (auto allay : allay_list)
+    {
+        allay->draw(gs.window);
+    }
+    for (auto enemy : enemy_list)
+    {
+        enemy->draw(gs.window);
+    }
+
+
+}
+
+void update_map(state& gs)
+{
+    for (auto& row : gs.Map)
+    {
+        for (auto& button : row)
+        {
+            button.update(gs.window);
+        }
+    }
+
+    for (auto allay : allay_list)
+    {
+        allay->update();
+    }
+    for (auto enemy : enemy_list)
+    {
+        enemy->update();
+    }
+}
+
+static void set_tile_sprite(sf::Sprite& sprite, const std::string& tileType, const sf::Vector2f& position)
+{
+    sf::Vector2i tileOffset;
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(0, 3);
+
+    if (tileType == "grass")
+    {
+        tileOffset = { dis(gen) * 16, 32 };
+    }
+    else if (tileType == "water")
+    {
+        tileOffset = { dis(gen) * 16, 0 };
+    }
+    else if (tileType == "mountain")
+    {
+        tileOffset = { dis(gen) * 16, 208 };
+    }
+    else
+    {
+        throw std::invalid_argument("tile name not valid");
+    }
+
+    sprite.setTextureRect(sf::IntRect(tileOffset, texture_tile_size));
+    sprite.setScale({ 2.48f, 2.48f });
+    sprite.setPosition(position);
+    sprite.move({ 0.5f, 0.5f });
+
 }

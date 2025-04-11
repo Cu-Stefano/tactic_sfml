@@ -23,13 +23,13 @@ class Button
         RectangleShape shape;
         Button(Vector2f Pos, Vector2f size, Sprite spr);
 
-		bool is_pressed() const; //averlo a const ottimiza il programma a livello del compialtore e indica che non viene modifcato alcun valore al suo interno
+		bool is_pressed() const;
 		bool is_hover() const;
 
         void update(const RenderWindow& window);
 		void draw(RenderWindow& window) const;    
 
-        // Metodo per impostare l'evento una volta che il bottone viene premuto
+        //function that ggets executed when the button is clicked
         void set_click_function(const std::function<void()>& func);
 
         bool operator==(const Button& other) const;

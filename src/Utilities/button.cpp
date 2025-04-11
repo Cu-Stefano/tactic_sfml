@@ -8,7 +8,7 @@ Button::Button(Vector2f Pos, Vector2f size, Sprite spr) : sprite(spr)
 	shape.setSize(size);
 	shape.setPosition(Pos);
 	shape.setFillColor(Color::Transparent);
-	shape.setOutlineColor(Color::White);
+	shape.setOutlineColor(Color(0, 0, 10, 255));
 	shape.setOutlineThickness(-0.5);
 }
 
@@ -50,7 +50,7 @@ void Button::update(const RenderWindow& window)
     else
     {
         state = not_pressed;
-        shape.setOutlineColor(Color::White);
+        shape.setOutlineColor(Color(255, 255, 255, 75));
         shape.setOutlineThickness(-0.5);
     }
 
@@ -74,6 +74,5 @@ void Button::set_click_function(const std::function<void()>& func)
 bool Button::operator==(const Button& other) const
 {
     return shape.getPosition() == other.shape.getPosition();
-	//&& sprite == other.sprite;
 }
 
