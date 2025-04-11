@@ -18,5 +18,5 @@ file(COPY ${CMAKE_SOURCE_DIR}/resources
 add_executable(TacticSFML
     "src/main.cpp"
     src/Map/mapBuilder.cpp
-    src/Utilities/button.cpp src/Headers/state.h "src/Utilities/tile.cpp" "src/headers/tile.h" "src/headers/unit.h" "src/Utilities/unit.cpp" "src/headers/animatedSprite.h" "src/Utilities/animatedSprite.cpp" "src/Utilities/animState.cpp" "src/Utilities/weapon.cpp" "src/headers/weapon.h")
+    src/Utilities/button.cpp src/Headers/state.h "src/Map/tile.cpp" "src/headers/tile.h" "src/headers/unit.h" "src/models/unit.cpp" "src/headers/animatedSprite.h" "src/Utilities/animatedSprite.cpp" "src/Utilities/animState.cpp" "src/models/weapon.cpp" "src/headers/weapon.h")
 target_link_libraries(TacticSFML PRIVATE SFML::Graphics)
