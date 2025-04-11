@@ -4,21 +4,22 @@ std::optional<Button> Button::isAnyButtonPressed = std::nullopt;
 
 Button::Button(Vector2f Pos, Vector2f size, Sprite spr) : sprite(spr)
 {
+	state = not_pressed;
 	shape.setSize(size);
 	shape.setPosition(Pos);
 	shape.setFillColor(Color::Transparent);
-	shape.setOutlineColor(Color::White);
+	shape.setOutlineColor(Color(0, 0, 10, 255));
 	shape.setOutlineThickness(-0.5);
 }
 
 bool Button::is_pressed() const
 {
-    return Maptate == pressed;
+    return state == pressed;
 }
 
 bool Button::is_hover() const
 {
-    return Maptate == hover;
+    return state == hover;
 }
 
 void Button::update(const RenderWindow& window)
@@ -27,14 +28,14 @@ void Button::update(const RenderWindow& window)
 
     if (shape.getGlobalBounds().contains(mousePos))
     {
-        Maptate = hover;
+        state = hover;
         shape.setOutlineColor(Color::Black);
         shape.setOutlineThickness(-2);
 
         if ((!isAnyButtonPressed.has_value() || isAnyButtonPressed == *this)
             && Mouse::isButtonPressed(Mouse::Button::Left))
         {
-            Maptate = pressed;
+            state = pressed;
             shape.setOutlineColor(Color::Red);
             shape.setOutlineThickness(-3);
 
@@ -48,8 +49,8 @@ void Button::update(const RenderWindow& window)
     }
     else
     {
-        Maptate = not_pressed;
-        shape.setOutlineColor(Color::White);
+        state = not_pressed;
+        shape.setOutlineColor(Color(255, 255, 255, 75));
         shape.setOutlineThickness(-0.5);
     }
 
@@ -73,6 +74,5 @@ void Button::set_click_function(const std::function<void()>& func)
 bool Button::operator==(const Button& other) const
 {
     return shape.getPosition() == other.shape.getPosition();
-	//&& sprite == other.sprite;
 }
 

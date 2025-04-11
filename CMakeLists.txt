@@ -12,13 +12,11 @@ FetchContent_Declare(SFML
     SYSTEM)
 FetchContent_MakeAvailable(SFML)
 
-# Aggiungi il file PNG alla directory di outputs
 file(COPY ${CMAKE_SOURCE_DIR}/resources
     DESTINATION ${CMAKE_BINARY_DIR}/bin/)
    
-
 add_executable(TacticSFML
     "src/main.cpp"
     src/Map/mapBuilder.cpp
-    src/Utilities/button.cpp src/Headers/state.h)
+    src/Utilities/button.cpp src/Headers/state.h "src/Utilities/tile.cpp" "src/headers/tile.h" "src/headers/unit.h" "src/Utilities/unit.cpp" "src/headers/animatedSprite.h" "src/Utilities/animatedSprite.cpp" "src/Utilities/animState.cpp" "src/Utilities/weapon.cpp" "src/headers/weapon.h")
 target_link_libraries(TacticSFML PRIVATE SFML::Graphics)
