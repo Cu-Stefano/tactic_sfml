@@ -61,13 +61,13 @@ static std::vector<Unit*> allay_list = {
 
 static std::vector<Unit*> enemy_list = {
     new Unit("Boss", 1, ClassType::warrior, 25, 9, 5, 5, 3, 3),
-    new Unit("soldier1",1, ClassType::soldier, 16, 4, 1, 3, 3, 5),
-    new Unit("soldier2",1, ClassType::soldier, 16, 4, 1, 3, 3, 5),
-    new Unit("soldier3",1, ClassType::soldier, 16, 4, 1, 3, 3, 5),
-    new Unit("spadaccino1", 1, ClassType::swordsman, 16, 5, 2, 5, 3, 4),
-    new Unit("spadaccino2", 1, ClassType::swordsman, 16, 5, 2, 5, 3, 4),
-    new Unit("spadaccino3", 1, ClassType::swordsman, 16, 5, 2, 5, 3, 4),
-    new Unit("warrior1", 1, ClassType::warrior, 18, 6, 3, 2, 3, 3),
-    new Unit("warrior2", 1, ClassType::warrior, 18, 6, 3, 2, 3, 3),
-    new Unit("warrior3", 1, ClassType::warrior, 18, 6, 3, 2, 3, 3),
+    new Unit("Sold1",1, ClassType::soldier, 16, 4, 1, 3, 3, 5),
+    new Unit("Sold2",1, ClassType::soldier, 16, 4, 1, 3, 3, 5),
+    new Unit("Sold3",1, ClassType::soldier, 16, 4, 1, 3, 3, 5),
+    new Unit("Sword1", 1, ClassType::swordsman, 16, 5, 2, 5, 3, 4),
+    new Unit("Sword2", 1, ClassType::swordsman, 16, 5, 2, 5, 3, 4),
+    new Unit("Sword3", 1, ClassType::swordsman, 16, 5, 2, 5, 3, 4),
+    new Unit("Warr1", 1, ClassType::warrior, 18, 6, 3, 2, 3, 3),
+    new Unit("Warr2", 1, ClassType::warrior, 18, 6, 3, 2, 3, 3),
+    new Unit("Warr3", 1, ClassType::warrior, 18, 6, 3, 2, 3, 3),
 };

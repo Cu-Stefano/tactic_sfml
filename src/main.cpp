@@ -37,18 +37,22 @@ void handle(const T&, state& gs)
 ////////////////////////////////////////////////////////////
 void draw_curr_stats(state& gs)
 {
-    if (gs.selected_tile->UnitOn != nullptr)
+	sf::Text unitText{ gs.font, "", 15 };
+	unitText.setFillColor(sf::Color::White);
+	sf::Text statsText{ gs.font, "", 15 };
+	statsText.setFillColor(sf::Color::White);
+	sf::Text calcStatsText{ gs.font, "", 15 };
+	calcStatsText.setFillColor(sf::Color::White);
+
+    if (gs.selected_tile != nullptr && gs.selected_tile->UnitOn != nullptr)
     {
         // Text for unit name and HP
-        sf::Text unitText{ gs.font, "", 15 };
         unitText.setFillColor(sf::Color::White);
         unitText.setString(gs.selected_tile->UnitOn->name + "\n\n" +
             "HP: " + std::to_string(gs.selected_tile->UnitOn->hp) + "/" + std::to_string(gs.selected_tile->UnitOn->max_hp));
         unitText.setPosition({ static_cast<float>(gs.menubar_attack_window_x) + 26, 50 });
-        gs.window.draw(unitText);
 
         // Text for unit statistics
-        sf::Text statsText{ gs.font, "", 15 };
         statsText.setFillColor(sf::Color::White);
         statsText.setString(
             "\n\n\n\nStr:" + std::to_string(gs.selected_tile->UnitOn->strength) + "\n\n\n" +
@@ -58,10 +62,8 @@ void draw_curr_stats(state& gs)
             "Luck:" + std::to_string(gs.selected_tile->UnitOn->luck));
 
         statsText.setPosition({ static_cast<float>(gs.menubar_attack_window_x) + 26, 100 });
-        gs.window.draw(statsText);
 
         // Text for calculated statistics
-        sf::Text calcStatsText{ gs.font, "", 15 };
         calcStatsText.setFillColor(sf::Color::White);
         calcStatsText.setString(
             "\n\n\nDodge: " + std::to_string(gs.selected_tile->UnitOn->Get_Dodge()) + "\n\n\n" +
@@ -69,8 +71,11 @@ void draw_curr_stats(state& gs)
             "Attack: " + std::to_string(gs.selected_tile->UnitOn->Get_Attack()) + "\n\n\n" +
             "Crit: " + std::to_string(gs.selected_tile->UnitOn->Get_Crit()));
         calcStatsText.setPosition({ static_cast<float>(gs.menubar_attack_window_x) + 26, 380 });
-        gs.window.draw(calcStatsText);
     }
+    gs.window.draw(unitText);
+    gs.window.draw(statsText);
+    gs.window.draw(calcStatsText);
+
 }
 
 void attack_window_draw(state& gs, Texture ui)

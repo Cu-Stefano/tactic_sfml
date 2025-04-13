@@ -46,6 +46,11 @@ void Button::update(const RenderWindow& window)
                 onClick();
             }
         }
+
+        if (onHover)
+        {
+            onHover();
+        }
     }
     else
     {
@@ -69,6 +74,11 @@ void Button::draw(RenderWindow& window) const
 void Button::set_click_function(const std::function<void()>& func)
 {
     onClick = func;
+}
+
+void Button::set_hover_function(const std::function<void()>& func)
+{
+	onHover = func;
 }
 
 bool Button::operator==(const Button& other) const

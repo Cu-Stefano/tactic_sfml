@@ -15,7 +15,10 @@ enum button_state
 class Button
 {
 	button_state state;
+
+	//functions that gets executed when the the events trigger
 	std::function<void()> onClick;
+	std::function<void()> onHover;
 
     public:
         static std::optional<Button> isAnyButtonPressed;
@@ -29,8 +32,9 @@ class Button
         void update(const RenderWindow& window);
 		void draw(RenderWindow& window) const;    
 
-        //function that ggets executed when the button is clicked
+		
         void set_click_function(const std::function<void()>& func);
+        void set_hover_function(const std::function<void()>& func);
 
         bool operator==(const Button& other) const;
 };

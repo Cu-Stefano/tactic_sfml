@@ -52,7 +52,7 @@ void initialize_Map(state& gs)
             sf::Vector2i tile;
             std::string tileName;
             bool walkable = true;
-			Unit* unit;
+			Unit* unit = nullptr;
 
             switch (map[i][j])
             {
@@ -107,6 +107,13 @@ void initialize_Map(state& gs)
             new_tile.set_click_function([i, j]() {
                 std::cout << "Tile clicked at (" << i << ", " << j << ")" << std::endl;
                 });
+
+			new_tile.set_hover_function([i, j, &gs]() {
+                if (gs.Map[i][j].UnitOn != nullptr) gs.selected_tile = &gs.Map[i][j];
+                else{
+                    gs.selected_tile = nullptr;
+                }
+				});
 
             row.push_back(new_tile);
             x += tileSize;
