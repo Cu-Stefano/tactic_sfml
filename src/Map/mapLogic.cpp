@@ -3,7 +3,7 @@
 
 MapLogic::MapLogic(state& gs) : gs_state(gs), current_turnState(nullptr) {
 	SetState(new AllayTurn(this));
-}
+} 
 
 void MapLogic::SetState(TurnState* newTurnState)
 {

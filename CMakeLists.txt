@@ -20,6 +20,10 @@ add_executable(TacticSFML
     src/Map/mapBuilder.cpp
     src/Map/mapLogic.cpp
     src/Utilities/button.cpp src/Headers/state.h "src/Map/tile.cpp" "src/headers/tile.h" "src/headers/unit.h" 
-    "src/models/unit.cpp" "src/headers/animatedSprite.h" "src/Headers/mapLogic.h" "src/Utilities/animatedSprite.cpp" "src/Utilities/animState.cpp" 
-    "src/models/weapon.cpp" "src/headers/weapon.h" "src/TurnLogic/TurnState.cpp" "src/TurnLogic/AllayTurn.cpp")
+    "src/models/unit.cpp" "src/headers/animatedSprite.h" "src/Headers/mapLogic.h" "src/Utilities/animatedSprite.cpp" 
+    "src/Utilities/animState.cpp" "src/models/weapon.cpp" "src/headers/weapon.h"  
+    "src/TurnLogic/AllayTurn.cpp" "src/TurnLogic/enemyTurn.cpp" "src/headers/actionState.hpp" 
+    "src/TurnLogic/Actions/0_chooseTile.cpp" "src/TurnLogic/Actions/1_tileSelected.cpp"
+    "src/TurnLogic/Actions/2_chooseAttack.cpp" "src/TurnLogic/Actions/3_attack.cpp" 
+    "src/headers/1_tileSelected.h" "src/headers/2_chooseAttack.h" "src/TurnLogic/turnState.cpp")
 target_link_libraries(TacticSFML PRIVATE SFML::Graphics)

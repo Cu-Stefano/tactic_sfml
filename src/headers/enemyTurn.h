@@ -1,5 +1,14 @@
-class EnemtTurn {
-public:
+#pragma once
+#include "turnState.hpp"
+class MapLogic;
 
-	EnemtTurn() = default;
+class EnemyTurn : public TurnState {
+public:
+    MapLogic* map_logic;
+    explicit EnemyTurn(MapLogic* map_logic);
+
+    void on_enter() override;
+    void on_exit() override;
+    void update() override;
+    void draw() override;
 };

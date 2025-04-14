@@ -145,6 +145,7 @@ void do_graphics(state& gs)
 void update(state& gs)
 {
     update_map(gs);
+	gs.maplogic.update();
 }
 ////////////////////////////////////////////////////////////
 

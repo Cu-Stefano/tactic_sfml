@@ -16,11 +16,11 @@ class Button
 {
 	button_state state;
 
-	//functions that gets executed when the the events trigger
-	std::function<void()> onClick;
-	std::function<void()> onHover;
-
     public:
+		//functions that gets executed when the the events trigger
+		std::function<void()> onClick;
+		std::function<void()> onHover;
+
         static std::optional<Button> isAnyButtonPressed;
 		Sprite sprite;
         RectangleShape shape;
