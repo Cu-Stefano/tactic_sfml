@@ -8,6 +8,13 @@
 constexpr unsigned window_width = 1400;
 constexpr unsigned window_height = 840;
 
+// Define colors as constants
+const sf::Color ENEMY_ATTACK_COLOR(0xFFFF4500); // Orange-Red
+const sf::Color ALLAY_ATTACK_COLOR(0xFF6495ED); // Cornflower Blue
+const sf::Color ENEMY_PATH_COLOR(0xFF87CEFA); // LightSkyBlue
+const sf::Color ALLAY_PATH_COLOR(0xFFFFA07A); // LightSalmon 
+
+
 class state
 {
 public:
@@ -25,5 +32,15 @@ public:
     {
         window = sf::RenderWindow(sf::VideoMode({ w, h }), title);
     }
+
+    Tile* getTileFromMousePosition(Vector2f mousePos)
+    {
+        int tileX = static_cast<int>(mousePos.x) / 40;
+        int tileY = static_cast<int>(mousePos.y) / 40;
+        if (tileX < 0 || tileX >= window_width / 40 || tileY < 0 || tileY >= window_height / 40)
+            return nullptr;
+        return &Map[tileY][tileX];
+    }
 };
+
 

@@ -32,14 +32,12 @@ void ChooseTile::update()
 		if (!selectedTile.shape.getGlobalBounds().contains(mousePos))// sanity check
 			return;
 
-		std::cout << tileX << " " << tileY << std::endl;
-
 		startinPosition = { tileX, tileY };
 		currentPosition = { tileX, tileY };
 
 		//CHANGE STATE TO 1
-		turnState->SetActionState(new TileSelected(gs_state, turnState));
-
+		if (selectedTile.UnitOn != nullptr)
+			turnState->SetActionState(new TileSelected(gs_state, turnState, &selectedTile));
 		//enemy case
 
 	   

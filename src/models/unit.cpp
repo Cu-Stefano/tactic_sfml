@@ -1,11 +1,12 @@
 #include "../headers/unit.h"
 
-Unit::Unit(std::string n, bool t, ClassType c, int mh, int str, int def, int spe, int skl, int lck)
+Unit::Unit(std::string n, bool t, ClassType c, int mh, int mv, int str, int def, int spe, int skl, int lck)
 {
 	name = n;
 	type = t;
 	unit_class = c;
 	max_hp = mh;
+	movement = mv;
 	hp = mh;
 	strength = str;
 	defense = def;

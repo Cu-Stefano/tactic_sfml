@@ -1,17 +1,18 @@
-#include "../../headers/0_chooseTile.h"
 #include "../../headers/1_tileSelected.h"
+#include "../../headers/pathAlgorithm.h"
 
 #include <iostream>
 
-#include "../../headers/state.h"
-#include "../../headers/tile.h"
 
-TileSelected::TileSelected(state& gs_state, TurnState* turnState)
+TileSelected::TileSelected(state& gs_state, TurnState* turnState, Tile* tile)
 	: ActionState(gs_state, turnState) {
+	this->tile = tile;
+	pathAlgorithm = new PathAlgorithm(tile, gs_state);
 }
 
 void TileSelected::on_enter() {
 	std::cout << "TileSelected::on_enter()" << std::endl;
+	pathAlgorithm->Execute();
 }
 
 void TileSelected::on_exit() {
@@ -20,6 +21,12 @@ void TileSelected::on_exit() {
 
 void TileSelected::update()
 {
+	for (auto tile : pathAlgorithm->path)
+	{
+		tile->sprite.setColor(ALLAY_PATH_COLOR);
+	}
+
+	
 }
 
 void TileSelected::draw() {

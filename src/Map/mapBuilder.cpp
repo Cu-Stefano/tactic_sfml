@@ -64,7 +64,7 @@ void initialize_Map(state& gs)
                 unit->an_sprite.sprite->move({ -16, -21 });
 
                 tileName = "grass";
-                walkable = true;
+                walkable = false;
                 break;
             case -1:
                 //enemy
@@ -73,7 +73,7 @@ void initialize_Map(state& gs)
                 enemy_index++;
 
                 tileName = "grass";
-                walkable = true;
+                walkable = false;
                 break;
 			case 0:
                 //alleato
@@ -82,7 +82,7 @@ void initialize_Map(state& gs)
                 allay_index++;
 
                 tileName = "grass";
-                walkable = true;
+                walkable = false;
 				break;
             case 2:
                 tileName = "water";

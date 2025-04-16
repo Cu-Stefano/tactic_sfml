@@ -5,7 +5,10 @@ class ActionState;
 
 class TurnState {
 public:
-    TurnState(state& gs_state) : gs_state(gs_state) {}
+    TurnState(state& gs_state) : gs_state(gs_state), CurrentActionState(nullptr)
+    {
+    }
+
     state& gs_state;
 
     ActionState* CurrentActionState;

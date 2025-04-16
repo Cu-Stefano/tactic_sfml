@@ -25,5 +25,5 @@ add_executable(TacticSFML
     "src/TurnLogic/AllayTurn.cpp" "src/TurnLogic/enemyTurn.cpp" "src/headers/actionState.hpp" 
     "src/TurnLogic/Actions/0_chooseTile.cpp" "src/TurnLogic/Actions/1_tileSelected.cpp"
     "src/TurnLogic/Actions/2_chooseAttack.cpp" "src/TurnLogic/Actions/3_attack.cpp" 
-    "src/headers/1_tileSelected.h" "src/headers/2_chooseAttack.h" "src/TurnLogic/turnState.cpp")
+    "src/headers/1_tileSelected.h" "src/headers/2_chooseAttack.h" "src/TurnLogic/turnState.cpp" "src/headers/pathAlgorithm.h" "src/Utilities/pathAlgorithm.cpp")
 target_link_libraries(TacticSFML PRIVATE SFML::Graphics)
