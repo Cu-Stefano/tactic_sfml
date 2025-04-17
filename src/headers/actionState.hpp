@@ -11,8 +11,8 @@ class ActionState
 public:
 	TurnState* turnState;
 	state& gs_state;
-	std::pair<int, int>  startinPosition;
-	std::pair<int, int>  currentPosition;
+	sf::Vector2i startinPosition;
+	sf::Vector2i currentPosition;
 
 	ActionState(state& gs_state, TurnState* turnState) : gs_state(gs_state), turnState(turnState) {}
 

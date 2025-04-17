@@ -19,6 +19,7 @@ class Unit {
 public:
     std::string name;
     bool type; // 0 allay, 1 enemy
+    bool can_move;
     ClassType unit_class;
     std::optional<Weapon> equiped_weapon;
     

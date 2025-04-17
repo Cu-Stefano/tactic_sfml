@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include "../../headers/0_chooseTile.h"
+#include "../../headers/2_chooseAttack.h"
 
 
 TileSelected::TileSelected(state& gs_state, TurnState* turnState, Tile* tile)
@@ -13,9 +14,7 @@ TileSelected::TileSelected(state& gs_state, TurnState* turnState, Tile* tile)
 }
 
 void TileSelected::on_enter() {
-	std::cout << "TileSelected::on_enter()" << std::endl;
 	pathAlgorithm->Execute();
-	//pathAlgorithm->Onode->UnitOn->set_state(new MoveState(pathAlgorithm->Onode->UnitOn));
 }
 
 void TileSelected::on_exit() {
@@ -26,10 +25,54 @@ void TileSelected::on_exit() {
 
 void TileSelected::move_Unit()
 {
+	Vector2f mousePos = gs_state.window.mapPixelToCoords(Mouse::getPosition(gs_state.window));
+	if (gs_state.isMouseOutOfRange(mousePos)) return;
 	
-	
+	// If clicking on a nearby enemy
+	if (isButtonPressed(Mouse::Button::Left))
+	{
+		auto hovered_tile = gs_state.getTileFromMousePosition(mousePos);
+		if (std::find(pathAlgorithm->nearEnemies.begin(), pathAlgorithm->nearEnemies.end(), hovered_tile) != pathAlgorithm->nearEnemies.end())
+		{
+			turnState->SetActionState(new ChooseAttack(gs_state, pathAlgorithm->nearEnemies, hovered_tile));
+			return;
+		}
 
+		// Exit conditions
+		if (!hovered_tile || hovered_tile->UnitOn || std::find(pathAlgorithm->path.begin(), pathAlgorithm->path.end(), hovered_tile) == pathAlgorithm->path.end())
+			return;
+
+		currentPosition = gs_state.getCoordFromTile(hovered_tile);
+		pathAlgorithm->Onode->move_unit(hovered_tile);
+
+		turnState->SetActionState(new ChooseTile(gs_state, turnState));
+		////controllo i nighbours per vedere se ci sono nemici
+		//// If there is an enemy unit in attack range, change state
+		//if (!newPathAlgorithm->nearEnemies.empty())
+		//{
+		//	turnState->SetActionState(new ChooseAttack(gs_state, newPathAlgorithm->nearEnemies, butt));
+		//}
+		//else
+		//{
+		//	// Unit can't move anymore
+		//	_startinPosition = { 0, 0 };
+		//	_currentPosition = { 0, 0 };
+
+		//	gs_state.maplogic.UnitCantMoveNoMore(butt);
+
+		//	// If all ally units have moved, change state to enemy turn
+		//	if (std::all_of(MapBuilder::AllayButtonList.begin(), MapBuilder::AllayButtonList.end(),
+		//		[](Button* allay) { return !(allay->getTile()->UnitOn->CanMove); }))
+		//	{
+		//		turnState->SetActionState(new EnemyTurn(gs_state.maplogic));
+		//	}
+
+		//	// Change state back to TileToBeSelected
+		//	turnState->SetActionState(new TileToBeSelected(gs_state));
+		//}
+	}
 }
+
 
 void TileSelected::update()
 {
@@ -52,7 +95,7 @@ void TileSelected::update()
 
 	//mouse actions:
 	Vector2f mousePos = gs_state.window.mapPixelToCoords(Mouse::getPosition(gs_state.window));
-	if (mousePos.x > gs_state.menubar_attack_window_x || mousePos.y > gs_state.menubar_attack_y || mousePos.x < 0 || mousePos.y < 0) return;
+	if (gs_state.isMouseOutOfRange(mousePos)) return;
 	auto hovered_tile = gs_state.getTileFromMousePosition(mousePos);
 	if (hovered_tile->UnitOn && hovered_tile->UnitOn->type == 1 - pathAlgorithm->Onode->UnitOn->type)
 	{
@@ -72,6 +115,7 @@ void TileSelected::update()
 
 		//left_mouse::Move
 		move_Unit();
+		
     }
 
 	//right_mouse::Back

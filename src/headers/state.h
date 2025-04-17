@@ -33,7 +33,7 @@ public:
         window = sf::RenderWindow(sf::VideoMode({ w, h }), title);
     }
 
-    Tile* getTileFromMousePosition(Vector2f mousePos)
+    Tile* getTileFromMousePosition(Vector2f mousePos) const
     {
         int tileX = static_cast<int>(mousePos.x) / 40;
         int tileY = static_cast<int>(mousePos.y) / 40;
@@ -41,6 +41,27 @@ public:
             return nullptr;
         return Map[tileY][tileX];
     }
+    Vector2i getCoordFromTile(Tile* tile) const
+    {
+		for (int i = 0; i < Map.size(); ++i)
+		{
+			for (int j = 0; j < Map[i].size(); ++j)
+			{
+				if (Map[i][j] == tile)
+				{
+					return {i, j};
+				}
+			}
+		}
+		return {-1, -1};
+    }
+
+    bool isMouseOutOfRange(Vector2f mousePos) const
+    {
+       return (mousePos.x > menubar_attack_window_x || mousePos.y > menubar_attack_y || mousePos.x < 0 || mousePos.y < 0);
+    }
+
+
 };
 
 

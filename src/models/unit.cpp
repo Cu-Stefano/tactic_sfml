@@ -13,6 +13,7 @@ Unit::Unit(std::string n, bool t, ClassType c, int mh, int mv, int str, int def,
 	speed = spe;
 	skill = skl;
 	luck = lck;
+	can_move = true;
 
 	switch (c)
 	{

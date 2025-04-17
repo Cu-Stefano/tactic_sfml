@@ -17,6 +17,8 @@ public:
 
     void draw(::state& gs_state) const;
 
+    void move_unit(Tile* b);
+
     std::string TileName;
     bool Walkable;
     Unit* UnitOn;
