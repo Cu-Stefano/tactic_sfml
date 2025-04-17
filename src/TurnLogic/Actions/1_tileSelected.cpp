@@ -1,7 +1,10 @@
 #include "../../headers/1_tileSelected.h"
+#include <iostream>
+#include <algorithm>
 #include "../../headers/pathAlgorithm.h"
 #include "../../headers/0_chooseTile.h"
 #include "../../headers/2_chooseAttack.h"
+#include "../../headers/enemyTurn.h"
 #include "../../headers/state.hpp"
 #include "../../headers/turnState.hpp"
 #include "../../headers/tile.h"
@@ -61,7 +64,16 @@ void TileSelected::move_Unit()
 				//turnState->SetActionState(new ChooseAttack(gs_state, turnState))
 			}
 		}
-		turnState->SetActionState(new ChooseTile(gs_state, turnState));
+
+		bool allAlliesCannotMove = std::all_of(allay_list.begin(), allay_list.end(), [](Unit* unit) {
+			return !unit->can_move; // Verifica che tutte le unità abbiano can_move == false
+			});
+
+		if (allAlliesCannotMove) {
+			gs_state.maplogic.SetState(new EnemyTurn(&gs_state.maplogic));
+		}
+		else 
+			turnState->SetActionState(new ChooseTile(gs_state, turnState));
 	}
 }
 

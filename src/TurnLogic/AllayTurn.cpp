@@ -5,6 +5,7 @@
 #include "../headers/actionState.hpp"
 #include "../headers/0_chooseTile.h"
 #include "../headers/tile.h"
+#include "../headers/unit.h"
 
 class Turnstate;
 class ActionState;
@@ -23,12 +24,10 @@ void AllayTurn::on_enter()
 
 void AllayTurn::on_exit()
 {
-	for (auto tiles : gs_state.Map)
+	for (auto unit : allay_list)
 	{
-		for (auto tile : tiles)
-		{
-			tile->onClick = nullptr;
-		}
+		unit->can_move = true;
+		unit->an_sprite.sprite->setColor(Color::White);
 	}
 }
 

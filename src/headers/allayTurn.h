@@ -1,6 +1,6 @@
 #pragma once
-class MapLogic;
-class TurnState;
+#include "turnState.hpp"
+#include "mapLogic.h"
 
 class AllayTurn : public TurnState{
 public:

@@ -123,6 +123,7 @@ void initialize_Map(state& gs)
                 std::cout << "Tile clicked at (" << i << ", " << j << ")" << std::endl;
 				std::cout << "Tile name: " << new_tile->TileName << std::endl;
 				std::cout << "Unit on tile: " << (new_tile->UnitOn ? new_tile->UnitOn->name : "None") << std::endl;
+				std::cout << "Unit can move: " << (new_tile->UnitOn ? new_tile->UnitOn->can_move : "None") << std::endl;
 				std::cout << "Walkable: " << new_tile->Walkable << std::endl;
 				std::cout << "g: " << new_tile->G << std::endl;
 				std::cout << "pass: " << new_tile->passable << std::endl << std::endl << std::endl;

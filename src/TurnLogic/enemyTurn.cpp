@@ -2,6 +2,8 @@
 #include "../headers/enemyTurn.h"  
 #include "../headers/mapLogic.h"  
 
+class Turnstate;
+
 EnemyTurn::EnemyTurn(MapLogic* map_logic) : TurnState(map_logic->gs_state)
 {
 	this->map_logic = map_logic;
