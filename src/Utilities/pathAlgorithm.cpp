@@ -1,6 +1,7 @@
 #include "../headers/pathAlgorithm.h"
 
 #include <random>
+#include <stdbool.h>
 
 PathAlgorithm::PathAlgorithm(Tile* Onode, state& gs_state): gs_state(gs_state)
 {
@@ -56,7 +57,6 @@ void PathAlgorithm::Execute(bool near)
             {
                 if (currNeighbour->G == 0) 
                 {
-
                     if (currNeighbour->UnitOn && currNeighbour->UnitOn->type == enemyType && curr->G < range && std::find(nearEnemies.begin(), nearEnemies.end(), currNeighbour) == nearEnemies.end())
                     {
                         nearEnemies.push_back(currNeighbour);
@@ -65,15 +65,8 @@ void PathAlgorithm::Execute(bool near)
 
                     if (currNeighbour->UnitOn)
                     {
-                        if (currNeighbour->UnitOn->type == enemyType && unit->equiped_weapon && std::find(attackList.begin(), attackList.end(), currNeighbour) == attackList.end())
-                        {
-                            if (unit->type == 1) // Enemy
-                                currNeighbour->sprite.setColor(ENEMY_ATTACK_COLOR);
-                            else 
-                                currNeighbour->sprite.setColor(ALLAY_ATTACK_COLOR);
-
+                        if (currNeighbour->UnitOn->type == enemyType)
                             attackList.push_back(currNeighbour);
-                        }
                         continue;
                     }
 
@@ -86,22 +79,13 @@ void PathAlgorithm::Execute(bool near)
 
         if (curr->G > movement)
         {
-            //if (unit->type == 1) // Enemy
-            //    curr->sprite.setColor(ENEMY_ATTACK_COLOR);
-            //else
-            //    curr->sprite.setColor(ALLAY_ATTACK_COLOR);
-
-            attackList.push_back(curr);
+            attackBorderPath.push_back(curr);
         }
-        else
+        else if (curr != Onode)
         {
-    //        if (unit->type == 1) // Enemy
-				//curr->sprite.setColor(ENEMY_PATH_COLOR);
-    //        else
-				//curr->sprite.setColor(ALLAY_PATH_COLOR);
-
             path.push_back(curr);
         }
+            
     }
 
     for (auto& butt : nearEnemies)
@@ -140,15 +124,6 @@ int PathAlgorithm::CalculateDistance(Tile* currNeighbourToReach) const
 	return c;
 }
 
-
-static int GenerateRandomWeight() {
-    static std::random_device rd; // Generatore di numeri casuali
-    static std::mt19937 gen(rd()); // Mersenne Twister
-    static std::uniform_int_distribution<> dist(1, 10); // Distribuzione uniforme tra 1 e 10
-
-    return (dist(gen) == 1) ? 2 : 0; // 10% di probabilità di restituire 2, altrimenti 0
-}
-
 vector<vector<Tile*>> PathAlgorithm::InitiliazeMap()  
 {  
    auto& baseMap = gs_state.Map;
@@ -160,9 +135,9 @@ vector<vector<Tile*>> PathAlgorithm::InitiliazeMap()
        vector<Tile*> row;  
        for (int j = 0; j < baseMap[0].size(); j++)  
        {  
-           Tile* tile = &baseMap[i][j];  
-           tile->G = GenerateRandomWeight();
-		   tile->passable = tile->Walkable;
+           Tile* tile = baseMap[i][j];  
+           tile->G = 0;
+           tile->passable = tile->UnitOn != nullptr ? true: tile->Walkable;
            row.push_back(tile);
        }  
        result.push_back(row);  

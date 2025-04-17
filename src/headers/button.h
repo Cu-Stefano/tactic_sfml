@@ -3,6 +3,8 @@
 #include <functional>
 #include <SFML/Graphics.hpp>
 #include <optional>
+
+class state;
 using namespace sf;
 
 enum button_state
@@ -30,7 +32,7 @@ class Button
 		bool is_hover() const;
 
         void update(const RenderWindow& window);
-		void draw(RenderWindow& window) const;    
+		void draw(::state& gs_state) const;    
 
 		
         void set_click_function(const std::function<void()>& func);

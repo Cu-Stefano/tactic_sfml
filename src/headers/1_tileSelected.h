@@ -1,6 +1,7 @@
 #pragma once
 
 #include "actionState.hpp"
+#include "SFML/Graphics/RenderWindow.hpp"
 
 class Tile;
 class PathAlgorithm;
@@ -13,7 +14,8 @@ public:
 	TileSelected(state& gs_state, TurnState* turnState, Tile* tile);
 	void on_enter() override;
 	void on_exit() override;
+	void move_Unit();
 
 	void update() override;
-	void draw() override;
+	void draw(state& gs_state) override;
 };

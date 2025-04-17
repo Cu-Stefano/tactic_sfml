@@ -27,23 +27,24 @@ void ChooseTile::update()
 
 		int tileX = static_cast<int>(mousePos.x) / 40;
 		int tileY = static_cast<int>(mousePos.y) / 40;
-		Tile selectedTile = gs_state.Map[tileY][tileX];
+		Tile* selectedTile = gs_state.Map[tileY][tileX];
 
-		if (!selectedTile.shape.getGlobalBounds().contains(mousePos))// sanity check
+		if (!selectedTile->shape.getGlobalBounds().contains(mousePos))// sanity check
 			return;
 
 		startinPosition = { tileX, tileY };
 		currentPosition = { tileX, tileY };
 
 		//CHANGE STATE TO 1
-		if (selectedTile.UnitOn != nullptr)
-			turnState->SetActionState(new TileSelected(gs_state, turnState, &selectedTile));
+		if (selectedTile->UnitOn != nullptr)
+			turnState->SetActionState(new TileSelected(gs_state, turnState, selectedTile));
 		//enemy case
 
-	   
    }
 }
 
-void ChooseTile::draw() {
-    // Draw logic
+void ChooseTile::draw(state& gs_state)
+{
+	
 }
+

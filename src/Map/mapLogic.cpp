@@ -11,9 +11,9 @@ void MapLogic::SetState(TurnState* newTurnState)
 	current_turnState->on_enter();
 }
 
-void MapLogic::draw() const
+void MapLogic::draw(state& g_state) const
 {
-	current_turnState->draw();
+	current_turnState->draw(gs_state);
 }
 void MapLogic::update() const
 {

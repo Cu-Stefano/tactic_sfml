@@ -11,6 +11,7 @@ AnimatedSprite::AnimatedSprite(sf::Texture t)
 	sprite->setScale({ 2, 2 });
 	sprite->move({ -12, -12 });
 	sprite->setTextureRect(sf::IntRect({ 0 * sprite_width, 0 }, { sprite_width, sprite_width }));
+
 }
 
 void AnimatedSprite::set_pos(sf::Vector2i coord)

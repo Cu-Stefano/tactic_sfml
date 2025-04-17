@@ -130,12 +130,13 @@ void do_gui(state& gs)
 	curr_unit_window_draw(gs, ui);
     draw_curr_stats(gs);
 
-        attack_window_draw(gs, ui);
+	attack_window_draw(gs, ui);
 }
 
 void do_graphics(state& gs)
 {
     gs.window.clear();
+
     do_gui(gs);
 	draw_map(gs);
 
@@ -155,7 +156,7 @@ int main()
     gs.window.setFramerateLimit(60);
 
 	initialize_Map(gs);
-    gs.selected_tile = &gs.Map[0][1];
+    gs.selected_tile = gs.Map[0][1];
 
     while (gs.window.isOpen()) // main loop
     {

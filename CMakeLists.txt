@@ -17,9 +17,9 @@ file(COPY ${CMAKE_SOURCE_DIR}/resources
    
 add_executable(TacticSFML
     "src/main.cpp"
-    src/Map/mapBuilder.cpp
-    src/Map/mapLogic.cpp
-    src/Utilities/button.cpp src/Headers/state.h "src/Map/tile.cpp" "src/headers/tile.h" "src/headers/unit.h" 
+    "src/Map/mapBuilder.cpp"
+    "src/Map/mapLogic.cpp"
+    "src/Utilities/button.cpp" "src/headers/state.h" "src/Map/tile.cpp" "src/headers/tile.h" "src/headers/unit.h" 
     "src/models/unit.cpp" "src/headers/animatedSprite.h" "src/Headers/mapLogic.h" "src/Utilities/animatedSprite.cpp" 
     "src/Utilities/animState.cpp" "src/models/weapon.cpp" "src/headers/weapon.h"  
     "src/TurnLogic/AllayTurn.cpp" "src/TurnLogic/enemyTurn.cpp" "src/headers/actionState.hpp" 

@@ -22,6 +22,7 @@ public:
 
 	vector<vector<Tile*>> InitiliazeMap();
 
+    Tile* Onode;
     vector<Tile*> path;
     vector<Tile*> attackBorderPath;//i bordi d'attacco del path
     vector<Tile*> attackList;//tutti i nemici dentro al path, ma fuori da nearEnemies
@@ -29,7 +30,6 @@ public:
 
 private:
     state& gs_state;
-    Tile* Onode;
     Unit* unit;
     vector<vector<Tile*>> map;
     priority_queue<pair<int, Tile*>, vector<pair<int, Tile*>>, greater<>> priorityQueue;

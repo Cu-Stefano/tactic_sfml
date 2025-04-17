@@ -19,6 +19,6 @@ void EnemyTurn::update() {
   
 }  
 
-void EnemyTurn::draw() {
+void EnemyTurn::draw(state& gs_state) {
     
 }

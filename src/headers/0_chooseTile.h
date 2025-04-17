@@ -9,5 +9,5 @@ public:
 	void on_exit() override;
 
 	void update() override;
-	void draw() override;
+	void draw(::state& gs_state) override;
 };

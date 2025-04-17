@@ -1,6 +1,8 @@
 #pragma once
 #include <utility>
 
+#include "SFML/Graphics/RenderWindow.hpp"
+
 class state;
 class TurnState;
 
@@ -18,5 +20,5 @@ public:
 	virtual void on_exit() = 0;
 
 	virtual void update() = 0;
-	virtual void draw() = 0;
+	virtual void draw(state& gs_state) = 0;
 };

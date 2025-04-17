@@ -1,5 +1,7 @@
 #include "../headers/button.h"
 
+#include "../headers/state.h"
+
 std::optional<Button> Button::isAnyButtonPressed = std::nullopt;
 
 Button::Button(Vector2f Pos, Vector2f size, Sprite spr) : sprite(spr)
@@ -65,10 +67,10 @@ void Button::update(const RenderWindow& window)
 }
 
 
-void Button::draw(RenderWindow& window) const
+void Button::draw(::state& gs_state) const
 {
-    window.draw(sprite);
-    window.draw(shape);
+   gs_state.window.draw(sprite);
+   gs_state.window.draw(shape);
 }
 
 void Button::set_click_function(const std::function<void()>& func)

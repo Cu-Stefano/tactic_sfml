@@ -27,7 +27,7 @@ void AllayTurn::on_exit()
 	{
 		for (auto tile : tiles)
 		{
-			tile.onClick = nullptr;
+			tile->onClick = nullptr;
 		}
 	}
 }
@@ -47,7 +47,7 @@ void AllayTurn::update()
 	CurrentActionState->update();
 }  
 
-void AllayTurn::draw()
+void AllayTurn::draw(state& gs_state)
 {  
-	CurrentActionState->draw();
+	CurrentActionState->draw(gs_state);
 }

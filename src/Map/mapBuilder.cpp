@@ -11,7 +11,7 @@ std::vector<std::vector<int>> map_generator()
     {
         {0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
         {1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-        {1, 1, 1, 1, 1, 1, 1, -1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1, -1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
         {1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 1, 1, 1, 1, 1, -1, -2, 1, 1},
         {1, 0, 0, 1, 2, 2, 2, 1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
         {1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -44,7 +44,7 @@ void initialize_Map(state& gs)
 
     for (size_t i = 0; i < map.size(); ++i)
     {
-        std::vector<Tile> row;
+        std::vector<Tile*> row;
         x = 0.0f;
         
         for (size_t j = 0; j < map[i].size(); ++j)
@@ -98,18 +98,27 @@ void initialize_Map(state& gs)
                 break;
             }
 
-            sf::Sprite grass_sprite = sf::Sprite(texture);
+            Sprite grass_sprite = sf::Sprite(texture);
 			set_tile_sprite(grass_sprite, tileName, { x, y });
 
-            Tile new_tile(tileName, walkable, unit, { x, y }, { tileSize, tileSize }, grass_sprite);
+            //path_sprite
+            Texture path_text;
+			Sprite* path_spr = new sf::Sprite(path_text);
+            path_spr->setTextureRect(sf::IntRect({0, 0}, texture_tile_size));
+            path_spr->setScale({ 2.48f, 2.48f });
+            path_spr->setColor(Color::Transparent);
+            path_spr->setPosition({ x, y });
+            path_spr->move({ 0.5f, 0.5f });
+
+            Tile* new_tile = new Tile(tileName, walkable, unit, { x, y }, { tileSize, tileSize }, grass_sprite, path_spr);
 
             // Evento di prova
-            new_tile.set_click_function([i, j]() {
+            new_tile->set_click_function([i, j]() {
                 std::cout << "Tile clicked at (" << i << ", " << j << ")" << std::endl;
                 });
 
-			new_tile.set_hover_function([i, j, &gs]() {
-                if (gs.Map[i][j].UnitOn != nullptr) gs.selected_tile = &gs.Map[i][j];
+			new_tile->set_hover_function([i, j, &gs]() {
+                if (gs.Map[i][j]->UnitOn != nullptr) gs.selected_tile = gs.Map[i][j];
                 else{
                     gs.selected_tile = nullptr;
                 }
@@ -129,10 +138,10 @@ void draw_map(state& gs)
     {
         for (auto& button : row)
         {
-            button.draw(gs.window);
+            button->draw(gs);
         }
     }
-
+    gs.maplogic.current_turnState->draw(gs);
     for (auto allay : allay_list)
     {
         allay->draw(gs.window);
@@ -141,8 +150,6 @@ void draw_map(state& gs)
     {
         enemy->draw(gs.window);
     }
-
-
 }
 
 void update_map(state& gs)
@@ -151,7 +158,7 @@ void update_map(state& gs)
     {
         for (auto& button : row)
         {
-            button.update(gs.window);
+            button->update(gs.window);
         }
     }
 

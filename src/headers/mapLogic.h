@@ -12,6 +12,6 @@ public:
 
 	void SetState(TurnState* newTurnState);  
 
-	void draw() const;  
+	void draw(state& g_state) const;  
 	void update() const;  
 };
