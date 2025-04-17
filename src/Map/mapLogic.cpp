@@ -1,4 +1,5 @@
 #include "../headers/mapLogic.h"
+#include "../headers/turnState.hpp"
 #include "../headers/allayTurn.h"
 
 MapLogic::MapLogic(state& gs) : gs_state(gs), current_turnState(nullptr) {

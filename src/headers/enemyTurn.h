@@ -1,6 +1,6 @@
 #pragma once
-#include "turnState.hpp"
 class MapLogic;
+class TurnState;
 
 class EnemyTurn : public TurnState {
 public:

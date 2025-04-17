@@ -1,4 +1,5 @@
 #include "../headers/unit.h"
+#include "../headers/weapon.h"
 
 Unit::Unit(std::string n, bool t, ClassType c, int mh, int mv, int str, int def, int spe, int skl, int lck)
 {
@@ -28,13 +29,40 @@ Unit::Unit(std::string n, bool t, ClassType c, int mh, int mv, int str, int def,
 		break;
 	}
 
-    set_state(new IdleState(this));
-}
+    sf::Texture texture;
+    std::string path1;
+    std::string path2;
 
-void Unit::set_state(AnimState* a)
-{
-    anim_state = a;
-	anim_state->on_enter();
+    if (type == 0) { // Alleati
+        path1 = "resources/Units/0/";
+        switch (unit_class) {
+        case swordsman:
+            path2 = "SwordFighter/SwordFighter_LongHair_Blue1.png";
+            break;
+        case warrior:
+            path2 = "AxeFighter/AxeFighter_LongHair_Blue1.png";
+            break;
+        case soldier:
+            path2 = "SpearFighter/SpearFighter_LongHair_Blue1.png";
+            break;
+        }
+    }
+    else { // Nemici
+        path1 = "resources/Units/1/";
+        switch (unit_class) {
+        case swordsman:
+            path2 = "SwordFighter/SwordFighter_LongHair_Red1.png";
+            break;
+        case warrior:
+            path2 = "AxeFighter/AxeFighter_ShortHair_Red1.png";
+            break;
+        case soldier:
+            path2 = "SpearFighter/SpearFighter_LongHair_Red1.png";
+            break;
+        }
+    }
+    texture.loadFromFile(path1 + path2);
+    set_sprite(texture);
 }
 
 int Unit::Get_Attack() const

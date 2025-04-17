@@ -1,10 +1,10 @@
 #include "../headers/turnState.hpp"
 #include "../headers/allayTurn.h"  
 #include "../headers/mapLogic.h"  
-#include "../headers/state.h"
+#include "../headers/state.hpp"
 #include "../headers/actionState.hpp"
 #include "../headers/0_chooseTile.h"
-#include "../headers/turnState.hpp"
+#include "../headers/tile.h"
 
 class Turnstate;
 class ActionState;

@@ -1,5 +1,4 @@
 #pragma once
-
 #include "actionState.hpp"
 
 class ChooseTile : public ActionState {

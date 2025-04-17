@@ -1,10 +1,11 @@
 #include "../../headers/1_tileSelected.h"
 #include "../../headers/pathAlgorithm.h"
-
-#include <iostream>
-
 #include "../../headers/0_chooseTile.h"
 #include "../../headers/2_chooseAttack.h"
+#include "../../headers/state.hpp"
+#include "../../headers/turnState.hpp"
+#include "../../headers/tile.h"
+#include "../../headers/unit.h"
 
 
 TileSelected::TileSelected(state& gs_state, TurnState* turnState, Tile* tile)
@@ -15,6 +16,8 @@ TileSelected::TileSelected(state& gs_state, TurnState* turnState, Tile* tile)
 
 void TileSelected::on_enter() {
 	pathAlgorithm->Execute();
+	pathAlgorithm->Onode->UnitOn->an_sprite.swap_interval = 0.15f; // sec
+	pathAlgorithm->Onode->UnitOn->an_sprite.sprite_y = 1;
 }
 
 void TileSelected::on_exit() {
@@ -32,6 +35,7 @@ void TileSelected::move_Unit()
 	if (isButtonPressed(Mouse::Button::Left))
 	{
 		auto hovered_tile = gs_state.getTileFromMousePosition(mousePos);
+		if (!hovered_tile) return;
 		if (std::find(pathAlgorithm->nearEnemies.begin(), pathAlgorithm->nearEnemies.end(), hovered_tile) != pathAlgorithm->nearEnemies.end())
 		{
 			turnState->SetActionState(new ChooseAttack(gs_state, pathAlgorithm->nearEnemies, hovered_tile));
@@ -45,34 +49,21 @@ void TileSelected::move_Unit()
 		currentPosition = gs_state.getCoordFromTile(hovered_tile);
 		pathAlgorithm->Onode->move_unit(hovered_tile);
 
+		//now hovered_tile is the new position of Onode
+		hovered_tile->UnitOn->an_sprite.sprite_y = 0;
+		hovered_tile->UnitOn->an_sprite.swap_interval = 0.3f; // sec
+		
+		//controllo i nighbours per vedere se ci sono nemici
+		for (auto& neighbour : hovered_tile->Neighbours)
+		{
+			if (neighbour->UnitOn && neighbour->UnitOn->type == 1 - hovered_tile->UnitOn->type)
+			{
+				//turnState->SetActionState(new ChooseAttack(gs_state, turnState))
+			}
+		}
 		turnState->SetActionState(new ChooseTile(gs_state, turnState));
-		////controllo i nighbours per vedere se ci sono nemici
-		//// If there is an enemy unit in attack range, change state
-		//if (!newPathAlgorithm->nearEnemies.empty())
-		//{
-		//	turnState->SetActionState(new ChooseAttack(gs_state, newPathAlgorithm->nearEnemies, butt));
-		//}
-		//else
-		//{
-		//	// Unit can't move anymore
-		//	_startinPosition = { 0, 0 };
-		//	_currentPosition = { 0, 0 };
-
-		//	gs_state.maplogic.UnitCantMoveNoMore(butt);
-
-		//	// If all ally units have moved, change state to enemy turn
-		//	if (std::all_of(MapBuilder::AllayButtonList.begin(), MapBuilder::AllayButtonList.end(),
-		//		[](Button* allay) { return !(allay->getTile()->UnitOn->CanMove); }))
-		//	{
-		//		turnState->SetActionState(new EnemyTurn(gs_state.maplogic));
-		//	}
-
-		//	// Change state back to TileToBeSelected
-		//	turnState->SetActionState(new TileToBeSelected(gs_state));
-		//}
 	}
 }
-
 
 void TileSelected::update()
 {
@@ -95,8 +86,9 @@ void TileSelected::update()
 
 	//mouse actions:
 	Vector2f mousePos = gs_state.window.mapPixelToCoords(Mouse::getPosition(gs_state.window));
-	if (gs_state.isMouseOutOfRange(mousePos)) return;
 	auto hovered_tile = gs_state.getTileFromMousePosition(mousePos);
+	if (!hovered_tile) return;
+
 	if (hovered_tile->UnitOn && hovered_tile->UnitOn->type == 1 - pathAlgorithm->Onode->UnitOn->type)
 	{
 		hovered_tile->shape.setOutlineThickness(-2);
@@ -112,15 +104,18 @@ void TileSelected::update()
 			currNode->shape.setOutlineColor(Color::Blue);
 			currNode = currNode->Parent;
 		}
-
 		//left_mouse::Move
 		move_Unit();
-		
     }
 
 	//right_mouse::Back
 	if (Mouse::isButtonPressed(Mouse::Button::Right))
+	{
+		pathAlgorithm->Onode->UnitOn->an_sprite.sprite_y = 0;
+		pathAlgorithm->Onode->UnitOn->an_sprite.swap_interval = 0.3f; // sec
 		turnState->SetActionState(new ChooseTile(gs_state, turnState));
+	}
+		
 
 }
 

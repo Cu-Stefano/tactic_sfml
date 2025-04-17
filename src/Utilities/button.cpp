@@ -1,6 +1,6 @@
 #include "../headers/button.h"
 
-#include "../headers/state.h"
+#include "../headers/state.hpp"
 
 std::optional<Button> Button::isAnyButtonPressed = std::nullopt;
 
@@ -38,8 +38,7 @@ void Button::update(const RenderWindow& window)
             && Mouse::isButtonPressed(Mouse::Button::Left))
         {
             state = pressed;
-            shape.setOutlineColor(Color::Red);
-            shape.setOutlineThickness(-3);
+            shape.setOutlineThickness(-4);
 
             isAnyButtonPressed = *this;
 

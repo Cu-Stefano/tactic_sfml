@@ -1,7 +1,6 @@
 #pragma once  
-#include "turnState.hpp"  
-
 class state;  
+class TurnState;
 
 class MapLogic  
 {  

@@ -4,6 +4,7 @@
 
 class Attack : public ActionState {
 public:
+
 	void on_enter() override;
 	void on_exit() override;
 

@@ -14,16 +14,11 @@ FetchContent_MakeAvailable(SFML)
 
 file(COPY ${CMAKE_SOURCE_DIR}/resources
     DESTINATION ${CMAKE_BINARY_DIR}/bin/)
-   
-add_executable(TacticSFML
-    "src/main.cpp"
-    "src/Map/mapBuilder.cpp"
-    "src/Map/mapLogic.cpp"
-    "src/Utilities/button.cpp" "src/headers/state.h" "src/Map/tile.cpp" "src/headers/tile.h" "src/headers/unit.h" 
-    "src/models/unit.cpp" "src/headers/animatedSprite.h" "src/Headers/mapLogic.h" "src/Utilities/animatedSprite.cpp" 
-    "src/Utilities/animState.cpp" "src/models/weapon.cpp" "src/headers/weapon.h"  
-    "src/TurnLogic/AllayTurn.cpp" "src/TurnLogic/enemyTurn.cpp" "src/headers/actionState.hpp" 
-    "src/TurnLogic/Actions/0_chooseTile.cpp" "src/TurnLogic/Actions/1_tileSelected.cpp"
-    "src/TurnLogic/Actions/2_chooseAttack.cpp" "src/TurnLogic/Actions/3_attack.cpp" 
-    "src/headers/1_tileSelected.h" "src/headers/2_chooseAttack.h" "src/TurnLogic/turnState.cpp" "src/headers/pathAlgorithm.h" "src/Utilities/pathAlgorithm.cpp")
+
+# Cerca automaticamente tutti i file .cpp e .h nella directory src e sottodirectory
+file(GLOB_RECURSE SOURCE_FILES ${CMAKE_SOURCE_DIR}/src/*.cpp)
+file(GLOB_RECURSE HEADER_FILES ${CMAKE_SOURCE_DIR}/src/*.h)
+
+# Aggiungi l'eseguibile principale con tutti i file trovati
+add_executable(TacticSFML ${SOURCE_FILES} ${HEADER_FILES})
 target_link_libraries(TacticSFML PRIVATE SFML::Graphics)

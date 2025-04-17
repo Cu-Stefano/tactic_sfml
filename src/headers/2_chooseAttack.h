@@ -1,7 +1,7 @@
 #pragma once
-
-#include "1_tileSelected.h"
 #include "actionState.hpp"
+
+class Tile;
 class state;
 
 class ChooseAttack : public ActionState {

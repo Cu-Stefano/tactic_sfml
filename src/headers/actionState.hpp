@@ -1,6 +1,4 @@
 #pragma once
-#include <utility>
-
 #include "SFML/Graphics/RenderWindow.hpp"
 
 class state;

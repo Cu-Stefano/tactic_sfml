@@ -1,6 +1,12 @@
 #include "../headers/mapBuilder.h"
+#include "../headers/state.hpp"
+#include "../headers/tile.h"
+#include "../headers/unit.h"
+#include "../headers/turnState.hpp"
+#include "SFML/Graphics/Texture.hpp"
 #include <iostream>
 #include <random>
+using namespace sf;
 
 const Texture texture("resources/Tiles/FullTileset.png");
 constexpr Vector2i texture_tile_size(16, 16);
@@ -113,8 +119,14 @@ void initialize_Map(state& gs)
             Tile* new_tile = new Tile(tileName, walkable, unit, { x, y }, { tileSize, tileSize }, grass_sprite, path_spr);
 
             // Evento di prova
-            new_tile->set_click_function([i, j]() {
+            new_tile->set_click_function([i, j, new_tile]() {
                 std::cout << "Tile clicked at (" << i << ", " << j << ")" << std::endl;
+				std::cout << "Tile name: " << new_tile->TileName << std::endl;
+				std::cout << "Unit on tile: " << (new_tile->UnitOn ? new_tile->UnitOn->name : "None") << std::endl;
+				std::cout << "Walkable: " << new_tile->Walkable << std::endl;
+				std::cout << "g: " << new_tile->G << std::endl;
+				std::cout << "pass: " << new_tile->passable << std::endl << std::endl << std::endl;
+                //stampo le info del tile con cout
                 });
 
 			new_tile->set_hover_function([i, j, &gs]() {

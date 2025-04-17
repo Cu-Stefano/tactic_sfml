@@ -1,7 +1,9 @@
 #include "../headers/pathAlgorithm.h"
-
+#include "../headers/state.hpp"
+#include "../headers/tile.h"
+#include "../headers/unit.h"
+#include "../headers/weapon.h"
 #include <random>
-#include <stdbool.h>
 
 PathAlgorithm::PathAlgorithm(Tile* Onode, state& gs_state): gs_state(gs_state)
 {
@@ -98,17 +100,17 @@ void PathAlgorithm::Execute(bool near)
 void PathAlgorithm::ResetAll()
 {
 	//ricolora i currNeighbour delle 3 liste vector
-	for (auto& currNeighbour : path)
+	for (auto& tile : path)
 	{
-		currNeighbour->shape.setFillColor(sf::Color::Transparent);
+        tile->shape.setFillColor(sf::Color::Transparent);
 	}
-	for (auto& currNeighbour : attackBorderPath)
+	for (auto& tile : attackBorderPath)
 	{
-		currNeighbour->shape.setFillColor(sf::Color::Transparent);
+        tile->shape.setFillColor(sf::Color::Transparent);
 	}
-	for (auto& currNeighbour : attackList)
+	for (auto& tile : attackList)
 	{
-		currNeighbour->shape.setFillColor(sf::Color::Transparent);
+        tile->shape.setFillColor(sf::Color::Transparent);
 	}
 }
 

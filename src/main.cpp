@@ -1,5 +1,7 @@
 #include "headers/mapBuilder.h"
-#include "headers/state.h"
+#include "headers/state.hpp"
+#include "headers/tile.h"
+#include "headers/unit.h"
 
 /// Handle events
 void handle(const sf::Event::Resized& resized, state& gs)

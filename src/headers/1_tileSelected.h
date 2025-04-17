@@ -1,7 +1,6 @@
 #pragma once
 
 #include "actionState.hpp"
-#include "SFML/Graphics/RenderWindow.hpp"
 
 class Tile;
 class PathAlgorithm;

@@ -1,12 +1,8 @@
 #pragma once
-
 #include <string>
 #include <optional>
 #include "animatedSprite.h"
-#include "animState.h"
 #include "weapon.h"
-
-class AnimState;
 
 enum ClassType
 {
@@ -24,7 +20,6 @@ public:
     std::optional<Weapon> equiped_weapon;
     
     AnimatedSprite an_sprite;
-    AnimState* anim_state;
 
     //stats
     int hp;
@@ -41,7 +36,6 @@ public:
 
     void set_sprite(sf::Texture t);
     void set_sprite_pos(sf::Vector2i coord);
-    void set_state(AnimState* a);
 
     int Get_Dodge() const;
     int Get_Hit() const;

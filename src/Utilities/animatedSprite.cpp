@@ -11,7 +11,7 @@ AnimatedSprite::AnimatedSprite(sf::Texture t)
 	sprite->setScale({ 2, 2 });
 	sprite->move({ -12, -12 });
 	sprite->setTextureRect(sf::IntRect({ 0 * sprite_width, 0 }, { sprite_width, sprite_width }));
-
+	sprite_y = 0;
 }
 
 void AnimatedSprite::set_pos(sf::Vector2i coord)
@@ -33,7 +33,7 @@ void AnimatedSprite::update()
 		{
 			this->curr_frame = 0;
 		}
-        sprite->setTextureRect(sf::IntRect({ this->curr_frame * sprite_width, sprite_y }, { sprite_width, sprite_width }));
+        sprite->setTextureRect(sf::IntRect({ this->curr_frame * sprite_width, sprite_y*32 }, { sprite_width, sprite_width }));
         clock.restart();
     }
 }

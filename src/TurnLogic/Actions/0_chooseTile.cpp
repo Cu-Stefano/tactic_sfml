@@ -1,17 +1,16 @@
 #include "../../headers/0_chooseTile.h"
-
-#include <iostream>
-
 #include "../../headers/1_tileSelected.h"
-#include "../../headers/state.h"
+#include "../../headers/state.hpp"
+#include "../../headers/turnState.hpp"
 #include "../../headers/tile.h"
+#include "../../headers/unit.h"
 
 ChooseTile::ChooseTile(state& gs_state, TurnState* turnState)
     : ActionState(gs_state, turnState) {
 }
 
 void ChooseTile::on_enter() {
-
+	
 }
 
 void ChooseTile::on_exit() {
@@ -23,13 +22,13 @@ void ChooseTile::update()
 	if ( Mouse::isButtonPressed(Mouse::Button::Left) )
 	{
 		Vector2f mousePos = gs_state.window.mapPixelToCoords(Mouse::getPosition(gs_state.window));
-		if (mousePos.x > gs_state.menubar_attack_window_x || mousePos.y > gs_state.menubar_attack_y || mousePos.x < 0 || mousePos.y < 0) return;
+		if (gs_state.isMouseOutOfRange(mousePos)) return;
 
 		int tileX = static_cast<int>(mousePos.x) / 40;
 		int tileY = static_cast<int>(mousePos.y) / 40;
 		Tile* selectedTile = gs_state.Map[tileY][tileX];
 
-	if (!selectedTile->shape.getGlobalBounds().contains(mousePos) || !selectedTile->UnitOn->can_move)// sanity check
+	if (!selectedTile->shape.getGlobalBounds().contains(mousePos) || !selectedTile->UnitOn || !selectedTile->UnitOn->can_move)// sanity check
 			return;
 
 		startinPosition = { tileX, tileY };

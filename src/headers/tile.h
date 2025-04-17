@@ -1,12 +1,11 @@
 #pragma once
 #include "button.h"
-#include "unit.h"
-#include <functional>
 #include <string>
 #include <vector>
-#include <optional>
 
 class state;
+class Unit;
+class Button;
 
 class Tile : public Button {
 public:

@@ -1,12 +1,12 @@
 #pragma once
-
 #include <vector>
 #include <queue>
-#include <memory>
 #include <SFML/Graphics.hpp>
-#include "tile.h"
-#include "state.h"
-#include "unit.h"
+
+class Unit;
+class Tile;
+class state;
+
 using namespace std;
 
 class PathAlgorithm {
