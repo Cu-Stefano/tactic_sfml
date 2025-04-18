@@ -1,8 +1,5 @@
 #include "../headers/button.h"
-
 #include "../headers/state.hpp"
-
-std::optional<Button> Button::isAnyButtonPressed = std::nullopt;
 
 Button::Button(Vector2f pos, Vector2f size, Sprite spr) : sprite(spr)
 {
@@ -34,13 +31,12 @@ void Button::update(const RenderWindow& window)
         shape.setOutlineColor(Color::Black);
         shape.setOutlineThickness(-2);
 
-        if ((!isAnyButtonPressed.has_value() || isAnyButtonPressed == *this)
-            && Mouse::isButtonPressed(Mouse::Button::Left))
+        if (isAnotherButtonPressed && Mouse::isButtonPressed(Mouse::Button::Left))
         {
             state = pressed;
             shape.setOutlineThickness(-2.5);
 
-            isAnyButtonPressed = *this;
+            isAnotherButtonPressed = false;
 
             if (onClick)
             {
@@ -61,7 +57,7 @@ void Button::update(const RenderWindow& window)
     }
 
     if (!Mouse::isButtonPressed(Mouse::Button::Left))
-        isAnyButtonPressed.reset();
+        isAnotherButtonPressed = true;
     
 }
 
@@ -86,4 +82,3 @@ bool Button::operator==(const Button& other) const
 {
     return shape.getPosition() == other.shape.getPosition();
 }
-

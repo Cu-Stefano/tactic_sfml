@@ -16,20 +16,21 @@ void Tile::draw(::state& gsState) const
 void Tile::move_unit(Tile* b)
 {
 	if (unitOn == nullptr) return;
+	if (b != this)
+	{
+		walkable = true;
+		b->walkable = false;
+		b->unitOn = unitOn;
+		unitOn->an_sprite.sprite->setPosition(b->sprite.getPosition());
 
-	walkable = true;
-	b->walkable = false;
-	b->unitOn = unitOn;
-	unitOn->an_sprite.sprite->setPosition(b->sprite.getPosition());
-
-	if (unitOn->name == "Boss")
-		unitOn->an_sprite.sprite->move({ -27, -32 });
-	else
-		unitOn->an_sprite.set_pos({ -12, -12 });
-	
+		if (unitOn->name == "Boss")
+			unitOn->an_sprite.sprite->move({ -27, -32 });
+		else
+			unitOn->an_sprite.set_pos({ -12, -12 });
+		unitOn = nullptr;
+	}
 	b->unitOn->can_move = false;
 	b->unitOn->an_sprite.sprite->setColor(UNIT_MOVED);
-
-	unitOn = nullptr;
-
 }
+
+

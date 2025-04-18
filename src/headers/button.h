@@ -22,12 +22,13 @@ class Button
 		std::function<void()> onClick;
 		std::function<void()> onHover;
 
-        static std::optional<Button> isAnyButtonPressed;
+		bool isAnotherButtonPressed = true;
 		Sprite sprite;
         RectangleShape shape;
         Button(Vector2f pos, Vector2f size, Sprite spr);
 
 		bool is_pressed() const;
+		bool is_released() const;
 		bool is_hover() const;
 
         void update(const RenderWindow& window);
@@ -39,3 +40,5 @@ class Button
 
         bool operator==(const Button& other) const;
 };
+
+
