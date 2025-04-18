@@ -1,10 +1,10 @@
 #include "../headers/turnState.hpp"
 #include "../headers/enemyTurn.h"  
-#include "../headers/mapLogic.h"  
+#include "../headers/MapLogic.h"  
 
 class Turnstate;
 
-EnemyTurn::EnemyTurn(MapLogic* map_logic) : TurnState(map_logic->gs_state)
+EnemyTurn::EnemyTurn(MapLogic* map_logic) : TurnState(map_logic->gsState)
 {
 	this->map_logic = map_logic;
 }
@@ -21,6 +21,6 @@ void EnemyTurn::update() {
   
 }  
 
-void EnemyTurn::draw(state& gs_state) {
+void EnemyTurn::draw(state& gState) {
     
 }

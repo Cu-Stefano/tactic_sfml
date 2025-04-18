@@ -11,5 +11,5 @@ public:
 	void on_exit() override;
 
 	void update() override;
-	void draw(state& g_state) override;
+	void draw(state& gsState) override;
 };

@@ -37,15 +37,15 @@ public:
     void set_sprite(sf::Texture t);
     void set_sprite_pos(sf::Vector2i coord);
 
-    int Get_Dodge() const;
-    int Get_Hit() const;
-    int Get_Attack() const;
-    int Get_Crit() const;
+    int get_dodge() const;
+    int get_hit() const;
+    int get_attack() const;
+    int get_crit() const;
 
     void draw(sf::RenderWindow& window) const;
 	void update();
 };
-//in modo che non vengano ridefinite, senza i puntatori cambiano di valore
+//in modo che non vengano ridefinite, senza, i puntatori cambiano di valore
 extern std::vector<Unit*> allay_list;
 extern std::vector<Unit*> enemy_list;
 

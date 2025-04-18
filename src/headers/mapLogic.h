@@ -6,11 +6,11 @@ class MapLogic
 {  
 public:
 	MapLogic(state& gs);
-	state& gs_state;  
+	state& gsState;  
 	TurnState* current_turnState;  
 
-	void SetState(TurnState* newTurnState);  
+	void set_state(TurnState* newTurnState);  
 
-	void draw(state& g_state) const;  
+	void draw(state& gState) const;  
 	void update() const;  
 };

@@ -1,6 +1,6 @@
 #pragma once
 #include "turnState.hpp"
-#include "mapLogic.h"
+#include "MapLogic.h"
 
 class AllayTurn : public TurnState{
 public:
@@ -11,5 +11,5 @@ public:
     void on_exit() override;
     void SetActionState(ActionState* action) override;
     void update() override;
-    void draw(::state& g_state) override;
+    void draw(state& gState) override;
 };

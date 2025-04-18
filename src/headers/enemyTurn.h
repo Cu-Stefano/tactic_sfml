@@ -1,6 +1,6 @@
 #pragma once
 #include "turnState.hpp"
-#include "mapLogic.h"
+#include "MapLogic.h"
 
 class EnemyTurn : public TurnState {
 public:
@@ -8,7 +8,7 @@ public:
     void on_enter() override;
     void on_exit() override;
     void update() override;
-    void draw(state& g_state) override;
+    void draw(state& gState) override;
 
 private:
     MapLogic* map_logic;

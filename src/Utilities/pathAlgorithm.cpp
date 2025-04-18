@@ -5,9 +5,9 @@
 #include "../headers/weapon.h"
 #include <random>
 
-PathAlgorithm::PathAlgorithm(Tile* Onode, state& gs_state): gs_state(gs_state)
+PathAlgorithm::PathAlgorithm(Tile* Onode, state& gsState): gsState(gsState)
 {
-	map = InitiliazeMap();
+	map = initiliazemap();
 	priorityQueue = {}; // emplace, top, pop
 	path = {};
 	attackBorderPath = {};
@@ -15,14 +15,14 @@ PathAlgorithm::PathAlgorithm(Tile* Onode, state& gs_state): gs_state(gs_state)
 	nearEnemies = {};
 
 	this->Onode = Onode;
-	unit = Onode->UnitOn;
+	unit = Onode->unitOn;
 	Onode->G = 0; 
 	Onode->Parent = nullptr; 
     priorityQueue.emplace(Onode->G = 0, Onode);
 }
-PathAlgorithm::PathAlgorithm(state& gs_state) : gs_state(gs_state)
+PathAlgorithm::PathAlgorithm(state& gsState) : gsState(gsState)
 {
-	map = InitiliazeMap();
+	map = initiliazemap();
 	priorityQueue = {};
 	path = {};
 	attackBorderPath = {};
@@ -31,16 +31,16 @@ PathAlgorithm::PathAlgorithm(state& gs_state) : gs_state(gs_state)
 	this->Onode = nullptr;
 	unit = nullptr;
 }
-void PathAlgorithm::SetOriginTile(Tile* button)
+void PathAlgorithm::set_origin_tile(Tile* button)
 {
 	this->Onode = Onode;
-	unit = Onode->UnitOn;
+	unit = Onode->unitOn;
 	Onode->G = 0;
 	Onode->Parent = nullptr;
 	priorityQueue.emplace(Onode->G = 0, Onode);
 }
 
-void PathAlgorithm::Execute(bool near)
+void PathAlgorithm::execute(bool near)
 {
     auto enemyType = unit->type == 0 ? 1 : 0; //the type of units the Onode wants to attack
     int movement = unit->movement;
@@ -55,19 +55,19 @@ void PathAlgorithm::Execute(bool near)
 
         if ((curr == Onode || curr->passable) && curr->G < totalRange && std::find(path.begin(), path.end(), curr) == path.end())
         {
-            for (auto& currNeighbour : curr->Neighbours)
+            for (auto& currNeighbour : curr->neighbours)
             {
                 if (currNeighbour->G == 0) 
                 {
-                    if (currNeighbour->UnitOn && currNeighbour->UnitOn->type == enemyType && curr->G < range && std::find(nearEnemies.begin(), nearEnemies.end(), currNeighbour) == nearEnemies.end())
+                    if (currNeighbour->unitOn && currNeighbour->unitOn->type == enemyType && curr->G < range && std::find(nearEnemies.begin(), nearEnemies.end(), currNeighbour) == nearEnemies.end())
                     {
                         nearEnemies.push_back(currNeighbour);
                         continue;
                     }
 
-                    if (currNeighbour->UnitOn)
+                    if (currNeighbour->unitOn)
                     {
-                        if (currNeighbour->UnitOn->type == enemyType)
+                        if (currNeighbour->unitOn->type == enemyType)
                             attackList.push_back(currNeighbour);
                         continue;
                     }
@@ -97,7 +97,7 @@ void PathAlgorithm::Execute(bool near)
     }
 }
 
-void PathAlgorithm::ResetAll()
+void PathAlgorithm::reset_all()
 {
 	//ricolora i currNeighbour delle 3 liste vector
 	for (auto& tile : path)
@@ -114,10 +114,10 @@ void PathAlgorithm::ResetAll()
 	}
 }
 
-int PathAlgorithm::CalculateDistance(Tile* currNeighbourToReach) const
+int PathAlgorithm::calculate_distance(Tile* tileToReach) const
 {
 	auto c = 0;
-	auto currNode = currNeighbourToReach;
+	auto currNode = tileToReach;
 	while (currNode != this->Onode)
 	{
 		currNode = currNode->Parent;
@@ -126,42 +126,42 @@ int PathAlgorithm::CalculateDistance(Tile* currNeighbourToReach) const
 	return c;
 }
 
-vector<vector<Tile*>> PathAlgorithm::InitiliazeMap()  
+vector<vector<Tile*>> PathAlgorithm::initiliazemap()  
 {  
-   auto& baseMap = gs_state.Map;
+   auto& basemap = gsState.map;
    vector<vector<Tile*>> result;  
 
    
-   for (int i = 0; i < baseMap.size(); i++)  
+   for (int i = 0; i < basemap.size(); i++)  
    {  
        vector<Tile*> row;  
-       for (int j = 0; j < baseMap[0].size(); j++)  
+       for (int j = 0; j < basemap[0].size(); j++)  
        {  
-           Tile* tile = baseMap[i][j];  
+           Tile* tile = basemap[i][j];  
            tile->G = 0;
-           tile->passable = tile->UnitOn != nullptr ? true: tile->Walkable;
+           tile->passable = tile->unitOn != nullptr ? true: tile->walkable;
            row.push_back(tile);
        }  
        result.push_back(row);  
    }  
 
    //neighbours
-   for (int k = 0; k < baseMap.size(); k++)  
+   for (int k = 0; k < basemap.size(); k++)  
    {  
-       for (int l = 0; l < baseMap[0].size(); l++)  
+       for (int l = 0; l < basemap[0].size(); l++)  
        {  
            auto& node = result[k][l];  
            if (k > 0 && result[k - 1][l]->passable)
-               node->Neighbours.push_back(result[k - 1][l]);
+               node->neighbours.push_back(result[k - 1][l]);
 
            if (l > 0 && result[k][l - 1]->passable)
-               node->Neighbours.push_back(result[k][l - 1]);
+               node->neighbours.push_back(result[k][l - 1]);
 
-           if (k < baseMap.size() - 1 && result[k + 1][l]->passable)
-               node->Neighbours.push_back(result[k + 1][l]);
+           if (k < basemap.size() - 1 && result[k + 1][l]->passable)
+               node->neighbours.push_back(result[k + 1][l]);
 
-           if (l < baseMap[k].size() - 1 && result[k][l + 1]->passable)
-               node->Neighbours.push_back(result[k][l + 1]);
+           if (l < basemap[k].size() - 1 && result[k][l + 1]->passable)
+               node->neighbours.push_back(result[k][l + 1]);
        }  
    }  
 

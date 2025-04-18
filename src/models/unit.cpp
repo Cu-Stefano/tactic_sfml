@@ -65,7 +65,7 @@ Unit::Unit(std::string n, bool t, ClassType c, int mh, int mv, int str, int def,
     set_sprite(texture);
 }
 
-int Unit::Get_Attack() const
+int Unit::get_attack() const
 {
     if (!equiped_weapon.has_value())
     {
@@ -74,12 +74,12 @@ int Unit::Get_Attack() const
     return strength + equiped_weapon.value().damage;
 }
 
-int Unit::Get_Dodge() const
+int Unit::get_dodge() const
 {
 	return speed + luck * 2;
 }
 
-int Unit::Get_Hit() const
+int Unit::get_hit() const
 {
     if (!equiped_weapon.has_value())
     {
@@ -88,7 +88,7 @@ int Unit::Get_Hit() const
     return equiped_weapon.value().hit + skill * 2 + luck;
 }
 
-int Unit::Get_Crit() const
+int Unit::get_crit() const
 {
     if (!equiped_weapon.has_value())
     {

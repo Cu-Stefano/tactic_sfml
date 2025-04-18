@@ -1,6 +1,6 @@
 #include "../headers/turnState.hpp"
 #include "../headers/allayTurn.h"  
-#include "../headers/mapLogic.h"  
+#include "../headers/MapLogic.h"  
 #include "../headers/state.hpp"
 #include "../headers/actionState.hpp"
 #include "../headers/0_chooseTile.h"
@@ -11,7 +11,7 @@ class Turnstate;
 class ActionState;
 class ChooseTile;
 
-AllayTurn::AllayTurn(MapLogic* map_logic) : TurnState(map_logic->gs_state) 
+AllayTurn::AllayTurn(MapLogic* map_logic) : TurnState(map_logic->gsState) 
 {
 	this->map_logic = map_logic;
 	CurrentActionState = nullptr;
@@ -19,7 +19,7 @@ AllayTurn::AllayTurn(MapLogic* map_logic) : TurnState(map_logic->gs_state)
 
 void AllayTurn::on_enter()
 {  
-	SetActionState(new ChooseTile(gs_state, this));
+	SetActionState(new ChooseTile(gsState, this));
 }  
 
 void AllayTurn::on_exit()
@@ -46,7 +46,7 @@ void AllayTurn::update()
 	CurrentActionState->update();
 }  
 
-void AllayTurn::draw(state& gs_state)
+void AllayTurn::draw(state& gsState)
 {  
-	CurrentActionState->draw(gs_state);
+	CurrentActionState->draw(gsState);
 }

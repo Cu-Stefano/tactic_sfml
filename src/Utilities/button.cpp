@@ -4,11 +4,11 @@
 
 std::optional<Button> Button::isAnyButtonPressed = std::nullopt;
 
-Button::Button(Vector2f Pos, Vector2f size, Sprite spr) : sprite(spr)
+Button::Button(Vector2f pos, Vector2f size, Sprite spr) : sprite(spr)
 {
 	state = not_pressed;
 	shape.setSize(size);
-	shape.setPosition(Pos);
+	shape.setPosition(pos);
 	shape.setFillColor(Color::Transparent);
 	shape.setOutlineColor(Color(0, 0, 10, 255));
 	shape.setOutlineThickness(-0.5);
@@ -38,7 +38,7 @@ void Button::update(const RenderWindow& window)
             && Mouse::isButtonPressed(Mouse::Button::Left))
         {
             state = pressed;
-            shape.setOutlineThickness(-4);
+            shape.setOutlineThickness(-2.5);
 
             isAnyButtonPressed = *this;
 
@@ -66,10 +66,10 @@ void Button::update(const RenderWindow& window)
 }
 
 
-void Button::draw(::state& gs_state) const
+void Button::draw(::state& gsState) const
 {
-   gs_state.window.draw(sprite);
-   gs_state.window.draw(shape);
+   gsState.window.draw(sprite);
+   gsState.window.draw(shape);
 }
 
 void Button::set_click_function(const std::function<void()>& func)

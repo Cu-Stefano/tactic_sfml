@@ -8,8 +8,8 @@
 #include <random>
 using namespace sf;
 
-const Texture texture("resources/Tiles/FullTileset.png");
-constexpr Vector2i texture_tile_size(16, 16);
+const Texture TEXTURE("resources/Tiles/FullTileset.png");
+constexpr Vector2i TEXTURE_TILE_SIZE(16, 16);
 
 std::vector<std::vector<int>> map_generator()
 {
@@ -34,28 +34,22 @@ std::vector<std::vector<int>> map_generator()
     };
 }
 
-void initialize_Map(state& gs)
+void initialize_map(state& gs)
 {
-    float tileSize = 40.0f;
-    float x = 0.0f, y = 0.0f;
+	float x = 0.0f, y = 0.0f;
 
     auto map = map_generator();
-
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> dis(0, 3);
-    int offset;
-    int allay_index = 0;
-    int enemy_index = 1;
+    int allayIndex = 0;
+    int enemyIndex = 1;
 
     for (size_t i = 0; i < map.size(); ++i)
     {
-        std::vector<Tile*> row;
+	    float tileSize = 40.0f;
+	    std::vector<Tile*> row;
         x = 0.0f;
         
         for (size_t j = 0; j < map[i].size(); ++j)
         {
-            sf::Vector2i tile;
             std::string tileName;
             bool walkable = true;
 			Unit* unit = nullptr;
@@ -74,18 +68,18 @@ void initialize_Map(state& gs)
                 break;
             case -1:
                 //enemy
-                unit = enemy_list.at(enemy_index);
+                unit = enemy_list.at(enemyIndex);
                 unit->set_sprite_pos({ static_cast<int>(x), static_cast<int>(y) });
-                enemy_index++;
+                enemyIndex++;
 
                 tileName = "grass";
                 walkable = false;
                 break;
 			case 0:
                 //alleato
-                unit = allay_list.at(allay_index);
+                unit = allay_list.at(allayIndex);
                 unit->set_sprite_pos({ static_cast<int>(x), static_cast<int>(y) });
-                allay_index++;
+                allayIndex++;
 
                 tileName = "grass";
                 walkable = false;
@@ -104,34 +98,34 @@ void initialize_Map(state& gs)
                 break;
             }
 
-            Sprite grass_sprite = sf::Sprite(texture);
+            Sprite grass_sprite = Sprite(TEXTURE);
 			set_tile_sprite(grass_sprite, tileName, { x, y });
 
             //path_sprite
             Texture path_text;
-			Sprite* path_spr = new sf::Sprite(path_text);
-            path_spr->setTextureRect(sf::IntRect({0, 0}, texture_tile_size));
-            path_spr->setScale({ 2.48f, 2.48f });
-            path_spr->setColor(Color::Transparent);
-            path_spr->setPosition({ x, y });
-            path_spr->move({ 0.5f, 0.5f });
+			Sprite path_spr = Sprite(path_text);
+            path_spr.setTextureRect(IntRect({0, 0}, TEXTURE_TILE_SIZE));
+            path_spr.setScale({ 2.48f, 2.48f });
+            path_spr.setColor(Color::Transparent);
+            path_spr.setPosition({ x, y });
+            path_spr.move({ 0.5f, 0.5f });
 
             Tile* new_tile = new Tile(tileName, walkable, unit, { x, y }, { tileSize, tileSize }, grass_sprite, path_spr);
 
             // Evento di prova
             new_tile->set_click_function([i, j, new_tile]() {
-                std::cout << "Tile clicked at (" << i << ", " << j << ")" << std::endl;
-				std::cout << "Tile name: " << new_tile->TileName << std::endl;
-				std::cout << "Unit on tile: " << (new_tile->UnitOn ? new_tile->UnitOn->name : "None") << std::endl;
-				std::cout << "Unit can move: " << (new_tile->UnitOn ? new_tile->UnitOn->can_move : "None") << std::endl;
-				std::cout << "Walkable: " << new_tile->Walkable << std::endl;
-				std::cout << "g: " << new_tile->G << std::endl;
-				std::cout << "pass: " << new_tile->passable << std::endl << std::endl << std::endl;
+                std::cout << "Tile clicked at (" << i << ", " << j << ")" << '\n';
+				std::cout << "Tile name: " << new_tile ->tileName << '\n';
+				std::cout << "Unit on tile: " << (new_tile->unitOn ? new_tile->unitOn->name : "None") << '\n';
+				std::cout << "Unit can move: " << (new_tile->unitOn ? new_tile->unitOn->can_move : "None") << '\n';
+				std::cout << "walkable: " << new_tile->walkable << '\n';
+				std::cout << "g: " << new_tile->G << '\n';
+				std::cout << "pass: " << new_tile->passable << "\n\n\n";
                 //stampo le info del tile con cout
                 });
 
 			new_tile->set_hover_function([i, j, &gs]() {
-                if (gs.Map[i][j]->UnitOn != nullptr) gs.selected_tile = gs.Map[i][j];
+                if (gs.map[i][j]->unitOn != nullptr) gs.selected_tile = gs.map[i][j];
                 else{
                     gs.selected_tile = nullptr;
                 }
@@ -140,26 +134,26 @@ void initialize_Map(state& gs)
             row.push_back(new_tile);
             x += tileSize;
         }
-        gs.Map.push_back(row);
+        gs.map.push_back(row);
         y += tileSize;
     }
 }
 
 void draw_map(state& gs)
 {
-    for (auto& row : gs.Map)
+    for (auto& row : gs.map)
     {
         for (auto& button : row)
         {
             button->draw(gs);
         }
     }
-    gs.maplogic.current_turnState->draw(gs);
-    for (auto allay : allay_list)
+    gs.MapLogic.current_turnState->draw(gs);
+    for (auto& allay : allay_list)
     {
         allay->draw(gs.window);
     }
-    for (auto enemy : enemy_list)
+    for (auto& enemy : enemy_list)
     {
         enemy->draw(gs.window);
     }
@@ -167,7 +161,7 @@ void draw_map(state& gs)
 
 void update_map(state& gs)
 {
-    for (auto& row : gs.Map)
+    for (auto& row : gs.map)
     {
         for (auto& button : row)
         {
@@ -175,19 +169,19 @@ void update_map(state& gs)
         }
     }
 
-    for (auto allay : allay_list)
+    for (auto& allay : allay_list)
     {
         allay->update();
     }
-    for (auto enemy : enemy_list)
+    for (auto& enemy : enemy_list)
     {
         enemy->update();
     }
 }
 
-static void set_tile_sprite(sf::Sprite& sprite, const std::string& tileType, const sf::Vector2f& position)
+static void set_tile_sprite(Sprite& sprite, const std::string& tileType, const Vector2f& position)
 {
-    sf::Vector2i tileOffset;
+    Vector2i tileOffset;
 
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -210,7 +204,7 @@ static void set_tile_sprite(sf::Sprite& sprite, const std::string& tileType, con
         throw std::invalid_argument("tile name not valid");
     }
 
-    sprite.setTextureRect(sf::IntRect(tileOffset, texture_tile_size));
+    sprite.setTextureRect(IntRect(tileOffset, TEXTURE_TILE_SIZE));
     sprite.setScale({ 2.48f, 2.48f });
     sprite.setPosition(position);
     sprite.move({ 0.5f, 0.5f });

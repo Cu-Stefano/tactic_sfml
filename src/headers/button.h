@@ -3,10 +3,9 @@
 #include <functional>
 #include <SFML/Graphics.hpp>
 #include <optional>
-
-class state;
 using namespace sf;
 
+class state;
 enum button_state
 {
 	not_pressed = 0,
@@ -26,13 +25,13 @@ class Button
         static std::optional<Button> isAnyButtonPressed;
 		Sprite sprite;
         RectangleShape shape;
-        Button(Vector2f Pos, Vector2f size, Sprite spr);
+        Button(Vector2f pos, Vector2f size, Sprite spr);
 
 		bool is_pressed() const;
 		bool is_hover() const;
 
         void update(const RenderWindow& window);
-		void draw(::state& gs_state) const;    
+		void draw(::state& gsState) const;    
 
 		
         void set_click_function(const std::function<void()>& func);

@@ -2,25 +2,24 @@
 #include <vector>
 #include <queue>
 #include <SFML/Graphics.hpp>
+using std::vector, std::priority_queue, std::pair, std::greater;
 
 class Unit;
 class Tile;
 class state;
 
-using namespace std;
-
 class PathAlgorithm {
 public:
-    PathAlgorithm(Tile* Onode, state& gs_state);
-    PathAlgorithm(state& gs_state);
+    PathAlgorithm(Tile* Onode, state& gsState);
+    PathAlgorithm(state& gsState);
 
-    void SetOriginTile(Tile* button);
-    void Execute(bool near = false);
+    void set_origin_tile(Tile* button);
+    void execute(bool near = false);
 
-    void ResetAll();
-    int CalculateDistance(Tile* TileToReach) const;
+    void reset_all();
+    int calculate_distance(Tile* tileToReach) const;
 
-	vector<vector<Tile*>> InitiliazeMap();
+    std::vector<std::vector<Tile*>> initiliazemap();
 
     Tile* Onode;
     vector<Tile*> path;
@@ -29,12 +28,9 @@ public:
     vector<Tile*> nearEnemies;//nemici nel range di attacco da fermo
 
 private:
-    state& gs_state;
+    state& gsState;
     Unit* unit;
     vector<vector<Tile*>> map;
-    priority_queue<pair<int, Tile*>, vector<pair<int, Tile*>>, greater<>> priorityQueue;
-  
-    //void HandleTileProcessing(Tile* currentTile, int totalRange, int movement, int range);
-    //void UpdatePathAndAttackLists(Tile* currentTile, int movement);
+    std::priority_queue<pair<int, Tile*>, vector<pair<int, Tile*>>, greater<>> priorityQueue;
 };
 

@@ -1,33 +1,35 @@
+#include <utility>
+
 #include "../headers/tile.h"
 #include "../headers/state.hpp"
 #include "../headers/unit.h"
 
-Tile::Tile(const std::string& tileName, bool walkable, Unit* unitOn,
-    const Vector2f& pos, const Vector2f& size, const Sprite& spr, Sprite* path_spr)
-	: Button(pos, size, spr), UnitOn(unitOn), path_sprite(path_spr), Walkable(walkable), TileName(tileName){}
+Tile::Tile(std::string tileName, bool walkable, Unit* unitOn,const Vector2f& pos, const Vector2f& size, const Sprite& spr, Sprite pathSpr)
+	: Button(pos, size, spr), tileName(std::move(tileName)), walkable(walkable), unitOn(unitOn), path_sprite(std::move(pathSpr))
+{}
 
-void Tile::draw(::state& gs_state) const
+void Tile::draw(::state& gsState) const
 {
-	Button::draw(gs_state);
+	Button::draw(gsState);
 }
 
 void Tile::move_unit(Tile* b)
 {
-	if (UnitOn == nullptr) return;
+	if (unitOn == nullptr) return;
 
-	Walkable = true;
-	b->Walkable = false;
-	b->UnitOn = UnitOn;
-	UnitOn->an_sprite.sprite->setPosition(b->sprite.getPosition());
+	walkable = true;
+	b->walkable = false;
+	b->unitOn = unitOn;
+	unitOn->an_sprite.sprite->setPosition(b->sprite.getPosition());
 
-	if (UnitOn->name == "Boss")
-		UnitOn->an_sprite.sprite->move({ -27, -32 });
+	if (unitOn->name == "Boss")
+		unitOn->an_sprite.sprite->move({ -27, -32 });
 	else
-		UnitOn->an_sprite.set_pos({ -12, -12 });
+		unitOn->an_sprite.set_pos({ -12, -12 });
 	
-	b->UnitOn->can_move = false;
-	b->UnitOn->an_sprite.sprite->setColor(UNIT_MOVED);
+	b->unitOn->can_move = false;
+	b->unitOn->an_sprite.sprite->setColor(UNIT_MOVED);
 
-	UnitOn = nullptr;
+	unitOn = nullptr;
 
 }

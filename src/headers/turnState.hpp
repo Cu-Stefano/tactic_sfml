@@ -4,11 +4,9 @@ class ActionState;
 
 class TurnState {
 public:
-    TurnState(state& gs_state) : gs_state(gs_state), CurrentActionState(nullptr)
-    {
-    }
+    TurnState(state& gsState) : gsState(gsState), CurrentActionState(nullptr){}
 
-    state& gs_state;
+    state& gsState;
 
     ActionState* CurrentActionState;
 
@@ -17,7 +15,7 @@ public:
     virtual void SetActionState(ActionState* action);
 
     virtual void update() = 0;
-    virtual void draw(state& gs) = 0;
+    virtual void draw(state& gState) = 0;
 
 };
 
