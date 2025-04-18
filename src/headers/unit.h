@@ -4,6 +4,8 @@
 #include "animatedSprite.h"
 #include "weapon.h"
 
+class Tile;
+
 enum ClassType
 {
 	swordsman = 0,
@@ -20,6 +22,12 @@ public:
     std::optional<Weapon> equiped_weapon;
     
     AnimatedSprite an_sprite;
+
+    sf::Vector2f currentTargetPosition; // Posizione di destinazione
+	std::vector<Tile*> targetRoute; // Percorso da seguire
+    bool isMoving = false;
+    int routeTileIndex = 0;
+    sf::Clock clock = sf::Clock();
 
     //stats
     int hp;

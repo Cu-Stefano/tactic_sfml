@@ -1,5 +1,9 @@
 #include "../headers/unit.h"
+
+#include <iostream>
+
 #include "../headers/weapon.h"
+#include "../headers/tile.h"
 
 Unit::Unit(std::string n, bool t, ClassType c, int mh, int mv, int str, int def, int spe, int skl, int lck)
 {
@@ -114,7 +118,37 @@ void Unit::draw(sf::RenderWindow& window) const
 
 void Unit::update()
 {
-	an_sprite.update();
+    an_sprite.update();
+
+    if (isMoving)
+    {
+        sf::Vector2f currentPosition = an_sprite.sprite->getPosition();
+
+        if (currentTargetPosition == currentPosition)
+            targetRoute.pop_back();
+
+        if (targetRoute.empty())
+        {
+            isMoving = false;
+            
+            an_sprite.sprite->setColor(UNIT_MOVED);
+            return;
+        }
+
+		currentTargetPosition = targetRoute.back()->shape.getPosition();
+    	if (name == "Boss")
+    		currentTargetPosition += sf::Vector2f(-27, -32);
+    	else
+    		currentTargetPosition += sf::Vector2f(-12, -12);
+        std::cout << currentTargetPosition.x <<" "<<currentTargetPosition.y << "\n";
+        
+        {
+            // Ferma il movimento quando raggiunge la destinazione
+            an_sprite.sprite->setPosition(currentTargetPosition);
+            sf::sleep(sf::milliseconds(100));
+        }
+    }
+	
 }
 
 std::vector<Unit*> allay_list = {

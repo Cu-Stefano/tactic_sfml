@@ -24,8 +24,11 @@ void TileSelected::on_enter() {
 	wasButtonPressed = false;
 	c = 0;
 	pathAlgorithm->execute();
-	pathAlgorithm->Onode->unitOn->an_sprite.swap_interval = 0.15f; // sec
-	pathAlgorithm->Onode->unitOn->an_sprite.sprite_y = 1;
+	if (!pathAlgorithm->Onode->unitOn->isMoving)
+	{
+		pathAlgorithm->Onode->unitOn->an_sprite.swap_interval = 0.15f; // sec
+		pathAlgorithm->Onode->unitOn->an_sprite.sprite_y = 1;
+	}
 }
 
 void TileSelected::on_exit() {
@@ -34,7 +37,7 @@ void TileSelected::on_exit() {
 	pathAlgorithm = nullptr;
 }
 
-void TileSelected::move_logic(Tile* hovered_tile)
+void TileSelected::move_logic(Tile* hovered_tile, vector<Tile*> route)
 {
 	Vector2f mousePos = gsState.window.mapPixelToCoords(Mouse::getPosition(gsState.window));
 	if (gsState.isMouseOutOfRange(mousePos)) return;
@@ -57,7 +60,7 @@ void TileSelected::move_logic(Tile* hovered_tile)
 			}
 
 			currentPosition = gsState.getCoordFromTile(hovered_tile);
-			pathAlgorithm->Onode->move_unit(hovered_tile);
+			pathAlgorithm->Onode->move_unit(hovered_tile, route);
 
 			//now hovered_tile is the new position of Onode
 			hovered_tile->unitOn->an_sprite.sprite_y = 0;
@@ -129,13 +132,15 @@ void TileSelected::update()
 	//hover::Trail
     if (std::find(pathAlgorithm->path.begin(), pathAlgorithm->path.end(), hovered_tile) != pathAlgorithm->path.end() || hovered_tile == pathAlgorithm->Onode) {
 		auto currNode = hovered_tile;
+		std::vector<Tile*> route{};
 		while (currNode != pathAlgorithm->Onode)
 		{
+			route.push_back(currNode);
 			currNode->shape.setOutlineThickness(-2);
 			currNode->shape.setOutlineColor(Color::Blue);
 			currNode = currNode->Parent;
 		}
-    	move_logic(hovered_tile);
+    	move_logic(hovered_tile, route);
     }
 	//right_mouse::Back
 	if (Mouse::isButtonPressed(Mouse::Button::Right))

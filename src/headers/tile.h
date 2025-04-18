@@ -14,7 +14,7 @@ public:
 
     void draw(::state& gsState) const;
 
-    void move_unit(Tile* b);
+    void move_unit(Tile* b, std::vector<Tile*> route);
 
     std::string tileName;
     bool walkable;
