@@ -60,11 +60,8 @@ void TileSelected::move_logic(Tile* hovered_tile, vector<Tile*> route)
 			}
 
 			currentPosition = gsState.getCoordFromTile(hovered_tile);
-			pathAlgorithm->Onode->move_unit(hovered_tile, route);
-
 			//now hovered_tile is the new position of Onode
-			hovered_tile->unitOn->an_sprite.sprite_y = 0;
-			hovered_tile->unitOn->an_sprite.swap_interval = 0.3f; // sec
+			pathAlgorithm->Onode->move_unit(hovered_tile, route);
 
 			//controllo i nighbours per vedere se ci sono nemici
 			std::vector<Tile*> near_enemies{};
@@ -81,14 +78,13 @@ void TileSelected::move_logic(Tile* hovered_tile, vector<Tile*> route)
 			{
 				// Verifica che tutte le unità si siano mosse
 				bool allAlliesCannotMove = std::all_of(allay_list.begin(), allay_list.end(), [](Unit* unit) {
-					return !unit->can_move;
+					return !unit->canMove;
 					});
 
-				if (allAlliesCannotMove) {
-					gsState.MapLogic.set_state(new EnemyTurn(&gsState.MapLogic));
+				if (allAlliesCannotMove && !Unit::IsAnyUnitMoving) {
+					return;
 				}
-				else
-					turnState->SetActionState(new ChooseTile(gsState, turnState));
+				turnState->SetActionState(new ChooseTile(gsState, turnState));
 			}
 		}
 	}

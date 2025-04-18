@@ -5,6 +5,8 @@
 #include "../headers/weapon.h"
 #include "../headers/tile.h"
 
+bool Unit::IsAnyUnitMoving = false;
+
 Unit::Unit(std::string n, bool t, ClassType c, int mh, int mv, int str, int def, int spe, int skl, int lck)
 {
 	name = n;
@@ -18,7 +20,7 @@ Unit::Unit(std::string n, bool t, ClassType c, int mh, int mv, int str, int def,
 	speed = spe;
 	skill = skl;
 	luck = lck;
-	can_move = true;
+	canMove = true;
 
 	switch (c)
 	{
@@ -122,34 +124,65 @@ void Unit::update()
 
     if (isMoving)
     {
-        sf::Vector2f currentPosition = an_sprite.sprite->getPosition();
+        // Reset the clock only when movement starts
+        static bool firstFrame = true;
+        if (firstFrame)
+        {
+            move_clock.restart();
+            firstFrame = false;
+        }
 
+        sf::Vector2f currentPosition = an_sprite.sprite->getPosition();
+        std::cout << currentPosition.x << " " << currentPosition.y << "\n";
         if (currentTargetPosition == currentPosition)
             targetRoute.pop_back();
 
         if (targetRoute.empty())
         {
-            isMoving = false;
-            
+            firstFrame = true; // Reset for the next movement
+            an_sprite.sprite_y = 0;
+            an_sprite.swap_interval = 0.3f; // sec
             an_sprite.sprite->setColor(UNIT_MOVED);
+            isMoving = false;
+            canMove = false;
+			IsAnyUnitMoving = false;
             return;
         }
 
-		currentTargetPosition = targetRoute.back()->shape.getPosition();
-    	if (name == "Boss")
-    		currentTargetPosition += sf::Vector2f(-27, -32);
-    	else
-    		currentTargetPosition += sf::Vector2f(-12, -12);
-        std::cout << currentTargetPosition.x <<" "<<currentTargetPosition.y << "\n";
-        
+        currentTargetPosition = targetRoute.back()->shape.getPosition();
+        if (name == "Boss")
+            currentTargetPosition += sf::Vector2f(-27, -32);
+        else
+            currentTargetPosition += sf::Vector2f(-12, -12);
+        std::cout << currentTargetPosition.x << " " << currentTargetPosition.y << "\n";
+
+        sf::Vector2f direction = currentTargetPosition - currentPosition;
+        float distance = std::sqrt(direction.x * direction.x + direction.y * direction.y);
+        sf::Vector2f normalizedDirection = direction / distance;
+
+        // Calculate movement step based on time elapsed
+        float step = move_speed * move_clock.restart().asSeconds();
+        sf::Vector2f movement = normalizedDirection * step;
+
+        // Ensure we don't overshoot the target
+        if (distance < step)
         {
-            // Ferma il movimento quando raggiunge la destinazione
-            an_sprite.sprite->setPosition(currentTargetPosition);
-            sf::sleep(sf::milliseconds(100));
+            movement = direction;
         }
+
+        sf::Vector2f currFramePos = currentPosition + movement;
+
+        std::cout << direction.x << " " << direction.y << "\n";
+        std::cout << normalizedDirection.x << " " << normalizedDirection.y << "\n";
+        std::cout << movement.x << " " << movement.y << "\n";
+        std::cout << currFramePos.x << " " << currFramePos.y << "\n";
+
+        // Ferma il movimento quando raggiunge la destinazione
+        an_sprite.sprite->setPosition(currFramePos);
     }
-	
 }
+
+
 
 std::vector<Unit*> allay_list = {
     new Unit("Ike", 0, ClassType::swordsman, 20, 5, 5, 5, 5, 5, 5),

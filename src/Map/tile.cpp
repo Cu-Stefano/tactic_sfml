@@ -16,13 +16,21 @@ void Tile::draw(::state& gsState) const
 void Tile::move_unit(Tile* b, std::vector<Tile*> route)
 {
     if (unitOn == nullptr) return;
-    if (b != this)
+    if (b == this)
     {
+        unitOn->an_sprite.sprite_y = 0;
+        unitOn->an_sprite.swap_interval = 0.3f; // sec
+        unitOn->an_sprite.sprite->setColor(UNIT_MOVED);
+        unitOn->canMove = false;
+    }
+    else
+    {
+        Unit::IsAnyUnitMoving = true;
         walkable = true;
         b->walkable = false;
 
         b->unitOn = unitOn;
-        b->unitOn->can_move = false;
+        b->unitOn->canMove = false;
 
         // Imposta la posizione di destinazione
         b->unitOn->targetRoute = route;

@@ -156,6 +156,14 @@ void update(state& gs)
 {
     update_map(gs);
 	gs.MapLogic.update();
+    for (auto& allay : allay_list)
+    {
+        allay->update();
+    }
+    for (auto& enemy : enemy_list)
+    {
+        enemy->update();
+    }
 }
 ////////////////////////////////////////////////////////////
 
