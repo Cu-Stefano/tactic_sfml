@@ -61,7 +61,7 @@ void initialize_map(state& gs)
                 unit = enemy_list.at(0);
                 unit->set_sprite_pos({ static_cast<int>(x), static_cast<int>(y) });
                 unit->an_sprite.sprite->setScale({3, 3});
-                unit->an_sprite.sprite->move({ -16, -21 });
+                unit->an_sprite.sprite->move(BOSS_OFFSET);
 
                 tileName = "grass";
                 walkable = false;

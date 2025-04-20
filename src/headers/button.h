@@ -2,8 +2,8 @@
 
 #include <functional>
 #include <SFML/Graphics.hpp>
-#include <optional>
-using namespace sf;
+
+using sf::Sprite, sf::RectangleShape, sf::Vector2f, sf::RenderWindow;
 
 class state;
 enum button_state

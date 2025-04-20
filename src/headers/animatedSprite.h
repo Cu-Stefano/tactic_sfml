@@ -9,7 +9,7 @@ class AnimatedSprite
 	sf::Clock clock = sf::Clock();
 
 public:
-	float swap_interval = 0.3f; // sec
+	float swap_interval = 0.3; // sec
 	int sprite_y = 0;
 	sf::Texture texture;
 	sf::Sprite* sprite;

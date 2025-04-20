@@ -4,6 +4,7 @@
 #include "../../headers/turnState.hpp"
 #include "../../headers/tile.h"
 #include "../../headers/unit.h"
+using namespace sf;
 
 ChooseTile::ChooseTile(state& gsState, TurnState* turnState)
     : ActionState(gsState, turnState) {

@@ -8,6 +8,8 @@
 #include "../headers/tile.h"
 #include "../headers/unit.h"
 
+using namespace sf;
+
 class Turnstate;
 class ActionState;
 class ChooseTile;

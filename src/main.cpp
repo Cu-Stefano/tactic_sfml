@@ -2,6 +2,9 @@
 #include "headers/state.hpp"
 #include "headers/tile.h"
 #include "headers/unit.h"
+
+using namespace sf;
+
 /// Handle events
 void handle(const sf::Event::Resized& resized, state& gs)
 {

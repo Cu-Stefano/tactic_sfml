@@ -11,6 +11,8 @@
 #include <iostream>
 #include <algorithm>
 
+using namespace sf;
+
 int c;// contatore usato per saltare il primo click che viene registrato per sbaglio dallo stato precedente:chooseTile
 bool wasButtonPressed;
 
@@ -26,7 +28,7 @@ void TileSelected::on_enter() {
 	pathAlgorithm->execute();
 	if (!pathAlgorithm->Onode->unitOn->isMoving)
 	{
-		pathAlgorithm->Onode->unitOn->an_sprite.swap_interval = 0.15f; // sec
+		pathAlgorithm->Onode->unitOn->an_sprite.swap_interval = SWAP_INTERVAL_RUN;
 		pathAlgorithm->Onode->unitOn->an_sprite.sprite_y = 1;
 	}
 }
@@ -42,7 +44,7 @@ void TileSelected::move_logic(Tile* hovered_tile, vector<Tile*> route)
 	Vector2f mousePos = gsState.window.mapPixelToCoords(Mouse::getPosition(gsState.window));
 	if (gsState.isMouseOutOfRange(mousePos)) return;
 
-	if (Mouse::isButtonPressed(Mouse::Button::Left))
+	if (Mouse::isButtonPressed(Mouse::Button::Left) && !Unit::IsAnyUnitMoving)
 	{
 		if (!wasButtonPressed)//entra al primo click e poi di nuovo soltanto quando si rilascia left mouse
 		{
@@ -142,7 +144,7 @@ void TileSelected::update()
 	if (Mouse::isButtonPressed(Mouse::Button::Right))
 	{
 		pathAlgorithm->Onode->unitOn->an_sprite.sprite_y = 0;
-		pathAlgorithm->Onode->unitOn->an_sprite.swap_interval = 0.3f; // sec
+		pathAlgorithm->Onode->unitOn->an_sprite.swap_interval = SWAP_INTERVAL; // sec
 		turnState->SetActionState(new ChooseTile(gsState, turnState));
 	}
 }

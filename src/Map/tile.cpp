@@ -18,10 +18,7 @@ void Tile::move_unit(Tile* b, std::vector<Tile*> route)
     if (unitOn == nullptr) return;
     if (b == this)
     {
-        unitOn->an_sprite.sprite_y = 0;
-        unitOn->an_sprite.swap_interval = 0.3f; // sec
-        unitOn->an_sprite.sprite->setColor(UNIT_MOVED);
-        unitOn->canMove = false;
+       unitOn->has_moved();
     }
     else
     {
