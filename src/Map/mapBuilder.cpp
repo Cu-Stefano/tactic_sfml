@@ -61,7 +61,7 @@ void initialize_map(state& gs)
                 unit = enemy_list.at(0);
                 unit->set_sprite_pos({ static_cast<int>(x), static_cast<int>(y) });
                 unit->an_sprite.sprite->setScale({3, 3});
-                unit->an_sprite.sprite->move({ -16, -21 });
+                unit->an_sprite.sprite->move(BOSS_OFFSET);
 
                 tileName = "grass";
                 walkable = false;
@@ -117,7 +117,7 @@ void initialize_map(state& gs)
                 std::cout << "Tile clicked at (" << i << ", " << j << ")" << '\n';
 				std::cout << "Tile name: " << new_tile ->tileName << '\n';
 				std::cout << "Unit on tile: " << (new_tile->unitOn ? new_tile->unitOn->name : "None") << '\n';
-				std::cout << "Unit can move: " << (new_tile->unitOn ? new_tile->unitOn->can_move : "None") << '\n';
+				std::cout << "Unit can move: " << (new_tile->unitOn ? new_tile->unitOn->canMove : "None") << '\n';
 				std::cout << "walkable: " << new_tile->walkable << '\n';
 				std::cout << "g: " << new_tile->G << '\n';
 				std::cout << "pass: " << new_tile->passable << "\n\n\n";
@@ -167,15 +167,6 @@ void update_map(state& gs)
         {
             button->update(gs.window);
         }
-    }
-
-    for (auto& allay : allay_list)
-    {
-        allay->update();
-    }
-    for (auto& enemy : enemy_list)
-    {
-        enemy->update();
     }
 }
 

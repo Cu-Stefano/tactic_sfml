@@ -11,6 +11,8 @@
 #include <iostream>
 #include <algorithm>
 
+using namespace sf;
+
 int c;// contatore usato per saltare il primo click che viene registrato per sbaglio dallo stato precedente:chooseTile
 bool wasButtonPressed;
 
@@ -24,8 +26,11 @@ void TileSelected::on_enter() {
 	wasButtonPressed = false;
 	c = 0;
 	pathAlgorithm->execute();
-	pathAlgorithm->Onode->unitOn->an_sprite.swap_interval = 0.15f; // sec
-	pathAlgorithm->Onode->unitOn->an_sprite.sprite_y = 1;
+	if (!pathAlgorithm->Onode->unitOn->isMoving)
+	{
+		pathAlgorithm->Onode->unitOn->an_sprite.swap_interval = SWAP_INTERVAL_RUN;
+		pathAlgorithm->Onode->unitOn->an_sprite.sprite_y = 1;
+	}
 }
 
 void TileSelected::on_exit() {
@@ -34,12 +39,12 @@ void TileSelected::on_exit() {
 	pathAlgorithm = nullptr;
 }
 
-void TileSelected::move_logic(Tile* hovered_tile)
+void TileSelected::move_logic(Tile* hovered_tile, vector<Tile*> route)
 {
 	Vector2f mousePos = gsState.window.mapPixelToCoords(Mouse::getPosition(gsState.window));
 	if (gsState.isMouseOutOfRange(mousePos)) return;
 
-	if (Mouse::isButtonPressed(Mouse::Button::Left))
+	if (Mouse::isButtonPressed(Mouse::Button::Left) && !Unit::IsAnyUnitMoving)
 	{
 		if (!wasButtonPressed)//entra al primo click e poi di nuovo soltanto quando si rilascia left mouse
 		{
@@ -57,11 +62,8 @@ void TileSelected::move_logic(Tile* hovered_tile)
 			}
 
 			currentPosition = gsState.getCoordFromTile(hovered_tile);
-			pathAlgorithm->Onode->move_unit(hovered_tile);
-
 			//now hovered_tile is the new position of Onode
-			hovered_tile->unitOn->an_sprite.sprite_y = 0;
-			hovered_tile->unitOn->an_sprite.swap_interval = 0.3f; // sec
+			pathAlgorithm->Onode->move_unit(hovered_tile, route);
 
 			//controllo i nighbours per vedere se ci sono nemici
 			std::vector<Tile*> near_enemies{};
@@ -78,14 +80,13 @@ void TileSelected::move_logic(Tile* hovered_tile)
 			{
 				// Verifica che tutte le unità si siano mosse
 				bool allAlliesCannotMove = std::all_of(allay_list.begin(), allay_list.end(), [](Unit* unit) {
-					return !unit->can_move;
+					return !unit->canMove;
 					});
 
-				if (allAlliesCannotMove) {
-					gsState.MapLogic.set_state(new EnemyTurn(&gsState.MapLogic));
+				if (allAlliesCannotMove && !Unit::IsAnyUnitMoving) {
+					return;
 				}
-				else
-					turnState->SetActionState(new ChooseTile(gsState, turnState));
+				turnState->SetActionState(new ChooseTile(gsState, turnState));
 			}
 		}
 	}
@@ -129,19 +130,21 @@ void TileSelected::update()
 	//hover::Trail
     if (std::find(pathAlgorithm->path.begin(), pathAlgorithm->path.end(), hovered_tile) != pathAlgorithm->path.end() || hovered_tile == pathAlgorithm->Onode) {
 		auto currNode = hovered_tile;
+		std::vector<Tile*> route{};
 		while (currNode != pathAlgorithm->Onode)
 		{
+			route.push_back(currNode);
 			currNode->shape.setOutlineThickness(-2);
 			currNode->shape.setOutlineColor(Color::Blue);
 			currNode = currNode->Parent;
 		}
-    	move_logic(hovered_tile);
+    	move_logic(hovered_tile, route);
     }
 	//right_mouse::Back
 	if (Mouse::isButtonPressed(Mouse::Button::Right))
 	{
 		pathAlgorithm->Onode->unitOn->an_sprite.sprite_y = 0;
-		pathAlgorithm->Onode->unitOn->an_sprite.swap_interval = 0.3f; // sec
+		pathAlgorithm->Onode->unitOn->an_sprite.swap_interval = SWAP_INTERVAL; // sec
 		turnState->SetActionState(new ChooseTile(gsState, turnState));
 	}
 }

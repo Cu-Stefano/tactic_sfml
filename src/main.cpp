@@ -2,6 +2,9 @@
 #include "headers/state.hpp"
 #include "headers/tile.h"
 #include "headers/unit.h"
+
+using namespace sf;
+
 /// Handle events
 void handle(const sf::Event::Resized& resized, state& gs)
 {
@@ -156,6 +159,14 @@ void update(state& gs)
 {
     update_map(gs);
 	gs.MapLogic.update();
+    for (auto& allay : allay_list)
+    {
+        allay->update();
+    }
+    for (auto& enemy : enemy_list)
+    {
+        enemy->update();
+    }
 }
 ////////////////////////////////////////////////////////////
 

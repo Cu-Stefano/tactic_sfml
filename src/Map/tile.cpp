@@ -13,24 +13,25 @@ void Tile::draw(::state& gsState) const
 	Button::draw(gsState);
 }
 
-void Tile::move_unit(Tile* b)
+void Tile::move_unit(Tile* b, std::vector<Tile*> route)
 {
-	if (unitOn == nullptr) return;
-	if (b != this)
-	{
-		walkable = true;
-		b->walkable = false;
-		b->unitOn = unitOn;
-		unitOn->an_sprite.sprite->setPosition(b->sprite.getPosition());
+    if (unitOn == nullptr) return;
+    if (b == this)
+    {
+       unitOn->has_moved();
+    }
+    else
+    {
+        Unit::IsAnyUnitMoving = true;
+        walkable = true;
+        b->walkable = false;
 
-		if (unitOn->name == "Boss")
-			unitOn->an_sprite.sprite->move({ -27, -32 });
-		else
-			unitOn->an_sprite.set_pos({ -12, -12 });
-		unitOn = nullptr;
-	}
-	b->unitOn->can_move = false;
-	b->unitOn->an_sprite.sprite->setColor(UNIT_MOVED);
+        b->unitOn = unitOn;
+        b->unitOn->canMove = false;
+
+        // Imposta la posizione di destinazione
+        b->unitOn->targetRoute = route;
+        b->unitOn->isMoving = true;
+        unitOn = nullptr;
+    }
 }
-
-

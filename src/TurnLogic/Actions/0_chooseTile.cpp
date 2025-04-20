@@ -4,6 +4,7 @@
 #include "../../headers/turnState.hpp"
 #include "../../headers/tile.h"
 #include "../../headers/unit.h"
+using namespace sf;
 
 ChooseTile::ChooseTile(state& gsState, TurnState* turnState)
     : ActionState(gsState, turnState) {
@@ -28,7 +29,7 @@ void ChooseTile::update()
 		int tileY = static_cast<int>(mousePos.y) / 40;
 		Tile* selectedTile = gsState.map[tileY][tileX];
 
-	if (!selectedTile->shape.getGlobalBounds().contains(mousePos) || !selectedTile->unitOn || !selectedTile->unitOn->can_move)// sanity check
+	if (!selectedTile->shape.getGlobalBounds().contains(mousePos) || !selectedTile->unitOn || !selectedTile->unitOn->canMove)// sanity check
 			return;
 
 		startinPosition = { tileX, tileY };

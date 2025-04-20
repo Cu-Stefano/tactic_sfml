@@ -1,5 +1,6 @@
 #include "../headers/button.h"
 #include "../headers/state.hpp"
+using namespace sf;
 
 Button::Button(Vector2f pos, Vector2f size, Sprite spr) : sprite(spr)
 {

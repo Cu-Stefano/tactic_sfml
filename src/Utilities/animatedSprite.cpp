@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include "../headers/unit.h"
+
 AnimatedSprite::AnimatedSprite(sf::Texture t)
 {
 	this->curr_frame = 0;
@@ -9,7 +11,7 @@ AnimatedSprite::AnimatedSprite(sf::Texture t)
 	texture = t;
 	sprite->setTexture(texture);
 	sprite->setScale({ 2, 2 });
-	sprite->move({ -12, -12 });
+	sprite->move(DEFAULT_OFFSET);
 	sprite->setTextureRect(sf::IntRect({ 0 * sprite_width, 0 }, { sprite_width, sprite_width }));
 	sprite_y = 0;
 }
