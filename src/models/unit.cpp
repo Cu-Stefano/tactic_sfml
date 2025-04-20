@@ -4,6 +4,7 @@
 #include "../headers/tile.h"
 
 bool Unit::IsAnyUnitMoving = false;
+bool Unit::hasSomeActionBeenStared = false;
 using namespace sf;
 
 Unit::Unit(std::string n, bool t, ClassType c, int mh, int mv, int str, int def, int spe, int skl, int lck)
@@ -27,7 +28,7 @@ Weapon Unit::initialize_weapon(ClassType c) const {
     throw std::invalid_argument("Invalid ClassType");
 }
 
-Texture Unit::load_texture(bool type, ClassType unit_class) const {
+Texture Unit::load_texture(int type, ClassType unit_class) const {
     std::string path1 = type == 0 ? "resources/Units/0/" : "resources/Units/1/";
     std::string path2;
 
@@ -114,6 +115,7 @@ void Unit::update()
 
     if (isMoving)
     {
+		hasSomeActionBeenStared = true;
         if (firstFrame)
         {
             move_clock.restart();

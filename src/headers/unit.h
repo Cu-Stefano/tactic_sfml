@@ -16,7 +16,7 @@ enum ClassType
 class Unit {
 public:
     std::string name;
-    bool type; // 0 allay, 1 enemy
+    int type; // 0 allay, 1 enemy
     bool canMove;
     ClassType unit_class;
     std::optional<Weapon> equiped_weapon;
@@ -32,6 +32,7 @@ public:
     sf::Clock move_clock; // Clock for movement timing
 
     static bool IsAnyUnitMoving;
+    static bool hasSomeActionBeenStared;
 
     //stats
     int hp;
@@ -46,7 +47,7 @@ public:
     Unit() = default;
     Unit(std::string n, bool t, ClassType c, int mh, int mv, int str, int def, int spe, int skl, int lck);
     Weapon initialize_weapon(ClassType c) const;
-    sf::Texture load_texture(bool type, ClassType unit_class) const;
+    sf::Texture load_texture(int type, ClassType unit_class) const;
 
     void set_sprite(sf::Texture t);
     void set_sprite_pos(sf::Vector2i coord);

@@ -8,7 +8,6 @@ class PathAlgorithm;
 class TileSelected : public ActionState {
 
 	PathAlgorithm* pathAlgorithm;
-	Tile* tile;
 public:
 	TileSelected(state& gsState, TurnState* turnState, Tile* tile);
 	void on_enter() override;

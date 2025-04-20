@@ -5,8 +5,10 @@ class Tile;
 class state;
 
 class ChooseAttack : public ActionState {
+	std::vector<Tile*> enemyNear;
+	Tile* attackingUnit;
 public:
-	ChooseAttack(const state& state, const std::vector<Tile*>& tiles, Tile* tile);
+	ChooseAttack(const state& state, const std::vector<Tile*>& enemyNear, Tile* attackingUnit);
 	void on_enter() override;
 	void on_exit() override;
 

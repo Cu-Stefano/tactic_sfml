@@ -47,13 +47,6 @@ void AllayTurn::SetActionState(ActionState* action)
 void AllayTurn::update()
 {
 	CurrentActionState->update();
-	bool allAlliesCannotMove = std::all_of(allay_list.begin(), allay_list.end(), [](Unit* unit) {
-		return !unit->canMove;
-		});
-
-	if (allAlliesCannotMove && !Unit::IsAnyUnitMoving) {
-		gsState.MapLogic.set_state(new EnemyTurn(&gsState.MapLogic));
-	}
 }  
 
 void AllayTurn::draw(state& gsState)
