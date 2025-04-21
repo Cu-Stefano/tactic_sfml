@@ -90,26 +90,7 @@ void draw_curr_stats(state& gs)
 
 void attack_window_draw(state& gs, Texture ui)
 {
-    sf::Sprite left_attack_window(ui);
-    sf::Sprite attack_window(ui);
-    sf::Sprite right_attack_window(ui);
-
-	left_attack_window.setTextureRect(sf::IntRect({ 54, 6 }, { 7, 36 }));
-	left_attack_window.scale({ 5, 5.5});
-
-	attack_window.setTextureRect(sf::IntRect({ 61, 6 }, { 22, 36 }));
-	attack_window.setScale({ 51.5, 5.5 });
-
-	right_attack_window.setTextureRect(sf::IntRect({ 81, 6 }, { 8, 36 }));
-	right_attack_window.scale({ 5, 5.5 });
-
-	left_attack_window.setPosition({ 0, static_cast<float>(gs.menubar_attack_y) });
-	attack_window.setPosition({ 35, static_cast<float>(gs.menubar_attack_y) });
-	right_attack_window.setPosition({ static_cast<float>(gs.menubar_attack_window_x - 39)  , static_cast<float>(gs.menubar_attack_y) });
-
-	gs.window.draw(left_attack_window);
-	gs.window.draw(attack_window);
-	gs.window.draw(right_attack_window);
+	gs.attackGui.draw(gs.window);
 }
 
 void curr_unit_window_draw(state& gs, Texture ui)

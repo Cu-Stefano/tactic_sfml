@@ -3,6 +3,7 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 #include "MapLogic.h"
+#include "attackGui.h"
 class Tile;
 
 constexpr unsigned WINDOW_WIDTH = 1400;
@@ -22,14 +23,14 @@ public:
     int menubar_attack_y = WINDOW_HEIGHT - 200;
 
     MapLogic MapLogic;
-
+	AttackGui attackGui;
     std::vector<std::vector<Tile*>> map;
     Tile* selected_tile;
     sf::Font font = sf::Font("resources/font/16x16_font.ttf");
 
-    state(unsigned w, unsigned h, const std::string& title): MapLogic(*this), selected_tile(nullptr)
+	state(unsigned w, unsigned h, const std::string& title) : MapLogic(*this), attackGui(*this), selected_tile(nullptr)
     {
-        window = sf::RenderWindow(sf::VideoMode({ w, h }), title);
+	    window = sf::RenderWindow(sf::VideoMode({w, h}), title);
     }
 
     Tile* get_tile_from_mouse_position(const sf::Vector2f mousePos) const

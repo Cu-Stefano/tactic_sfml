@@ -124,7 +124,7 @@ void TileSelected::update()
 			}
 		}
 		if (!near_enemies.empty())
-			turnState->SetActionState(new ChooseAttack(gsState, near_enemies, hovered_tile));
+			turnState->SetActionState(new ChooseAttack(gsState, near_enemies, destination));
 		else
 		{
 			bool allAlliesCannotMove = std::all_of(allay_list.begin(), allay_list.end(), [](Unit* unit) {
