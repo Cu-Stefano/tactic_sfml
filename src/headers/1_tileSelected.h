@@ -9,11 +9,11 @@ class TileSelected : public ActionState {
 
 	PathAlgorithm* pathAlgorithm;
 public:
-	TileSelected(state& gsState, TurnState* turnState, Tile* tile);
+	TileSelected(state& gState, TurnState* turnState, Tile* tile);
 	void on_enter() override;
 	void on_exit() override;
 	void move_logic(Tile* tile, std::vector<Tile*> route);
 
 	void update() override;
-	void draw(state& gsState) override;
+	void draw(state& gState) override;
 };

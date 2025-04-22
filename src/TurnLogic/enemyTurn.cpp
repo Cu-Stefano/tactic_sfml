@@ -4,7 +4,7 @@
 
 class Turnstate;
 
-EnemyTurn::EnemyTurn(MapLogic* map_logic) : TurnState(map_logic->gsState)
+EnemyTurn::EnemyTurn(MapLogic* map_logic) : TurnState(map_logic->gState)
 {
 	this->map_logic = map_logic;
 }

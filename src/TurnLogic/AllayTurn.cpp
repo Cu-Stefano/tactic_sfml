@@ -14,7 +14,7 @@ class Turnstate;
 class ActionState;
 class ChooseTile;
 
-AllayTurn::AllayTurn(MapLogic* map_logic) : TurnState(map_logic->gsState) 
+AllayTurn::AllayTurn(MapLogic* map_logic) : TurnState(map_logic->gState) 
 {
 	this->map_logic = map_logic;
 	CurrentActionState = nullptr;
@@ -22,7 +22,7 @@ AllayTurn::AllayTurn(MapLogic* map_logic) : TurnState(map_logic->gsState)
 
 void AllayTurn::on_enter()
 {  
-	SetActionState(new ChooseTile(gsState, this));
+	SetActionState(new ChooseTile(gState, this));
 }  
 
 void AllayTurn::on_exit()
@@ -49,7 +49,7 @@ void AllayTurn::update()
 	CurrentActionState->update();
 }  
 
-void AllayTurn::draw(state& gsState)
+void AllayTurn::draw(state& gState)
 {  
-	CurrentActionState->draw(gsState);
+	CurrentActionState->draw(gState);
 }

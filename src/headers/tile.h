@@ -12,7 +12,7 @@ public:
     Tile() = default;
     Tile(std::string tileName, bool walkable, Unit* unitOn, const Vector2f& pos, const Vector2f& size, const Sprite& spr, Sprite pathSpr);
 
-    void draw(::state& gsState) const;
+    void draw(::state& gState) const;
 
     void move_unit(Tile* b, std::vector<Tile*> route);
 

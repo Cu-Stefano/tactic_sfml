@@ -2,7 +2,7 @@
 #include "../headers/turnState.hpp"
 #include "../headers/allayTurn.h"
 
-MapLogic::MapLogic(state& gs) : gsState(gs), current_turnState(nullptr) {
+MapLogic::MapLogic(state& gs) : gState(gs), current_turnState(nullptr) {
 	set_state(new AllayTurn(this));
 } 
 
@@ -16,7 +16,7 @@ void MapLogic::set_state(TurnState* newTurnState)
 
 void MapLogic::draw(state& gState) const
 {
-	current_turnState->draw(gsState);
+	current_turnState->draw(gState);
 }
 void MapLogic::update() const
 {

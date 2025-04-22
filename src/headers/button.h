@@ -32,7 +32,7 @@ class Button
 		bool is_hover() const;
 
         void update(const RenderWindow& window);
-		void draw(::state& gsState) const;    
+		void draw(::state& gState) const;    
 
 		
         void set_click_function(const std::function<void()>& func);

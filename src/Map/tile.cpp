@@ -8,9 +8,9 @@ Tile::Tile(std::string tileName, bool walkable, Unit* unitOn,const Vector2f& pos
 	: Button(pos, size, spr), tileName(std::move(tileName)), walkable(walkable), unitOn(unitOn), path_sprite(std::move(pathSpr))
 {}
 
-void Tile::draw(::state& gsState) const
+void Tile::draw(::state& gState) const
 {
-	Button::draw(gsState);
+	Button::draw(gState);
 }
 
 void Tile::move_unit(Tile* b, std::vector<Tile*> route)
@@ -19,6 +19,9 @@ void Tile::move_unit(Tile* b, std::vector<Tile*> route)
     if (b == this)
     {
        unitOn->has_moved();
+       unitOn->canMove = false;
+       unitOn->an_sprite.sprite->setColor(UNIT_MOVED);
+       Unit::hasSomeActionBeenStared = true;
     }
     else
     {
@@ -27,7 +30,6 @@ void Tile::move_unit(Tile* b, std::vector<Tile*> route)
         b->walkable = false;
 
         b->unitOn = unitOn;
-        b->unitOn->canMove = false;
 
         // Imposta la posizione di destinazione
         b->unitOn->targetRoute = route;

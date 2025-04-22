@@ -17,12 +17,13 @@ int c;// contatore usato per saltare il primo click che viene registrato per sba
 bool wasButtonPressed;
 Tile* destination;
 
-TileSelected::TileSelected(state& gsState, TurnState* turnState, Tile* tile)
-	: ActionState(gsState, turnState) {
-	pathAlgorithm = new PathAlgorithm(tile, gsState);
+TileSelected::TileSelected(state& gState, TurnState* turnState, Tile* tile)
+	: ActionState(gState, turnState) {
+	pathAlgorithm = new PathAlgorithm(tile, gState);
 }
 
 void TileSelected::on_enter() {
+	Unit::hasSomeActionBeenStared = false;
 	wasButtonPressed = false;
 	c = 0;
 	pathAlgorithm->execute();
@@ -41,8 +42,8 @@ void TileSelected::on_exit() {
 
 void TileSelected::move_logic(Tile* hovered_tile, vector<Tile*> route)
 {
-	Vector2f mousePos = gsState.window.mapPixelToCoords(Mouse::getPosition(gsState.window));
-	if (gsState.isMouseOutOfRange(mousePos)) return;
+	Vector2f mousePos = gState.window.mapPixelToCoords(Mouse::getPosition(gState.window));
+	if (gState.isMouseOutOfRange(mousePos)) return;
 
 	if (Mouse::isButtonPressed(Mouse::Button::Left) && !Unit::IsAnyUnitMoving)
 	{
@@ -61,7 +62,7 @@ void TileSelected::move_logic(Tile* hovered_tile, vector<Tile*> route)
 					return;
 			}
 
-			currentPosition = gsState.getCoordFromTile(hovered_tile);
+			currentPosition = gState.getCoordFromTile(hovered_tile);
 			//now hovered_tile is the new position of Onode
 			destination = hovered_tile;
 			pathAlgorithm->Onode->move_unit(hovered_tile, route);
@@ -72,7 +73,6 @@ void TileSelected::move_logic(Tile* hovered_tile, vector<Tile*> route)
 		wasButtonPressed = false; // Resetto lo stato quando il pulsante viene rilasciato
 	}
 }
-
 
 void TileSelected::update()
 {
@@ -94,8 +94,8 @@ void TileSelected::update()
 	}
 
 	//mouse actions:
-	Vector2f mousePos = gsState.window.mapPixelToCoords(Mouse::getPosition(gsState.window));
-	auto hovered_tile = gsState.get_tile_from_mouse_position(mousePos);
+	Vector2f mousePos = gState.window.mapPixelToCoords(Mouse::getPosition(gState.window));
+	auto hovered_tile = gState.get_tile_from_mouse_position(mousePos);
 	if (!hovered_tile) return;
 
 	//hover::Trail
@@ -123,50 +123,53 @@ void TileSelected::update()
 				near_enemies.push_back(neighbour);
 			}
 		}
+
 		if (!near_enemies.empty())
-			turnState->SetActionState(new ChooseAttack(gsState, near_enemies, destination));
+			turnState->SetActionState(new ChooseAttack(gState, turnState, near_enemies, destination));
 		else
 		{
+			destination->unitOn->canMove = false;
+			destination->unitOn->an_sprite.sprite->setColor(UNIT_MOVED);
 			bool allAlliesCannotMove = std::all_of(allay_list.begin(), allay_list.end(), [](Unit* unit) {
 				return !unit->canMove;
 				});
 
 			if (allAlliesCannotMove) {
-				gsState.MapLogic.set_state(new EnemyTurn(&gsState.MapLogic));
+				gState.MapLogic.set_state(new EnemyTurn(&gState.MapLogic));
 			}
 			else
-				turnState->SetActionState(new ChooseTile(gsState, turnState));
+				turnState->SetActionState(new ChooseTile(gState, turnState));
 		}
 		Unit::hasSomeActionBeenStared = false;
 		destination = nullptr;
 	}
 
 	//right_mouse::Back
-	if (Mouse::isButtonPressed(Mouse::Button::Right))
+	if (Mouse::isButtonPressed(Mouse::Button::Right) && !Unit::IsAnyUnitMoving)
 	{
 		pathAlgorithm->Onode->unitOn->an_sprite.sprite_y = 0;
 		pathAlgorithm->Onode->unitOn->an_sprite.swap_interval = SWAP_INTERVAL; // sec
-		turnState->SetActionState(new ChooseTile(gsState, turnState));
+		turnState->SetActionState(new ChooseTile(gState, turnState));
 	}
 }
 
-void TileSelected::draw(state& gsState)
+void TileSelected::draw(state& gState)
 {
 	for (auto& tile : pathAlgorithm->path)
 	{
-		gsState.window.draw(tile->path_sprite);
+		gState.window.draw(tile->path_sprite);
 	}
 	for (auto& tile : pathAlgorithm->attackBorderPath)
 	{
-		gsState.window.draw(tile->path_sprite);
+		gState.window.draw(tile->path_sprite);
 	}
 	for (auto tile : pathAlgorithm->attackList)
 	{
-		gsState.window.draw(tile->path_sprite);
+		gState.window.draw(tile->path_sprite);
 	}
 	for (auto tile : pathAlgorithm->nearEnemies)
 	{
-		gsState.window.draw(tile->path_sprite);
+		gState.window.draw(tile->path_sprite);
 	}
 }
 

@@ -97,8 +97,6 @@ void Unit::has_moved()
 {
     an_sprite.sprite_y = 0;
     an_sprite.swap_interval = 0.3f; // sec
-    an_sprite.sprite->setColor(UNIT_MOVED);
-    canMove = false;
     isMoving = false;
     IsAnyUnitMoving = false;
     firstFrame = true;
@@ -157,23 +155,23 @@ void Unit::update()
 }
 
 std::vector<Unit*> allay_list = {
-    new Unit("Ike", 0, ClassType::swordsman, 20, 5, 5, 5, 5, 5, 5),
-    new Unit("Mia", 0, ClassType::swordsman, 18, 5, 6, 4, 7, 6, 4),
-    new Unit("Oscar", 0, ClassType::warrior, 22, 5, 7, 6, 5, 5, 3),
-    new Unit("Boyd", 0, ClassType::warrior, 25, 5, 8, 5, 4, 4, 2),
-    new Unit("Rhys", 0, ClassType::soldier, 15, 5, 3, 2, 3, 5, 6),
-    new Unit("Soren", 0, ClassType::soldier, 16, 5, 4, 3, 4, 6, 5)
+    new Unit("Ike", 0, ClassType::swordsman, 19, 5, 5, 4, 6, 5, 5), 
+    new Unit("Mia", 0, ClassType::swordsman, 17, 5, 5, 3, 8, 6, 4), 
+    new Unit("Oscar", 0, ClassType::warrior, 21, 5, 6, 5, 5, 5, 3), 
+    new Unit("Boyd", 0, ClassType::warrior, 23, 5, 7, 4, 4, 4, 2),  
+    new Unit("Rhys", 0, ClassType::soldier, 14, 5, 3, 2, 3, 5, 6),  
+    new Unit("Soren", 0, ClassType::soldier, 15, 5, 4, 3, 4, 6, 5)  
 };
 
 std::vector<Unit*> enemy_list = {
-    new Unit("Boss", 1, ClassType::warrior, 25, 5, 9, 5, 5, 3, 3),
-    new Unit("Sold1", 1, ClassType::soldier, 16, 5, 4, 1, 3, 3, 5),
-    new Unit("Sold2", 1, ClassType::soldier, 16, 5, 4, 1, 3, 3, 5),
-    new Unit("Sold3", 1, ClassType::soldier, 16, 5, 4, 1, 3, 3, 5),
-    new Unit("Sword1", 1, ClassType::swordsman, 16, 5, 5, 2, 5, 3, 4),
-    new Unit("Sword2", 1, ClassType::swordsman, 16, 5, 5, 2, 5, 3, 4),
-    new Unit("Sword3", 1, ClassType::swordsman, 16, 5, 5, 2, 5, 3, 4),
-    new Unit("Warr1", 1, ClassType::warrior, 18, 5, 6, 3, 2, 3, 3),
-    new Unit("Warr2", 1, ClassType::warrior, 18, 5, 6, 3, 2, 3, 3),
-    new Unit("Warr3", 1, ClassType::warrior, 18, 5, 6, 3, 2, 3, 3)
+    new Unit("Boss", 1, ClassType::warrior, 24, 5, 8, 4, 4, 3, 3), 
+    new Unit("Sold1", 1, ClassType::soldier, 15, 5, 4, 1, 3, 3, 4),
+    new Unit("Sold2", 1, ClassType::soldier, 15, 5, 3, 2, 3, 3, 4),
+    new Unit("Sold3", 1, ClassType::soldier, 15, 5, 3, 1, 3, 3, 4),
+    new Unit("Sword1", 1, ClassType::swordsman, 15, 5, 3, 2, 5, 3, 4), 
+    new Unit("Sword2", 1, ClassType::swordsman, 15, 5, 4, 2, 4, 3, 4),
+    new Unit("Sword3", 1, ClassType::swordsman, 15, 5, 4, 2, 3, 3, 4),
+    new Unit("Warr1", 1, ClassType::warrior, 17, 5, 5, 4, 3, 3, 3), 
+    new Unit("Warr2", 1, ClassType::warrior, 17, 5, 5, 4, 2, 3, 3),
+    new Unit("Warr3", 1, ClassType::warrior, 17, 5, 5, 3, 3, 3, 3)
 };

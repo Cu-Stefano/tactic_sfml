@@ -10,8 +10,8 @@ class state;
 
 class PathAlgorithm {
 public:
-    PathAlgorithm(Tile* Onode, state& gsState);
-    PathAlgorithm(state& gsState);
+    PathAlgorithm(Tile* Onode, state& gState);
+    PathAlgorithm(state& gState);
 
     void set_origin_tile(Tile* button);
     void execute(bool near = false);
@@ -28,7 +28,7 @@ public:
     vector<Tile*> nearEnemies;//nemici nel range di attacco da fermo
 
 private:
-    state& gsState;
+    state& gState;
     Unit* unit;
     vector<vector<Tile*>> map;
     std::priority_queue<pair<int, Tile*>, vector<pair<int, Tile*>>, greater<>> priorityQueue;

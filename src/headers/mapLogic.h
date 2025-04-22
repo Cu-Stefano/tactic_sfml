@@ -6,7 +6,7 @@ class MapLogic
 {  
 public:
 	MapLogic(state& gs);
-	state& gsState;  
+	state& gState;  
 	TurnState* current_turnState;  
 
 	void set_state(TurnState* newTurnState);  

@@ -7,16 +7,17 @@ class TurnState;
 class ActionState
 {
 public:
+	static sf::Vector2i startinPosition;
+	static sf::Vector2i currentPosition;
 	TurnState* turnState;
-	state& gsState;
-	sf::Vector2i startinPosition;
-	sf::Vector2i currentPosition;
+	state& gState;
 
-	ActionState(state& gsState, TurnState* turnState) : gsState(gsState), turnState(turnState) {}
+	ActionState(state& gState, TurnState* turnState) : gState(gState), turnState(turnState) {}
 
 	virtual void on_enter() = 0;
 	virtual void on_exit() = 0;
 
 	virtual void update() = 0;
-	virtual void draw(state& gsState) = 0;
+	virtual void draw(state& gState) = 0;
 };
+

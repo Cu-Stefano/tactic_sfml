@@ -5,7 +5,7 @@
 #include "../headers/weapon.h"
 #include <random>
 
-PathAlgorithm::PathAlgorithm(Tile* Onode, state& gsState): gsState(gsState)
+PathAlgorithm::PathAlgorithm(Tile* Onode, state& gState): gState(gState)
 {
 	map = initiliazemap();
 	priorityQueue = {}; // emplace, top, pop
@@ -20,7 +20,7 @@ PathAlgorithm::PathAlgorithm(Tile* Onode, state& gsState): gsState(gsState)
 	Onode->Parent = nullptr; 
     priorityQueue.emplace(Onode->G = 0, Onode);
 }
-PathAlgorithm::PathAlgorithm(state& gsState) : gsState(gsState)
+PathAlgorithm::PathAlgorithm(state& gState) : gState(gState)
 {
 	map = initiliazemap();
 	priorityQueue = {};
@@ -128,7 +128,7 @@ int PathAlgorithm::calculate_distance(Tile* tileToReach) const
 
 vector<vector<Tile*>> PathAlgorithm::initiliazemap()  
 {  
-   auto& basemap = gsState.map;
+   auto& basemap = gState.map;
    vector<vector<Tile*>> result;  
 
    

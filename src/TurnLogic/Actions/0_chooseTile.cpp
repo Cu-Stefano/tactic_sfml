@@ -6,8 +6,8 @@
 #include "../../headers/unit.h"
 using namespace sf;
 
-ChooseTile::ChooseTile(state& gsState, TurnState* turnState)
-    : ActionState(gsState, turnState) {
+ChooseTile::ChooseTile(state& gState, TurnState* turnState)
+    : ActionState(gState, turnState) {
 }
 
 void ChooseTile::on_enter() {
@@ -22,12 +22,12 @@ void ChooseTile::update()
 {
 	if ( Mouse::isButtonPressed(Mouse::Button::Left) )
 	{
-		Vector2f mousePos = gsState.window.mapPixelToCoords(Mouse::getPosition(gsState.window));
-		if (gsState.isMouseOutOfRange(mousePos)) return;
+		Vector2f mousePos = gState.window.mapPixelToCoords(Mouse::getPosition(gState.window));
+		if (gState.isMouseOutOfRange(mousePos)) return;
 
 		int tileX = static_cast<int>(mousePos.x) / 40;
 		int tileY = static_cast<int>(mousePos.y) / 40;
-		Tile* selectedTile = gsState.map[tileY][tileX];
+		Tile* selectedTile = gState.map[tileY][tileX];
 
 	if (!selectedTile->shape.getGlobalBounds().contains(mousePos) || !selectedTile->unitOn || !selectedTile->unitOn->canMove)// sanity check
 			return;
@@ -37,13 +37,13 @@ void ChooseTile::update()
 
 		//CHANGE STATE TO 1
 		if (selectedTile->unitOn != nullptr)
-			turnState->SetActionState(new TileSelected(gsState, turnState, selectedTile));
+			turnState->SetActionState(new TileSelected(gState, turnState, selectedTile));
 		//enemy case
 
    }
 }
 
-void ChooseTile::draw(state& gsState)
+void ChooseTile::draw(state& gState)
 {
 	
 }

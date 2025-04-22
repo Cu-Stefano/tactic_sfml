@@ -1,10 +1,14 @@
 #include "../../headers/2_chooseAttack.h"
+#include "../../headers/3_attack.h"
+#include "../../headers/0_chooseTile.h"
 #include "../../headers/tile.h"
+#include "../../headers/turnState.hpp"
 #include "../../headers/unit.h"
+
 using namespace sf;
 
-ChooseAttack::ChooseAttack(state& gsState, const std::vector<Tile*>& enemyNear, Tile* attackingUnit)
-	: ActionState(gsState, turnState)
+ChooseAttack::ChooseAttack(state& gState, TurnState* turnState, const std::vector<Tile*>& enemyNear, Tile* attackingUnit)
+	: ActionState(gState, turnState)
 {
 	this->enemyNear = enemyNear;
 	this->attackingUnit = attackingUnit;
@@ -26,33 +30,72 @@ void ChooseAttack::update()
 		attackingUnit->unitOn->an_sprite.sprite_y = 2;
 	}
 
-	if (isButtonPressed(sf::Mouse::Button::Left) && !preview_selected)
+	if (isButtonPressed(sf::Mouse::Button::Left))
 	{
-		preview_selected = true;
+		Vector2f mousePos = gState.window.mapPixelToCoords(sf::Mouse::getPosition(gState.window));
+		if (gState.isMouseOutOfRange(sf::Vector2f(mousePos)))
+		{
+			sf::FloatRect bounds = gState.attackGui.attack_text.getGlobalBounds();
 
-		Vector2f mousePos = gsState.window.mapPixelToCoords(sf::Mouse::getPosition(gsState.window));
-		if (gsState.isMouseOutOfRange(sf::Vector2f(mousePos))) return;
-		auto clicked_tile = gsState.get_tile_from_mouse_position(sf::Vector2f(mousePos));
+			if (bounds.contains({ mousePos.x, mousePos.y }))
+				turnState->SetActionState(new Attack(gState, turnState, attackingUnit, gState.attackGui.unitB, gState.attackGui.unitAStats, gState.attackGui.unitBStats));
+		}
+		else
+		{
+			auto clicked_tile = gState.get_tile_from_mouse_position(sf::Vector2f(mousePos));
 
-		gsState.attackGui.unitA = attackingUnit;
-		gsState.attackGui.unitB = clicked_tile;
+			if (std::find(enemyNear.begin(), enemyNear.end(), clicked_tile) != enemyNear.end())
+			{
+				gState.attackGui.unitA = attackingUnit;
+				gState.attackGui.unitB = clicked_tile;
+				gState.attackGui.unitAStats = {};
+				gState.attackGui.unitBStats = {};
+				gState.attackGui.update();
+				preview_selected = clicked_tile->unitOn != nullptr;
+			}
+			else if (clicked_tile == attackingUnit)
+			{
+				attackingUnit->move_unit(clicked_tile, {});
+				attackingUnit->unitOn->an_sprite.sprite_y = 0;
+				attackingUnit->unitOn->an_sprite.sprite->setColor(UNIT_MOVED);
+
+				for (auto enemy : enemyNear)
+				{
+					enemy->unitOn->an_sprite.sprite_y = 0;
+				}
+
+				turnState->SetActionState(new ChooseTile(gState, turnState));
+			}
+		}
 	}
-	if (isButtonPressed(sf::Mouse::Button::Left) && preview_selected)
+	if (isButtonPressed(sf::Mouse::Button::Right))//back
 	{
-		//se clicco sul bottone attack inizio lo stato di attacco
+		for (auto enemy : enemyNear)
+		{
+			enemy->unitOn->an_sprite.sprite_y = 0;
+		}
+
+		attackingUnit->unitOn->an_sprite.sprite_y = 0;
+		gState.map[startinPosition.y][startinPosition.x]->unitOn = attackingUnit->unitOn;
+
+		attackingUnit->unitOn->an_sprite.sprite->setPosition(Vector2f{ static_cast<float>(startinPosition.x * 40), static_cast<float>(startinPosition.y * 40) });
+		attackingUnit->unitOn->an_sprite.sprite->move(DEFAULT_OFFSET);
+		attackingUnit->unitOn = nullptr;
+
+		turnState->SetActionState(new ChooseTile(gState, turnState));
 	}
 }
 
-void ChooseAttack::draw(state& gsState)
+void ChooseAttack::draw(state& gState)
 {
 	for (auto enemy : enemyNear)
 	{
-		gsState.window.draw(enemy->shape);
+		gState.window.draw(enemy->shape);
 	}
 	if (preview_selected)
 	{
-		gsState.attackGui.draw_units();
-		gsState.attackGui.draw_stats();
+		gState.attackGui.draw_units();
+		gState.attackGui.draw_stats();
 	}
 }
 

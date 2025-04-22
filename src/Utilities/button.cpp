@@ -63,10 +63,10 @@ void Button::update(const RenderWindow& window)
 }
 
 
-void Button::draw(::state& gsState) const
+void Button::draw(::state& gState) const
 {
-   gsState.window.draw(sprite);
-   gsState.window.draw(shape);
+   gState.window.draw(sprite);
+   gState.window.draw(shape);
 }
 
 void Button::set_click_function(const std::function<void()>& func)
