@@ -49,6 +49,10 @@ void draw_curr_stats(state& gs)
 	sf::Text calcStatsText{ gs.font, "", 15 };
 	calcStatsText.setFillColor(sf::Color::White);
 
+    Texture traingle = Texture("resources/Ui/Ui_assets.png");
+    sf::Sprite weapon_traingle(traingle);
+    weapon_traingle.setTextureRect(sf::IntRect({ 0, 0 }, { 0, 0 }));
+
     if (gs.selected_tile != nullptr && gs.selected_tile->unitOn != nullptr)
     {
         // Text for unit name and HP
@@ -80,11 +84,17 @@ void draw_curr_stats(state& gs)
             "Attack: " + std::to_string(gs.selected_tile->unitOn->get_attack()) + "\n\n\n" +
             "Crit: " + std::to_string(gs.selected_tile->unitOn->get_crit()));
         calcStatsText.setPosition({ static_cast<float>(gs.menubar_attack_window_x) + 26, 380 });
+
+        weapon_traingle.setTextureRect(sf::IntRect({ 155, 9 }, { 44, 38 }));
+        weapon_traingle.setScale({ 3, 3 });
+        weapon_traingle.setPosition({ static_cast<float>(gs.menubar_attack_window_x) + ((WINDOW_WIDTH - static_cast<float>(gs.menubar_attack_window_x)) / 2) - 66, 650 });
+
     }
     gs.window.draw(unitText);
 	gs.window.draw(maxHP);
     gs.window.draw(statsText);
     gs.window.draw(calcStatsText);
+    gs.window.draw(weapon_traingle);
 
 }
 
@@ -98,6 +108,7 @@ void curr_unit_window_draw(state& gs, Texture ui)
 	sf::Sprite top_curr_unit_window(ui);
 	sf::Sprite curr_unit_window(ui);
 	sf::Sprite bottom_curr_unit_window(ui);
+
 
 	top_curr_unit_window.setTextureRect(sf::IntRect({ 54, 6 }, { 37, 8 }));
 	top_curr_unit_window.scale({ 5.6, 5 });
@@ -113,6 +124,7 @@ void curr_unit_window_draw(state& gs, Texture ui)
 	gs.window.draw(top_curr_unit_window);
 	gs.window.draw(curr_unit_window);
 	gs.window.draw(bottom_curr_unit_window);
+
 }
 
 /// Graphics
@@ -130,8 +142,8 @@ void do_graphics(state& gs)
 {
     gs.window.clear();
 
-    do_gui(gs);
 	draw_map(gs);
+    do_gui(gs);
 
     gs.window.display();
 }

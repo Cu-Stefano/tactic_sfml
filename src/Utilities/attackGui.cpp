@@ -10,7 +10,7 @@ using namespace sf;
 Texture ui = Texture("resources/Ui/Ui_assets.png");
 
 
-AttackGui::AttackGui(state& gState): gState(gState), attack_text(gState.font, "  ATTACK! ", 20)
+AttackGui::AttackGui(state& gState): gState(gState), attack_text(gState.font, "  ATTACK ", 20)
 {
 }
 
@@ -51,6 +51,13 @@ void AttackGui::draw_units()
 	gState.window.draw(unitA_sprite);
 	gState.window.draw(unitB_sprite);
 
+	//draw attack button
+	sf::Sprite attack_button(ui);
+	attack_button.setTextureRect(sf::IntRect({ 0, 130 }, { 48, 12}));
+	attack_button.setScale({ 3.5, 4.5 });
+	attack_button.setPosition({ gState.menubar_attack_window_x / 4.2f, static_cast<float>(gState.menubar_attack_y) + 68 });
+
+	gState.window.draw(attack_button);
 }
 
 void calculate_attack_stats(Unit unita, Unit unitb, std::vector<int>& a_stats, std::vector<int>& b_stats, int& bonus)
@@ -106,7 +113,7 @@ void AttackGui::draw_stats()
 
 	attack_text.setOutlineThickness(1);
 	attack_text.setOutlineColor(sf::Color::Black);
-	attack_text.setPosition({ gState.menubar_attack_window_x / 4.8f, static_cast<float>(gState.menubar_attack_y) + 85 });
+	attack_text.setPosition({ gState.menubar_attack_window_x / 4.4f, static_cast<float>(gState.menubar_attack_y) + 85 });
 	gState.window.draw(attack_text);
 
     for (int i = 0; i < statNames.size(); ++i)
