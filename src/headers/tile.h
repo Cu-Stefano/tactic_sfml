@@ -10,8 +10,8 @@ class Button;
 class Tile : public Button {
 public:
     Tile() = default;
-    Tile(std::string tileName, bool walkable, Unit* unitOn, const Vector2f& pos, const Vector2f& size, const Sprite& spr, Sprite pathSpr);
-
+    Tile(const std::string& tileName, bool walkable, Unit* unitOn,
+        const Vector2f& pos, const Vector2f& size, const Sprite& spr, const Sprite& path_spr);
     void draw(::state& gState) const;
 
     void move_unit(Tile* b, std::vector<Tile*> route);

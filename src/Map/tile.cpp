@@ -4,9 +4,13 @@
 #include "../headers/state.hpp"
 #include "../headers/unit.h"
 
-Tile::Tile(std::string tileName, bool walkable, Unit* unitOn,const Vector2f& pos, const Vector2f& size, const Sprite& spr, Sprite pathSpr)
-	: Button(pos, size, spr), tileName(std::move(tileName)), walkable(walkable), unitOn(unitOn), path_sprite(std::move(pathSpr))
-{}
+
+Tile::Tile(const std::string& tileName, bool walkable, Unit* unitOn,
+    const Vector2f& pos, const Vector2f& size, const Sprite& spr, const Sprite& path_spr)
+    : Button(pos, size, spr), path_sprite(path_spr),
+    tileName(tileName), walkable(walkable), unitOn(unitOn)
+{
+}
 
 void Tile::draw(::state& gState) const
 {

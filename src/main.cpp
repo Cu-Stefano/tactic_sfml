@@ -5,39 +5,6 @@
 
 using namespace sf;
 
-/// Handle events
-void handle(const sf::Event::Resized& resized, state& gs)
-{
-    if (resized.size.x < WINDOW_WIDTH || resized.size.y < WINDOW_HEIGHT)
-    {
-        gs.window.setSize({ WINDOW_WIDTH, WINDOW_HEIGHT });
-        return;
-    }
-
-    float aspectRatio = static_cast<float>(resized.size.x) / static_cast<float>(resized.size.y);
-
-    if (aspectRatio <= 1.2f || aspectRatio >= 2.4f)
-    {
-        gs.window.setSize({ WINDOW_WIDTH, WINDOW_HEIGHT });
-        return;
-    }
-
-    sf::View view = gs.window.getView();
-    view.setSize({ static_cast<float>(resized.size.x), static_cast<float>(resized.size.y) });
-
-    gs.window.setView(view);
-}
-
-void handle(const sf::Event::Closed&, state& gs)
-{
-    gs.window.close();
-}
-
-template <typename T>
-void handle(const T&, state& gs)
-{
-    // All unhandled events will end up here
-}
 ////////////////////////////////////////////////////////////
 void draw_curr_stats(state& gs)
 {
@@ -87,7 +54,7 @@ void draw_curr_stats(state& gs)
 
         weapon_traingle.setTextureRect(sf::IntRect({ 155, 9 }, { 44, 38 }));
         weapon_traingle.setScale({ 3, 3 });
-        weapon_traingle.setPosition({ static_cast<float>(gs.menubar_attack_window_x) + ((WINDOW_WIDTH - static_cast<float>(gs.menubar_attack_window_x)) / 2) - 66, 650 });
+        weapon_traingle.setPosition({ static_cast<float>(gs.menubar_attack_window_x) + ((WINDOW_WIDTH - static_cast<float>(gs.menubar_attack_window_x)) / 2) - 66, 690 });
 
     }
     gs.window.draw(unitText);
@@ -109,7 +76,6 @@ void curr_unit_window_draw(state& gs, Texture ui)
 	sf::Sprite curr_unit_window(ui);
 	sf::Sprite bottom_curr_unit_window(ui);
 
-
 	top_curr_unit_window.setTextureRect(sf::IntRect({ 54, 6 }, { 37, 8 }));
 	top_curr_unit_window.scale({ 5.6, 5 });
 	curr_unit_window.setTextureRect(sf::IntRect({ 54, 13 }, { 37, 20 }));
@@ -124,7 +90,6 @@ void curr_unit_window_draw(state& gs, Texture ui)
 	gs.window.draw(top_curr_unit_window);
 	gs.window.draw(curr_unit_window);
 	gs.window.draw(bottom_curr_unit_window);
-
 }
 
 /// Graphics
@@ -142,8 +107,8 @@ void do_graphics(state& gs)
 {
     gs.window.clear();
 
-	draw_map(gs);
     do_gui(gs);
+	draw_map(gs);
 
     gs.window.display();
 }
@@ -163,19 +128,52 @@ void update(state& gs)
 }
 ////////////////////////////////////////////////////////////
 
+
 int main()
 {
     state gs(WINDOW_WIDTH, WINDOW_HEIGHT, "TacticSFML");
     gs.window.setFramerateLimit(60);
 
-	initialize_map(gs);
+    initialize_map(gs);
     gs.selected_tile = gs.map[0][1];
 
     while (gs.window.isOpen()) // main loop
     {
-        gs.window.handleEvents([&](const auto& event)
-            { handle(event, gs); });
-        update(gs);
-        do_graphics(gs);
+        while (gs.window.isOpen())
+        { // main loop
+            while (const std::optional event = gs.window.pollEvent())
+            { // event loop + hevent handler
+                if (event->is<sf::Event::Closed>())
+                {
+                    gs.window.close();
+                    break;
+                }
+
+                if (const auto* resized = event->getIf<sf::Event::Resized>())
+                {
+                    if (resized->size.x < WINDOW_WIDTH || resized->size.y < WINDOW_HEIGHT)
+                    {
+                        gs.window.setSize({ WINDOW_WIDTH, WINDOW_HEIGHT });
+                        continue;
+                    }
+
+                    float aspectRatio = static_cast<float>(resized->size.x) / static_cast<float>(resized->size.y);
+
+                    if (aspectRatio <= 1.2f || aspectRatio >= 2.4f)
+                    {
+                        gs.window.setSize({ WINDOW_WIDTH, WINDOW_HEIGHT });
+                        continue;
+                    }
+
+                    sf::View view = gs.window.getView();
+                    view.setSize({ static_cast<float>(resized->size.x), static_cast<float>(resized->size.y) });
+
+                    gs.window.setView(view);
+                }
+            }
+
+            update(gs);
+            do_graphics(gs);
+        }
     }
 }

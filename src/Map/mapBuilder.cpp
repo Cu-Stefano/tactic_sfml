@@ -98,13 +98,12 @@ void initialize_map(state& gs)
                 break;
             }
 
-            Sprite grass_sprite = Sprite(TEXTURE);
-			set_tile_sprite(grass_sprite, tileName, { x, y });
+             Sprite grass_sprite = sf::Sprite(TEXTURE);
+            set_tile_sprite(grass_sprite, tileName, { x, y });
 
             //path_sprite
-            Texture path_text;
-			Sprite path_spr = Sprite(path_text);
-            path_spr.setTextureRect(IntRect({0, 0}, TEXTURE_TILE_SIZE));
+            Sprite path_spr = sf::Sprite(TEXTURE);
+            path_spr.setTextureRect(sf::IntRect({ 120, 0 }, TEXTURE_TILE_SIZE));
             path_spr.setScale({ 2.48f, 2.48f });
             path_spr.setColor(Color::Transparent);
             path_spr.setPosition({ x, y });

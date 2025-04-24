@@ -27,6 +27,8 @@ void ChooseTile::update()
 
 		int tileX = static_cast<int>(mousePos.x) / 40;
 		int tileY = static_cast<int>(mousePos.y) / 40;
+		if (tileX < 0 || tileX >= WINDOW_WIDTH / 40 || tileY < 0 || tileY >= WINDOW_HEIGHT / 40)
+			return;
 		Tile* selectedTile = gState.map[tileY][tileX];
 
 	if (!selectedTile->shape.getGlobalBounds().contains(mousePos) || !selectedTile->unitOn || !selectedTile->unitOn->canMove)// sanity check
