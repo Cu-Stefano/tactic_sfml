@@ -1,11 +1,12 @@
 #pragma once
-#include "state.h"
-
-using namespace std;
+#include <string>
+#include <vector>
+#include "SFML/Graphics/Sprite.hpp"
+#include "state.hpp"
 
 std::vector<std::vector<int>> map_generator();
 
-void initialize_Map(state& gs);
+void initialize_map(state& gs);
 
 void draw_map(state& gs);
 void update_map(state& gs);

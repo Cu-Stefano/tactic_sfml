@@ -1,25 +1,29 @@
 #pragma once
 #include "button.h"
-#include "unit.h"
-#include <functional>
+#include "state.hpp"
 #include <string>
 #include <vector>
-#include <optional>
+
+class Unit;
+class Button;
 
 class Tile : public Button {
 public:
     Tile() = default;
-
     Tile(const std::string& tileName, bool walkable, Unit* unitOn,
-        const Vector2f& pos, const Vector2f& size, const Sprite& spr);
+        const Vector2f& pos, const Vector2f& size, const Sprite& spr, const Sprite& path_spr);
+    void draw(::state& gState) const;
 
-    std::string TileName;
-    bool Walkable;
-    Unit* UnitOn;
+    void move_unit(Tile* b, std::vector<Tile*> route);
+
+    std::string tileName;
+    bool walkable;
+    Unit* unitOn;
 
     // Path Algorithm attributes
     int G = 0;
     bool passable = true;
     Tile* Parent = nullptr;
-    std::vector<Tile*> Neighbours;
+    std::vector<Tile*> neighbours;
+    Sprite path_sprite;
 };

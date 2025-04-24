@@ -14,9 +14,11 @@ FetchContent_MakeAvailable(SFML)
 
 file(COPY ${CMAKE_SOURCE_DIR}/resources
     DESTINATION ${CMAKE_BINARY_DIR}/bin/)
-   
-add_executable(TacticSFML
-    "src/main.cpp"
-    src/Map/mapBuilder.cpp
-    src/Utilities/button.cpp src/Headers/state.h "src/Utilities/tile.cpp" "src/headers/tile.h" "src/headers/unit.h" "src/Utilities/unit.cpp" "src/headers/animatedSprite.h" "src/Utilities/animatedSprite.cpp" "src/Utilities/animState.cpp" "src/Utilities/weapon.cpp" "src/headers/weapon.h")
+
+# Cerca automaticamente tutti i file .cpp e .h nella directory src e sottodirectory
+file(GLOB_RECURSE SOURCE_FILES ${CMAKE_SOURCE_DIR}/src/*.cpp)
+file(GLOB_RECURSE HEADER_FILES ${CMAKE_SOURCE_DIR}/src/*.h)
+
+# Aggiungi l'eseguibile principale con tutti i file trovati
+add_executable(TacticSFML ${SOURCE_FILES} ${HEADER_FILES})
 target_link_libraries(TacticSFML PRIVATE SFML::Graphics)

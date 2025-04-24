@@ -1,17 +1,15 @@
 #pragma once
-
-#include <string>
 #include "SFML/Graphics.hpp"
 
 class AnimatedSprite
 {
 	int n_frames = 4;
-	int curr_frame;
+	int curr_frame = 0;
 	int sprite_width = 32;
-	float swap_interval = 0.3f; // sec
 	sf::Clock clock = sf::Clock();
 
 public:
+	float swap_interval = 0.25; // sec
 	int sprite_y = 0;
 	sf::Texture texture;
 	sf::Sprite* sprite;

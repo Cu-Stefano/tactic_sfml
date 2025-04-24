@@ -1,32 +1,42 @@
 #pragma once
-
 #include <string>
 #include <optional>
 #include "animatedSprite.h"
-#include "animState.h"
 #include "weapon.h"
 
-class AnimState;
+class Tile;
 
 enum ClassType
 {
-	swordsman = 0,
-	warrior = 1,
-	soldier = 2,
+    swordsman = 0,
+    warrior = 1,
+    soldier = 2,
 };
 
 class Unit {
 public:
     std::string name;
-    bool type; // 0 allay, 1 enemy
+    int type; // 0 allay, 1 enemy
+    bool canMove;
     ClassType unit_class;
     std::optional<Weapon> equiped_weapon;
-    
+
     AnimatedSprite an_sprite;
-    AnimState* anim_state;
+
+    sf::Vector2f currentTargetPosition; // Posizione di destinazione
+    std::vector<Tile*> targetRoute; // Percorso da seguire
+	bool firstFrame = true; // Flag per il primo frame di movimento;
+    bool isMoving = false;
+    bool move_just_started = false;
+    float move_speed = 200.0f; // Speed in pixels per second
+    sf::Clock move_clock; // Clock for movement timing
+
+    static bool IsAnyUnitMoving;
+    static bool hasSomeActionBeenStared;
 
     //stats
     int hp;
+    int movement;
     int max_hp;
     int strength;
     int defense;
@@ -35,39 +45,31 @@ public:
     int luck;
 
     Unit() = default;
-    Unit(std::string n, bool t, ClassType c, int mh, int str, int def, int spe, int skl, int lck);
+    Unit(std::string n, bool t, ClassType c, int mh, int mv, int str, int def, int spe, int skl, int lck);
+    Weapon initialize_weapon(ClassType c) const;
+    sf::Texture load_texture(int type, ClassType unit_class) const;
 
     void set_sprite(sf::Texture t);
     void set_sprite_pos(sf::Vector2i coord);
-    void set_state(AnimState* a);
+    void has_moved();
 
-    int Get_Dodge() const;
-    int Get_Hit() const;
-    int Get_Attack() const;
-    int Get_Crit() const;
+    int get_dodge() const;
+    int get_hit() const;
+    int get_attack() const;
+    int get_crit() const;
 
     void draw(sf::RenderWindow& window) const;
-	void update();
+    void update();
 };
+//in modo che non vengano ridefinite, senza, i puntatori cambiano di valore
+extern std::vector<Unit*> allay_list;
+extern std::vector<Unit*> enemy_list;
 
-static std::vector<Unit*> allay_list = {
-    new Unit("Ike", 0, ClassType::swordsman, 20, 5, 5, 5, 5, 5),
-    new Unit("Mia", 0, ClassType::swordsman, 18, 6, 4, 7, 6, 4),
-    new Unit("Oscar", 0, ClassType::warrior, 22, 7, 6, 5, 5, 3),
-    new Unit("Boyd", 0, ClassType::warrior, 25, 8, 5, 4, 4, 2),
-    new Unit("Rhys", 0, ClassType::soldier, 15, 3, 2, 3, 5, 6),
-    new Unit("Soren", 0, ClassType::soldier, 16, 4, 3, 4, 6, 5)
-};
+constexpr sf::Vector2f BOSS_OFFSET(-16, -21);
+constexpr sf::Vector2f BOSS_MOVE_OFFSET(-11, -11);
+constexpr sf::Vector2f DEFAULT_OFFSET(-12, -12);
 
-static std::vector<Unit*> enemy_list = {
-    new Unit("Boss", 1, ClassType::warrior, 25, 9, 5, 5, 3, 3),
-    new Unit("soldier1",1, ClassType::soldier, 16, 4, 1, 3, 3, 5),
-    new Unit("soldier2",1, ClassType::soldier, 16, 4, 1, 3, 3, 5),
-    new Unit("soldier3",1, ClassType::soldier, 16, 4, 1, 3, 3, 5),
-    new Unit("spadaccino1", 1, ClassType::swordsman, 16, 5, 2, 5, 3, 4),
-    new Unit("spadaccino2", 1, ClassType::swordsman, 16, 5, 2, 5, 3, 4),
-    new Unit("spadaccino3", 1, ClassType::swordsman, 16, 5, 2, 5, 3, 4),
-    new Unit("warrior1", 1, ClassType::warrior, 18, 6, 3, 2, 3, 3),
-    new Unit("warrior2", 1, ClassType::warrior, 18, 6, 3, 2, 3, 3),
-    new Unit("warrior3", 1, ClassType::warrior, 18, 6, 3, 2, 3, 3),
-};
+constexpr float SWAP_INTERVAL = 0.3f;
+constexpr float SWAP_INTERVAL_RUN = 0.1f;
+
+

@@ -1,12 +1,12 @@
 #include "../headers/button.h"
+#include "../headers/state.hpp"
+using namespace sf;
 
-std::optional<Button> Button::isAnyButtonPressed = std::nullopt;
-
-Button::Button(Vector2f Pos, Vector2f size, Sprite spr) : sprite(spr)
+Button::Button(Vector2f pos, Vector2f size, Sprite spr) : sprite(spr)
 {
 	state = not_pressed;
 	shape.setSize(size);
-	shape.setPosition(Pos);
+	shape.setPosition(pos);
 	shape.setFillColor(Color::Transparent);
 	shape.setOutlineColor(Color(0, 0, 10, 255));
 	shape.setOutlineThickness(-0.5);
@@ -32,19 +32,22 @@ void Button::update(const RenderWindow& window)
         shape.setOutlineColor(Color::Black);
         shape.setOutlineThickness(-2);
 
-        if ((!isAnyButtonPressed.has_value() || isAnyButtonPressed == *this)
-            && Mouse::isButtonPressed(Mouse::Button::Left))
+        if (isAnotherButtonPressed && Mouse::isButtonPressed(Mouse::Button::Left))
         {
             state = pressed;
-            shape.setOutlineColor(Color::Red);
-            shape.setOutlineThickness(-3);
+            shape.setOutlineThickness(-2.5);
 
-            isAnyButtonPressed = *this;
+            isAnotherButtonPressed = false;
 
             if (onClick)
             {
                 onClick();
             }
+        }
+
+        if (onHover)
+        {
+            onHover();
         }
     }
     else
@@ -55,15 +58,15 @@ void Button::update(const RenderWindow& window)
     }
 
     if (!Mouse::isButtonPressed(Mouse::Button::Left))
-        isAnyButtonPressed.reset();
+        isAnotherButtonPressed = true;
     
 }
 
 
-void Button::draw(RenderWindow& window) const
+void Button::draw(::state& gState) const
 {
-    window.draw(sprite);
-    window.draw(shape);
+   gState.window.draw(sprite);
+   gState.window.draw(shape);
 }
 
 void Button::set_click_function(const std::function<void()>& func)
@@ -71,8 +74,12 @@ void Button::set_click_function(const std::function<void()>& func)
     onClick = func;
 }
 
+void Button::set_hover_function(const std::function<void()>& func)
+{
+	onHover = func;
+}
+
 bool Button::operator==(const Button& other) const
 {
     return shape.getPosition() == other.shape.getPosition();
 }
-

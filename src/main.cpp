@@ -1,98 +1,73 @@
 #include "headers/mapBuilder.h"
-#include "headers/state.h"
+#include "headers/state.hpp"
+#include "headers/tile.h"
+#include "headers/unit.h"
 
-/// Handle events
-void handle(const sf::Event::Resized& resized, state& gs)
-{
-    if (resized.size.x < window_width || resized.size.y < window_height)
-    {
-        gs.window.setSize({ window_width, window_height });
-        return;
-    }
+using namespace sf;
 
-    float aspectRatio = static_cast<float>(resized.size.x) / static_cast<float>(resized.size.y);
-
-    if (aspectRatio <= 1.2f || aspectRatio >= 2.4f)
-    {
-        gs.window.setSize({ window_width, window_height });
-        return;
-    }
-
-    sf::View view = gs.window.getView();
-    view.setSize({ static_cast<float>(resized.size.x), static_cast<float>(resized.size.y) });
-
-    gs.window.setView(view);
-}
-
-void handle(const sf::Event::Closed&, state& gs)
-{
-    gs.window.close();
-}
-
-template <typename T>
-void handle(const T&, state& gs)
-{
-    // All unhandled events will end up here
-}
 ////////////////////////////////////////////////////////////
 void draw_curr_stats(state& gs)
 {
-    if (gs.selected_tile->UnitOn != nullptr)
+	sf::Text unitText{ gs.font, "", 15 };
+	sf::Text maxHP{ gs.font, "", 15 };
+	unitText.setFillColor(sf::Color::White);
+	sf::Text statsText{ gs.font, "", 15 };
+	statsText.setFillColor(sf::Color::White);
+	sf::Text calcStatsText{ gs.font, "", 15 };
+	calcStatsText.setFillColor(sf::Color::White);
+
+    Texture traingle = Texture("resources/Ui/Ui_assets.png");
+    sf::Sprite weapon_traingle(traingle);
+    weapon_traingle.setTextureRect(sf::IntRect({ 0, 0 }, { 0, 0 }));
+
+    if (gs.selected_tile != nullptr && gs.selected_tile->unitOn != nullptr)
     {
         // Text for unit name and HP
-        sf::Text unitText{ gs.font, "", 15 };
         unitText.setFillColor(sf::Color::White);
-        unitText.setString(gs.selected_tile->UnitOn->name + "\n\n" +
-            "HP: " + std::to_string(gs.selected_tile->UnitOn->hp) + "/" + std::to_string(gs.selected_tile->UnitOn->max_hp));
+        unitText.setString(gs.selected_tile->unitOn->name + "\n\n" +
+            "HP: " + std::to_string(gs.selected_tile->unitOn->hp) + "/");
         unitText.setPosition({ static_cast<float>(gs.menubar_attack_window_x) + 26, 50 });
-        gs.window.draw(unitText);
+
+        maxHP.setString(std::to_string(gs.selected_tile->unitOn->max_hp));
+		maxHP.setFillColor(sf::Color::Green);
+        maxHP.setPosition({ static_cast<float>(gs.menubar_attack_window_x) + 133, 80 });
 
         // Text for unit statistics
-        sf::Text statsText{ gs.font, "", 15 };
         statsText.setFillColor(sf::Color::White);
         statsText.setString(
-            "\n\n\n\nStr:" + std::to_string(gs.selected_tile->UnitOn->strength) + "\n\n\n" +
-            "Defense:" + std::to_string(gs.selected_tile->UnitOn->defense) + "\n\n\n" +
-            "Speed:" + std::to_string(gs.selected_tile->UnitOn->speed) + "\n\n\n" +
-            "Skill:" + std::to_string(gs.selected_tile->UnitOn->skill) + "\n\n\n" +
-            "Luck:" + std::to_string(gs.selected_tile->UnitOn->luck));
+            "\n\n\n\nStr:" + std::to_string(gs.selected_tile->unitOn->strength) + "\n\n\n" +
+            "Defense:" + std::to_string(gs.selected_tile->unitOn->defense) + "\n\n\n" +
+            "Speed:" + std::to_string(gs.selected_tile->unitOn->speed) + "\n\n\n" +
+            "Skill:" + std::to_string(gs.selected_tile->unitOn->skill) + "\n\n\n" +
+            "Luck:" + std::to_string(gs.selected_tile->unitOn->luck));
 
         statsText.setPosition({ static_cast<float>(gs.menubar_attack_window_x) + 26, 100 });
-        gs.window.draw(statsText);
 
         // Text for calculated statistics
-        sf::Text calcStatsText{ gs.font, "", 15 };
         calcStatsText.setFillColor(sf::Color::White);
         calcStatsText.setString(
-            "\n\n\nDodge: " + std::to_string(gs.selected_tile->UnitOn->Get_Dodge()) + "\n\n\n" +
-            "Hit: " + std::to_string(gs.selected_tile->UnitOn->Get_Hit()) + "\n\n\n" +
-            "Attack: " + std::to_string(gs.selected_tile->UnitOn->Get_Attack()) + "\n\n\n" +
-            "Crit: " + std::to_string(gs.selected_tile->UnitOn->Get_Crit()));
+            "\n\n\nDodge: " + std::to_string(gs.selected_tile->unitOn->get_dodge()) + "\n\n\n" +
+            "Hit: " + std::to_string(gs.selected_tile->unitOn->get_hit()) + "\n\n\n" +
+            "Attack: " + std::to_string(gs.selected_tile->unitOn->get_attack()) + "\n\n\n" +
+            "Crit: " + std::to_string(gs.selected_tile->unitOn->get_crit()));
         calcStatsText.setPosition({ static_cast<float>(gs.menubar_attack_window_x) + 26, 380 });
-        gs.window.draw(calcStatsText);
+
+        weapon_traingle.setTextureRect(sf::IntRect({ 155, 9 }, { 44, 38 }));
+        weapon_traingle.setScale({ 3, 3 });
+        weapon_traingle.setPosition({ static_cast<float>(gs.menubar_attack_window_x) + ((WINDOW_WIDTH - static_cast<float>(gs.menubar_attack_window_x)) / 2) - 66, 690 });
+
     }
+    gs.window.draw(unitText);
+	gs.window.draw(maxHP);
+    gs.window.draw(statsText);
+    gs.window.draw(calcStatsText);
+    gs.window.draw(weapon_traingle);
+
 }
 
 void attack_window_draw(state& gs, Texture ui)
 {
-    sf::Sprite left_attack_window(ui);
-    sf::Sprite attack_window(ui);
-    sf::Sprite right_attack_window(ui);
-
-	left_attack_window.setTextureRect(sf::IntRect({ 54, 6 }, { 7, 36 }));
-	left_attack_window.scale({ 5, 5.6});
-	attack_window.setTextureRect(sf::IntRect({ 61, 6 }, { 22, 36 }));
-	attack_window.setScale({ 51.36, 5.6 });
-	right_attack_window.setTextureRect(sf::IntRect({ 81, 6 }, { 8, 36 }));
-	right_attack_window.scale({ 5, 5.6 });
-
-	left_attack_window.setPosition({ 0, static_cast<float>(gs.menubar_attack_y) });
-	attack_window.setPosition({ 35, static_cast<float>(gs.menubar_attack_y) });
-	right_attack_window.setPosition({ static_cast<float>(gs.menubar_attack_window_x - 39)  , static_cast<float>(gs.menubar_attack_y) });
-
-	gs.window.draw(left_attack_window);
-	gs.window.draw(attack_window);
-	gs.window.draw(right_attack_window);
+	gs.attackGui.draw(gs.window);
 }
 
 void curr_unit_window_draw(state& gs, Texture ui)
@@ -125,12 +100,13 @@ void do_gui(state& gs)
 	curr_unit_window_draw(gs, ui);
     draw_curr_stats(gs);
 
-        attack_window_draw(gs, ui);
+	attack_window_draw(gs, ui);
 }
 
 void do_graphics(state& gs)
 {
     gs.window.clear();
+
     do_gui(gs);
 	draw_map(gs);
 
@@ -140,22 +116,64 @@ void do_graphics(state& gs)
 void update(state& gs)
 {
     update_map(gs);
+	gs.MapLogic.update();
+    for (auto& allay : allay_list)
+    {
+        allay->update();
+    }
+    for (auto& enemy : enemy_list)
+    {
+        enemy->update();
+    }
 }
 ////////////////////////////////////////////////////////////
 
+
 int main()
 {
-    state gs(window_width, window_height, "TacticSFML");
+    state gs(WINDOW_WIDTH, WINDOW_HEIGHT, "TacticSFML");
     gs.window.setFramerateLimit(60);
 
-	initialize_Map(gs);
-    gs.selected_tile = &gs.Map[0][1];
+    initialize_map(gs);
+    gs.selected_tile = gs.map[0][1];
 
     while (gs.window.isOpen()) // main loop
     {
-        gs.window.handleEvents([&](const auto& event)
-            { handle(event, gs); });
-        update(gs);
-        do_graphics(gs);
+        while (gs.window.isOpen())
+        { // main loop
+            while (const std::optional event = gs.window.pollEvent())
+            { // event loop + hevent handler
+                if (event->is<sf::Event::Closed>())
+                {
+                    gs.window.close();
+                    break;
+                }
+
+                if (const auto* resized = event->getIf<sf::Event::Resized>())
+                {
+                    if (resized->size.x < WINDOW_WIDTH || resized->size.y < WINDOW_HEIGHT)
+                    {
+                        gs.window.setSize({ WINDOW_WIDTH, WINDOW_HEIGHT });
+                        continue;
+                    }
+
+                    float aspectRatio = static_cast<float>(resized->size.x) / static_cast<float>(resized->size.y);
+
+                    if (aspectRatio <= 1.2f || aspectRatio >= 2.4f)
+                    {
+                        gs.window.setSize({ WINDOW_WIDTH, WINDOW_HEIGHT });
+                        continue;
+                    }
+
+                    sf::View view = gs.window.getView();
+                    view.setSize({ static_cast<float>(resized->size.x), static_cast<float>(resized->size.y) });
+
+                    gs.window.setView(view);
+                }
+            }
+
+            update(gs);
+            do_graphics(gs);
+        }
     }
 }
