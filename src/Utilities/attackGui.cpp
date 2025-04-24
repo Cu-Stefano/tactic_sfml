@@ -9,9 +9,9 @@ using namespace sf;
 
 Texture ui = Texture("resources/Ui/Ui_assets.png");
 
-
 AttackGui::AttackGui(state& gState): gState(gState), attack_text(gState.font, "  ATTACK! ", 20)
 {
+	attack_button = new Sprite(ui);
 }
 
 void AttackGui::draw(sf::RenderWindow& window)
@@ -40,25 +40,26 @@ void AttackGui::draw(sf::RenderWindow& window)
 
 void AttackGui::draw_units()
 {
+	float x = 45;
+	if (attack_initiated)
+		x = 350;
+
 	Sprite unitA_sprite = *unitA->unitOn->an_sprite.sprite;
 	Sprite unitB_sprite = *unitB->unitOn->an_sprite.sprite;
 
 	unitA_sprite.setScale({ 8, 8 });
-	unitA_sprite.setPosition({ 40, static_cast<float>(gState.menubar_attack_y) - 20 });
+	unitA_sprite.setPosition({ x, static_cast<float>(gState.menubar_attack_y) - 20 });
 
 	unitB_sprite.setScale({ -8, 8 });
-	unitB_sprite.setPosition({ static_cast<float>(gState.menubar_attack_window_x - 50)  , static_cast<float>(gState.menubar_attack_y) - 20});
+	unitB_sprite.setPosition({ static_cast<float>(gState.menubar_attack_window_x - x)  , static_cast<float>(gState.menubar_attack_y) - 20});
 	gState.window.draw(unitA_sprite);
 	gState.window.draw(unitB_sprite);
 
 	//draw attack button
-	sf::Sprite attack_button(ui);
-	attack_button.setTextureRect(sf::IntRect({ 0, 130 }, { 48, 12 }));
-	attack_button.setScale({ 3.5, 4.5 });
-	attack_button.setPosition({ gState.menubar_attack_window_x / 4.1f, static_cast<float>(gState.menubar_attack_y) + 68 });
 
-	gState.window.draw(attack_button);
-
+	attack_button->setTextureRect(sf::IntRect({ 0, 130 }, { 48, 12 }));
+	attack_button->setScale({ 3.5, 4.5 });
+	attack_button->setPosition({ gState.menubar_attack_window_x / 4.1f, static_cast<float>(gState.menubar_attack_y) + 68 });
 }
 
 void calculate_attack_stats(Unit unita, Unit unitb, std::vector<int>& a_stats, std::vector<int>& b_stats, int& bonus)
@@ -89,13 +90,16 @@ void calculate_attack_stats(Unit unita, Unit unitb, std::vector<int>& a_stats, s
 		bonus_a_att = -2;
 	}
 
-    a_stats.push_back(std::max(0, unita.get_attack() - unitb.defense + bonus_a_att));  
-    a_stats.push_back(std::max(0, unita.hp - a_stats.back())); // hp rimasti  
+	int damage = std::max(0, unita.get_attack() - unitb.defense + bonus_a_att);
+
+	a_stats.push_back(std::max(0, unita.hp - damage)); // hp rimasti  
+    a_stats.push_back(damage);  
     a_stats.push_back(std::min(100, unita.get_hit() - unitb.get_dodge() + bonus_a_hit));  
     a_stats.push_back(unita.get_crit());  
 
-    b_stats.push_back(std::max(0, unitb.get_attack() - unita.defense + bonus_b_att));  
-    b_stats.push_back(std::max(0, unitb.hp - b_stats.back())); // hp rimasti  
+	damage = std::max(0, unitb.get_attack() - unita.defense + bonus_b_att);
+    b_stats.push_back(damage);  
+    b_stats.push_back(std::max(0, unitb.hp - damage)); // hp rimasti  
     b_stats.push_back(std::min(100, unitb.get_hit() - unita.get_dodge() + bonus_b_hit));  
     b_stats.push_back(unitb.get_crit());
 }

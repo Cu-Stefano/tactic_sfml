@@ -18,6 +18,10 @@ void ChooseAttack::on_enter()
 }
 void ChooseAttack::on_exit()
 {
+	for (auto enemy : enemyNear)
+	{
+		enemy->unitOn->an_sprite.sprite_y = 0;
+	}
 }
 
 void ChooseAttack::update()
@@ -26,8 +30,8 @@ void ChooseAttack::update()
 	{
 		enemy->shape.setOutlineColor(sf::Color::Red);
 		enemy->shape.setOutlineThickness(-2);
-		enemy->unitOn->an_sprite.sprite_y = 2;
-		attackingUnit->unitOn->an_sprite.sprite_y = 2;
+		//enemy->unitOn->an_sprite.sprite_y = 2;
+		//attackingUnit->unitOn->an_sprite.sprite_y = 2;
 	}
 
 	if (isButtonPressed(sf::Mouse::Button::Left))
@@ -95,6 +99,7 @@ void ChooseAttack::draw(state& gState)
 	if (preview_selected)
 	{
 		gState.attackGui.draw_units();
+		gState.window.draw(*gState.attackGui.attack_button);
 		gState.attackGui.draw_stats();
 	}
 }
