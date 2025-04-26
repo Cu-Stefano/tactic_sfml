@@ -61,8 +61,8 @@ void AttackGui::draw_units()
 	attack_button->setScale({ 3.5, 4.5 });
 	attack_button->setPosition({ gState.menubar_attack_window_x / 4.1f, static_cast<float>(gState.menubar_attack_y) + 68 });
 
-	unitA->draw(gState.window);
-	unitB->draw(gState.window);
+	//unitA->draw(gState.window);
+	//unitB->draw(gState.window);
 }
 
 void calculate_attack_stats(Unit unita, Unit unitb, std::vector<int>& a_stats, std::vector<int>& b_stats, int& bonus)

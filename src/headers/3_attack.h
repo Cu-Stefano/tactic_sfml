@@ -48,7 +48,7 @@ private:
     bool attackFinished = false;
 
 
-    const float flashDuration = 0.5f;
+    const float flashDuration = 0.3f;
     const float attackDelay = 0.9f;
     const float counterDelay = 0.9f;
 };

@@ -49,14 +49,12 @@ void Attack::handlePhase(Unit* attacker, Unit* target, bool wasHit, float delay,
 {
     if (currclock.getElapsedTime().asSeconds() <= flashDuration) {
         attacker->an_sprite.sprite_y = 2;
-        attacker->an_sprite.swap_interval = 0.2f;
         if (target) {
             target->an_sprite.sprite->setColor(wasHit ? sf::Color::Red : sf::Color(255, 255, 255, 150));
         }
     }
     else if (currclock.getElapsedTime().asSeconds() <= flashDuration + delay) {
         attacker->an_sprite.sprite_y = 0;
-        attacker->an_sprite.swap_interval = 0.2f;
         if (target) {
             target->an_sprite.sprite->setColor(sf::Color::White);
         }
@@ -103,6 +101,7 @@ void Attack::draw(state& gState)
             hitFlashClock = sf::Clock();
             clock2 = sf::Clock();
             first_time = false;
+			gState.attackGui.unitA->an_sprite.curr_frame = 0;
         }
         handlePhase(gState.attackGui.unitA, gState.attackGui.unitB, B_was_hit, attackDelay, AttackPhase::SecondAttack, hitFlashClock);
         break;
@@ -114,11 +113,12 @@ void Attack::draw(state& gState)
 			clock = sf::Clock();
 			clock3 = sf::Clock();
             first_time_b = false;
+			gState.attackGui.unitB->an_sprite.curr_frame = 0;
 		}
         handlePhase(gState.attackGui.unitB, gState.attackGui.unitA, A_was_hit, counterDelay, AttackPhase::Finished, clock);
         break;
     case AttackPhase::Finished:
-        if (clock3.getElapsedTime().asSeconds() <= 2)
+        if (clock3.getElapsedTime().asSeconds() <= 1s)
             return;
         attackFinished = true;
         /*turnState->SetActionState(new ChooseTile(gState, turnState));*/

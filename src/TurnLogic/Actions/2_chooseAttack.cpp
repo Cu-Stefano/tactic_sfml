@@ -31,8 +31,6 @@ void ChooseAttack::update()
 	{
 		enemy->shape.setOutlineColor(sf::Color::Red);
 		enemy->shape.setOutlineThickness(-2);
-		attackingUnit->unitOn->an_sprite.swap_interval = 0.2f;
-		enemy->unitOn->an_sprite.swap_interval = 0.2f;
 		//enemy->unitOn->an_sprite.sprite_y = 2;
 		//attackingUnit->unitOn->an_sprite.sprite_y = 2;
 	}
