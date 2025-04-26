@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include "unit.h"
 
 class state;
 class Tile;
@@ -13,8 +14,8 @@ public:
 
 	sf::Sprite* attack_button;
     sf::Text attack_text;
-    Tile* unitA;
-    Tile* unitB;
+    Unit* unitA;
+    Unit* unitB;
     std::vector<int> unitAStats{};
     std::vector<int> unitBStats{};
 	int bonus = 0;

@@ -7,7 +7,9 @@ class state;
 class ChooseAttack : public ActionState {
 	std::vector<Tile*> enemyNear;
 	Tile* attackingUnit;
+	Tile* attackedUnit;
 	bool preview_selected = false;
+
 public:
 	ChooseAttack(state& state, TurnState* turnState, const std::vector<Tile*>& enemyNear, Tile* attackingUnit);
 	void on_enter() override;
