@@ -42,13 +42,14 @@ private:
     sf::Clock clock;
     sf::Clock clock2;
     sf::Clock clock3;
+    sf::Clock clockfirst;
     sf::Clock hitFlashClock;
     bool first_time = true;
     bool first_time_b = true;
     bool attackFinished = false;
 
 
-    const float flashDuration = 0.3f;
+    const float flashDuration = 0.4f;
     const float attackDelay = 0.9f;
     const float counterDelay = 0.9f;
 };
