@@ -7,7 +7,6 @@ class state;
 class ChooseAttack : public ActionState {
 	std::vector<Tile*> enemyNear;
 	Tile* attackingUnit;
-	Tile* attackedUnit;
 	bool preview_selected = false;
 
 public:

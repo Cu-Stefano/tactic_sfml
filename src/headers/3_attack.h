@@ -16,12 +16,14 @@ public:
     void on_enter() override;
     void on_exit() override;
     void update() override;
+    bool remove_dead_unit(Tile* unit);
     void draw(state& gState) override;
 
 private:
     enum class AttackPhase {
         FirstAttack,
         SecondAttack,
+        Dead,
         Finished
     };
 
@@ -49,7 +51,7 @@ private:
     bool attackFinished = false;
 
 
-    const float flashDuration = 0.4f;
+    const float flashDuration = 0.3f;
     const float attackDelay = 0.9f;
     const float counterDelay = 0.9f;
 };

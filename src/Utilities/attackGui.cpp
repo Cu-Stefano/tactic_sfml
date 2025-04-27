@@ -40,30 +40,45 @@ void AttackGui::draw(sf::RenderWindow& window)
 
 void AttackGui::draw_units()
 {
-	float x = 45;
+	float x = 45.0f;
 	if (attack_initiated)
-		x = 350;
+		x = 350.0f;
 
-	Sprite unitA_sprite = *unitA->an_sprite.sprite;
-	Sprite unitB_sprite = *unitB->an_sprite.sprite;
 
-	unitA_sprite.setScale({ 8, 8 });
-	unitA_sprite.setPosition({ x, static_cast<float>(gState.menubar_attack_y) - 20 });
+	// Controlla se unitA esiste
+	if (unitA && unitA->unitOn)
+	{
+		if (unitA->unitOn->an_sprite.sprite_y == 3)
+		{
+			std::cout << "unitA: " << unitA->unitOn->an_sprite.curr_frame<< std::endl;
+		}
 
-	unitB_sprite.setScale({ -8, 8 });
-	unitB_sprite.setPosition({ static_cast<float>(gState.menubar_attack_window_x - x)  , static_cast<float>(gState.menubar_attack_y) - 20});
-	gState.window.draw(unitA_sprite);
-	gState.window.draw(unitB_sprite);
+		Sprite unitA_sprite = *unitA->unitOn->an_sprite.sprite;
+		unitA_sprite.setScale({ 8, 8 });
+		unitA_sprite.setPosition({ x, static_cast<float>(gState.menubar_attack_y) - 20 });
+		gState.window.draw(unitA_sprite);
+	}
 
-	//draw attack button
+	// Controlla se unitB esiste
+	if (unitB && unitB->unitOn)
+	{
+		if (unitB->unitOn->an_sprite.sprite_y == 3)
+		{
+			std::cout << "unitB: " << unitB->unitOn->an_sprite.curr_frame << std::endl;
+		}
 
+		Sprite unitB_sprite = *unitB->unitOn->an_sprite.sprite;
+		unitB_sprite.setScale({ -8, 8 });
+		unitB_sprite.setPosition({ (gState.menubar_attack_window_x - x), static_cast<float>(gState.menubar_attack_y) - 20 });
+		gState.window.draw(unitB_sprite);
+	}
+
+	// Disegna il pulsante di attacco
 	attack_button->setTextureRect(sf::IntRect({ 0, 130 }, { 48, 12 }));
 	attack_button->setScale({ 3.5, 4.5 });
 	attack_button->setPosition({ gState.menubar_attack_window_x / 4.1f, static_cast<float>(gState.menubar_attack_y) + 68 });
-
-	//unitA->draw(gState.window);
-	//unitB->draw(gState.window);
 }
+
 
 void calculate_attack_stats(Unit unita, Unit unitb, std::vector<int>& a_stats, std::vector<int>& b_stats, int& bonus)
 {
@@ -200,5 +215,5 @@ void AttackGui::draw_stats()
 
 void AttackGui::update()  
 {  
-   calculate_attack_stats(*unitA, *unitB, unitAStats, unitBStats, bonus);
+   calculate_attack_stats(*unitA->unitOn, *unitB->unitOn, unitAStats, unitBStats, bonus);
 }

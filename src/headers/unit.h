@@ -61,6 +61,7 @@ public:
     void draw(sf::RenderWindow& window) const;
     void update();
 };
+
 //in modo che non vengano ridefinite, senza, i puntatori cambiano di valore
 extern std::vector<Unit*> allay_list;
 extern std::vector<Unit*> enemy_list;

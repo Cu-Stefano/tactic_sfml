@@ -5,10 +5,11 @@ class AnimatedSprite
 {
 	int n_frames = 4;
 	int sprite_width = 32;
-	sf::Clock clock = sf::Clock();
+	
 
 public:
 	float swap_interval = 0.25; // sec
+	sf::Clock clock = sf::Clock();
 	int curr_frame = 0;
 	int sprite_y = 0;
 	sf::Texture texture;

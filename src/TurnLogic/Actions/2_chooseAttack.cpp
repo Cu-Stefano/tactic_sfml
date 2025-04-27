@@ -8,7 +8,7 @@
 using namespace sf;
 
 ChooseAttack::ChooseAttack(state& gState, TurnState* turnState, const std::vector<Tile*>& enemyNear, Tile* attackingUnit)
-	: ActionState(gState, turnState), attackedUnit(nullptr)
+	: ActionState(gState, turnState)
 {
 	this->enemyNear = enemyNear;
 	this->attackingUnit = attackingUnit;
@@ -31,8 +31,6 @@ void ChooseAttack::update()
 	{
 		enemy->shape.setOutlineColor(sf::Color::Red);
 		enemy->shape.setOutlineThickness(-2);
-		//enemy->unitOn->an_sprite.sprite_y = 2;
-		//attackingUnit->unitOn->an_sprite.sprite_y = 2;
 	}
 
 	if (isButtonPressed(sf::Mouse::Button::Left))
@@ -43,7 +41,7 @@ void ChooseAttack::update()
 			sf::FloatRect bounds = gState.attackGui.attack_text.getGlobalBounds();
 
 			if (bounds.contains({ mousePos.x, mousePos.y }))
-				turnState->SetActionState(new Attack(gState, turnState, attackingUnit, attackedUnit, gState.attackGui.unitAStats, gState.attackGui.unitBStats));
+				turnState->SetActionState(new Attack(gState, turnState, attackingUnit, gState.attackGui.unitB, gState.attackGui.unitAStats, gState.attackGui.unitBStats));
 		}
 		else
 		{
@@ -51,9 +49,8 @@ void ChooseAttack::update()
 
 			if (std::find(enemyNear.begin(), enemyNear.end(), clicked_tile) != enemyNear.end())
 			{
-				gState.attackGui.unitA = new Unit(*attackingUnit->unitOn);
-				attackedUnit = clicked_tile;
-				gState.attackGui.unitB = new Unit (*clicked_tile->unitOn);
+				gState.attackGui.unitA = attackingUnit;
+				gState.attackGui.unitB = clicked_tile;
 				gState.attackGui.unitAStats = {};
 				gState.attackGui.unitBStats = {};
 				gState.attackGui.update();
