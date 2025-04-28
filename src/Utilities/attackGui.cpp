@@ -9,7 +9,7 @@ using namespace sf;
 
 Texture ui = Texture("resources/Ui/Ui_assets.png");
 
-AttackGui::AttackGui(state& gState): gState(gState), attack_text(gState.font, "  ATTACK! ", 20)
+AttackGui::AttackGui(state& gState): gState(gState), attack_text(gState.font, "ATTACK!", 20)
 {
 	attack_button = new Sprite(ui);
 }
@@ -44,15 +44,9 @@ void AttackGui::draw_units()
 	if (attack_initiated)
 		x = 350.0f;
 
-
 	// Controlla se unitA esiste
 	if (unitA && unitA->unitOn)
 	{
-		if (unitA->unitOn->an_sprite.sprite_y == 3)
-		{
-			std::cout << "unitA: " << unitA->unitOn->an_sprite.curr_frame<< std::endl;
-		}
-
 		Sprite unitA_sprite = *unitA->unitOn->an_sprite.sprite;
 		unitA_sprite.setScale({ 8, 8 });
 		unitA_sprite.setPosition({ x, static_cast<float>(gState.menubar_attack_y) - 20 });
@@ -62,11 +56,6 @@ void AttackGui::draw_units()
 	// Controlla se unitB esiste
 	if (unitB && unitB->unitOn)
 	{
-		if (unitB->unitOn->an_sprite.sprite_y == 3)
-		{
-			std::cout << "unitB: " << unitB->unitOn->an_sprite.curr_frame << std::endl;
-		}
-
 		Sprite unitB_sprite = *unitB->unitOn->an_sprite.sprite;
 		unitB_sprite.setScale({ -8, 8 });
 		unitB_sprite.setPosition({ (gState.menubar_attack_window_x - x), static_cast<float>(gState.menubar_attack_y) - 20 });
@@ -74,9 +63,9 @@ void AttackGui::draw_units()
 	}
 
 	// Disegna il pulsante di attacco
-	attack_button->setTextureRect(sf::IntRect({ 0, 130 }, { 48, 12 }));
-	attack_button->setScale({ 3.5, 4.5 });
-	attack_button->setPosition({ gState.menubar_attack_window_x / 4.1f, static_cast<float>(gState.menubar_attack_y) + 68 });
+	attack_button->setTextureRect(sf::IntRect({ 96, 50 }, { 47, 13 }));
+	attack_button->setScale({ 4, 4.5 });
+	attack_button->setPosition({ gState.menubar_attack_window_x / 4.7f, static_cast<float>(gState.menubar_attack_y) + 68 });
 }
 
 
@@ -125,15 +114,15 @@ void AttackGui::draw_stats()
 
     sf::Text text { gState.font, "", 16};
     text.setFillColor(sf::Color::White);
-	attack_text.setFillColor(sf::Color::White);
     // positions
     float centerX = gState.menubar_attack_window_x / 2.0f;
     float startY = static_cast<float>(gState.menubar_attack_y) + 27.0f;
     float spacing = 40.0f;
 
+	attack_text.setFillColor(sf::Color::White);
 	attack_text.setOutlineThickness(1);
-	attack_text.setOutlineColor(sf::Color::Black);
-	attack_text.setPosition({ gState.menubar_attack_window_x / 4.4f, static_cast<float>(gState.menubar_attack_y) + 85 });
+	attack_text.setOutlineColor(sf::Color::Transparent);
+	attack_text.setPosition({ gState.menubar_attack_window_x / 4.2f, static_cast<float>(gState.menubar_attack_y) + 85 });
 	gState.window.draw(attack_text);
 
     for (int i = 0; i < statNames.size(); ++i)
@@ -146,7 +135,6 @@ void AttackGui::draw_stats()
         if (i == 0)
         {
 			text.setOutlineThickness(1);
-			text.setOutlineColor(sf::Color::Black);
 			text.setCharacterSize(20);
         }
         else

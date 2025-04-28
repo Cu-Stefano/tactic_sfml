@@ -15,7 +15,6 @@ void ChooseTile::on_enter() {
 }
 
 void ChooseTile::on_exit() {
-    // Clean up logic
 }
 
 void ChooseTile::update()
@@ -31,17 +30,14 @@ void ChooseTile::update()
 			return;
 		Tile* selectedTile = gState.map[tileY][tileX];
 
-	if (!selectedTile->shape.getGlobalBounds().contains(mousePos) || !selectedTile->unitOn || !selectedTile->unitOn->canMove)// sanity check
+		if (!selectedTile->shape.getGlobalBounds().contains(mousePos) || !selectedTile->unitOn || !selectedTile->unitOn->canMove)// sanity check
 			return;
 
 		startinPosition = { tileX, tileY };
 		currentPosition = { tileX, tileY };
 
-		//CHANGE STATE TO 1
-		if (selectedTile->unitOn != nullptr)
+		if (selectedTile->unitOn != nullptr && selectedTile->unitOn->type == 0)
 			turnState->SetActionState(new TileSelected(gState, turnState, selectedTile));
-		//enemy case
-
    }
 }
 

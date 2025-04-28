@@ -6,7 +6,7 @@ class Tile;
 class PathAlgorithm;
 
 class TileSelected : public ActionState {
-
+	Tile* destination;
 	PathAlgorithm* pathAlgorithm;
 public:
 	TileSelected(state& gState, TurnState* turnState, Tile* tile);

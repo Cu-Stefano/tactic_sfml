@@ -15,10 +15,10 @@ using namespace sf;
 
 int c;// contatore usato per saltare il primo click che viene registrato per sbaglio dallo stato precedente:chooseTile
 bool wasButtonPressed;
-Tile* destination;
 
 TileSelected::TileSelected(state& gState, TurnState* turnState, Tile* tile)
-	: ActionState(gState, turnState) {
+	: ActionState(gState, turnState), destination(nullptr)
+{
 	pathAlgorithm = new PathAlgorithm(tile, gState);
 }
 
@@ -77,99 +77,110 @@ void TileSelected::move_logic(Tile* hovered_tile, vector<Tile*> route)
 void TileSelected::update()
 {
 	for (auto& tile : pathAlgorithm->path)
-	{
 		tile->path_sprite.setColor(ALLAY_PATH_COLOR);
-	}
+	
 	for (auto& tile : pathAlgorithm->attackBorderPath)
-	{
 		tile->path_sprite.setColor(ALLAY_ATTACK_COLOR);
-	}
+
 	for (auto tile : pathAlgorithm->attackList)
-	{
 		tile->path_sprite.setColor(ALLAY_ATTACK_COLOR);
-	}
+		
 	for (auto tile : pathAlgorithm->nearEnemies)
-	{
 		tile->path_sprite.setColor(ALLAY_ATTACK_COLOR);
-	}
 
 	//mouse actions:
 	Vector2f mousePos = gState.window.mapPixelToCoords(Mouse::getPosition(gState.window));
 	auto hovered_tile = gState.get_tile_from_mouse_position(mousePos);
 	if (!hovered_tile) return;
 
-	//hover::Trail
-    if (std::find(pathAlgorithm->path.begin(), pathAlgorithm->path.end(), hovered_tile) != pathAlgorithm->path.end() || hovered_tile == pathAlgorithm->Onode) {
-		auto currNode = hovered_tile;
-		std::vector<Tile*> route{};
-		while (currNode != pathAlgorithm->Onode)
-		{
-			route.push_back(currNode);
-			currNode->shape.setOutlineThickness(-2);
-			currNode->shape.setOutlineColor(Color::Blue);
-			currNode = currNode->Parent;
-		}
-    	move_logic(hovered_tile, route);
-    }
-
-	if (!Unit::IsAnyUnitMoving && Unit::hasSomeActionBeenStared)
+	if (!Unit::IsAnyUnitMoving)
 	{
-		//controllo i nighbours per vedere se ci sono nemici
-		std::vector<Tile*> near_enemies{};
-		for (auto& neighbour : destination->neighbours)
+		//hover::Trail
+		if ((std::find(pathAlgorithm->path.begin(), pathAlgorithm->path.end(), hovered_tile) != pathAlgorithm->path.end() 
+			|| hovered_tile == pathAlgorithm->Onode) && destination == nullptr) 
 		{
-			if (neighbour->unitOn && neighbour->unitOn->type == 1 - destination->unitOn->type)
+			auto currNode = hovered_tile;
+			std::vector<Tile*> route{};
+			while (currNode != pathAlgorithm->Onode)
 			{
-				near_enemies.push_back(neighbour);
+				route.push_back(currNode);
+				currNode->shape.setOutlineThickness(-2);
+				currNode->shape.setOutlineColor(Color::Blue);
+				currNode = currNode->Parent;
+			}
+
+			move_logic(hovered_tile, route);
+
+			if (Unit::IsAnyUnitMoving)
+			{
+				for (auto tile : route)
+				{
+					tile->shape.setOutlineThickness(-0.5);
+					tile->shape.setOutlineColor(sf::Color(255, 255, 255, 75));
+				}
 			}
 		}
 
-		if (!near_enemies.empty())
-			turnState->SetActionState(new ChooseAttack(gState, turnState, near_enemies, destination));
-		else
+		if (Unit::hasSomeActionBeenStared)
 		{
-			destination->unitOn->canMove = false;
-			destination->unitOn->an_sprite.sprite->setColor(UNIT_MOVED);
-			bool allAlliesCannotMove = std::all_of(allay_list.begin(), allay_list.end(), [](Unit* unit) {
-				return !unit->canMove;
-				});
-
-			if (allAlliesCannotMove) {
-				gState.MapLogic.set_state(new EnemyTurn(&gState.MapLogic));
+			//controllo i nighbours per vedere se ci sono nemici.
+			std::vector<Tile*> near_enemies{};
+			for (auto& neighbour : destination->neighbours)
+			{
+				if (neighbour->unitOn && neighbour->unitOn->type == 1 - destination->unitOn->type)
+				{
+					near_enemies.push_back(neighbour);
+				}
 			}
+
+			if (!near_enemies.empty())
+				turnState->SetActionState(new ChooseAttack(gState, turnState, near_enemies, destination));
 			else
-				turnState->SetActionState(new ChooseTile(gState, turnState));
+			{
+				destination->unitOn->canMove = false;
+				destination->unitOn->an_sprite.sprite->setColor(UNIT_MOVED);
+				bool allAlliesCannotMove = std::all_of(allay_list.begin(), allay_list.end(), [](Unit* unit) {
+					return !unit->canMove;
+					});
+
+				if (allAlliesCannotMove) {
+					gState.MapLogic.set_state(new EnemyTurn(&gState.MapLogic));
+				}
+				else
+					turnState->SetActionState(new ChooseTile(gState, turnState));
+			}
+			Unit::hasSomeActionBeenStared = false;
 		}
-		Unit::hasSomeActionBeenStared = false;
-		destination = nullptr;
 	}
 
 	//right_mouse::Back
 	if (Mouse::isButtonPressed(Mouse::Button::Right) && !Unit::IsAnyUnitMoving)
 	{
-		pathAlgorithm->Onode->unitOn->an_sprite.sprite_y = 0;
-		pathAlgorithm->Onode->unitOn->an_sprite.swap_interval = SWAP_INTERVAL; // sec
-		turnState->SetActionState(new ChooseTile(gState, turnState));
+		if (pathAlgorithm)
+		{
+			pathAlgorithm->Onode->unitOn->an_sprite.sprite_y = 0;
+			pathAlgorithm->Onode->unitOn->an_sprite.swap_interval = SWAP_INTERVAL; // sec
+			turnState->SetActionState(new ChooseTile(gState, turnState));
+		}
 	}
 }
 
 void TileSelected::draw(state& gState)
 {
-	for (auto& tile : pathAlgorithm->path)
+	if (!Unit::IsAnyUnitMoving && !Unit::hasSomeActionBeenStared)
 	{
-		gState.window.draw(tile->path_sprite);
-	}
-	for (auto& tile : pathAlgorithm->attackBorderPath)
-	{
-		gState.window.draw(tile->path_sprite);
-	}
-	for (auto tile : pathAlgorithm->attackList)
-	{
-		gState.window.draw(tile->path_sprite);
-	}
-	for (auto tile : pathAlgorithm->nearEnemies)
-	{
-		gState.window.draw(tile->path_sprite);
+		for (auto& tile : pathAlgorithm->path)
+			gState.window.draw(tile->path_sprite);
+		
+		for (auto& tile : pathAlgorithm->attackBorderPath)
+			gState.window.draw(tile->path_sprite);
+		
+		for (auto tile : pathAlgorithm->attackList)
+			gState.window.draw(tile->path_sprite);
+		
+		for (auto tile : pathAlgorithm->nearEnemies)
+			gState.window.draw(tile->path_sprite);
+		
 	}
 }
 

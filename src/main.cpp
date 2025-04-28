@@ -9,6 +9,7 @@ using namespace sf;
 void draw_curr_stats(state& gs)
 {
 	sf::Text unitText{ gs.font, "", 15 };
+	
 	sf::Text maxHP{ gs.font, "", 15 };
 	unitText.setFillColor(sf::Color::White);
 	sf::Text statsText{ gs.font, "", 15 };
@@ -16,21 +17,27 @@ void draw_curr_stats(state& gs)
 	sf::Text calcStatsText{ gs.font, "", 15 };
 	calcStatsText.setFillColor(sf::Color::White);
 
-    Texture traingle = Texture("resources/Ui/Ui_assets.png");
-    sf::Sprite weapon_traingle(traingle);
+    Texture ui = Texture("resources/Ui/Ui_assets.png");
+    sf::Sprite weapon_traingle(ui);
+    sf::Sprite nameIcon(ui);
     weapon_traingle.setTextureRect(sf::IntRect({ 0, 0 }, { 0, 0 }));
+    nameIcon.setTextureRect(sf::IntRect({ 0, 0 }, { 0, 0 }));
 
     if (gs.selected_tile != nullptr && gs.selected_tile->unitOn != nullptr)
     {
         // Text for unit name and HP
-        unitText.setFillColor(sf::Color::White);
-        unitText.setString(gs.selected_tile->unitOn->name + "\n\n" +
-            "HP: " + std::to_string(gs.selected_tile->unitOn->hp) + "/");
-        unitText.setPosition({ static_cast<float>(gs.menubar_attack_window_x) + 26, 50 });
+        unitText.setFillColor(sf::Color::White);  
+               unitText.setString(gs.selected_tile->unitOn->name);  
+               unitText.setPosition({ static_cast<float>(gs.menubar_attack_window_x) +  
+                   ((WINDOW_WIDTH - static_cast<float>(gs.menubar_attack_window_x)) / 2) -  
+                   (unitText.getLocalBounds().size.x / 2), 50 });
 
+    	maxHP.setString(std::to_string(gs.selected_tile->unitOn->hp) + "/" );
+        maxHP.setPosition({ static_cast<float>(gs.menubar_attack_window_x) + 65, 90 });
+        gs.window.draw(maxHP);
         maxHP.setString(std::to_string(gs.selected_tile->unitOn->max_hp));
 		maxHP.setFillColor(sf::Color::Green);
-        maxHP.setPosition({ static_cast<float>(gs.menubar_attack_window_x) + 133, 80 });
+        maxHP.setPosition({ static_cast<float>(gs.menubar_attack_window_x) + 112, 90 });
 
         // Text for unit statistics
         statsText.setFillColor(sf::Color::White);
@@ -52,13 +59,18 @@ void draw_curr_stats(state& gs)
             "Crit: " + std::to_string(gs.selected_tile->unitOn->get_crit()));
         calcStatsText.setPosition({ static_cast<float>(gs.menubar_attack_window_x) + 26, 380 });
 
+        nameIcon.setTextureRect(sf::IntRect({ 50, 50 }, { 45, 15 }));
+		nameIcon.setScale({ 4, 3 });
+		nameIcon.setPosition({ static_cast<float>(gs.menubar_attack_window_x) + 13, 45 });
+
         weapon_traingle.setTextureRect(sf::IntRect({ 155, 9 }, { 44, 38 }));
         weapon_traingle.setScale({ 3, 3 });
         weapon_traingle.setPosition({ static_cast<float>(gs.menubar_attack_window_x) + ((WINDOW_WIDTH - static_cast<float>(gs.menubar_attack_window_x)) / 2) - 66, 690 });
 
     }
+    gs.window.draw(nameIcon);
     gs.window.draw(unitText);
-	gs.window.draw(maxHP);
+    gs.window.draw(maxHP);
     gs.window.draw(statsText);
     gs.window.draw(calcStatsText);
     gs.window.draw(weapon_traingle);

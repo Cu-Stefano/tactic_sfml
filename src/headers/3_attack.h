@@ -28,7 +28,7 @@ private:
     };
 
     void handleAttack(Tile* target, const std::vector<int>& attackerStats, std::vector<int>& targetStats, bool& wasHit);
-	void handlePhase(Unit* attacker, Unit* target, bool wasHit, float delay, AttackPhase nextPhase, sf::Clock currclock);
+	void handlePhase(Unit* attacker, Tile* target, bool wasHit, float delay, AttackPhase nextPhase, sf::Clock currclock);
     Tile* unitA;
     Tile* unitB;
     std::vector<int> aStats;
@@ -39,6 +39,8 @@ private:
 
     bool A_was_hit = false;
     bool B_was_hit = false;
+
+    Tile* dead;
 
 
     sf::Clock clock;

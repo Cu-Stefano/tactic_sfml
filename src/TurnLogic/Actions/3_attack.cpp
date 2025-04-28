@@ -13,10 +13,10 @@
 
 Attack::Attack(state& state, TurnState* turnState, Tile* unitA, Tile* unitB,
                std::vector<int> aStats, std::vector<int> bStats)
-    : ActionState(state, turnState), unitA(unitA), unitB(unitB),
-    aStats(aStats), bStats(bStats)
+	: ActionState(state, turnState), unitA(unitA), unitB(unitB),
+	  aStats(aStats), bStats(bStats), dead(nullptr)
 {
-    std::srand(static_cast<unsigned>(std::time(nullptr)));
+	std::srand(static_cast<unsigned>(std::time(nullptr)));
 	clockfirst = sf::Clock();
 }
 
@@ -36,25 +36,26 @@ void Attack::handleAttack(Tile* target, const std::vector<int>& attackerStats, s
     }
 }
 
-void Attack::handlePhase(Unit* attacker, Unit* target, bool wasHit, float delay, AttackPhase nextPhase, sf::Clock currclock)
+void Attack::handlePhase(Unit* attacker, Tile* target, bool wasHit, float delay, AttackPhase nextPhase, sf::Clock currclock)
 {
     if (currclock.getElapsedTime().asSeconds() <= flashDuration) {
         attacker->an_sprite.sprite_y = 2;
 		attacker->an_sprite.swap_interval = 0.1; // sec
         if (target) {
-            target->an_sprite.sprite->setColor(wasHit ? sf::Color::Red : sf::Color(255, 255, 255, 150));
+            target->unitOn->an_sprite.sprite->setColor(wasHit ? sf::Color::Red : sf::Color(255, 255, 255, 150));
         }
     }
     else if (currclock.getElapsedTime().asSeconds() <= flashDuration + delay) {
         attacker->an_sprite.sprite_y = 0;
         attacker->an_sprite.swap_interval = SWAP_INTERVAL;
         if (target) {
-            target->an_sprite.sprite->setColor(sf::Color::White);
+            target->unitOn->an_sprite.sprite->setColor(sf::Color::White);
         }
     }
     else {
-        if (!target || target->hp == 0)
+        if (!target || target->unitOn->hp == 0)
         {
+            dead = target;
             first_time_b = true;
         	currentPhase = AttackPhase::Dead;
         }
@@ -87,9 +88,6 @@ void Attack::on_exit()
 
 void Attack::update()
 {
-    //gState.attackGui.unitA->update();
-    //gState.attackGui.unitB->update();
-
     if (attackFinished)
         turnState->SetActionState(new ChooseTile(gState, turnState));
 }
@@ -124,9 +122,9 @@ void Attack::draw(state& gState)
             hitFlashClock = sf::Clock();
             clock2 = sf::Clock();
             first_time = false;
-            unitA->unitOn->an_sprite.curr_frame = 0;
+            unitA->unitOn->an_sprite.curr_frame = 3;
         }
-        handlePhase(unitA->unitOn, unitB->unitOn, B_was_hit, attackDelay, AttackPhase::SecondAttack, hitFlashClock);
+        handlePhase(unitA->unitOn, unitB, B_was_hit, attackDelay, AttackPhase::SecondAttack, hitFlashClock);
         break;
 
     case AttackPhase::SecondAttack:
@@ -139,49 +137,33 @@ void Attack::draw(state& gState)
             clock = sf::Clock();
             clock3 = sf::Clock();
             first_time_b = false;
-            unitB->unitOn->an_sprite.curr_frame = 0;
+            unitB->unitOn->an_sprite.curr_frame = 3;
         }
-        handlePhase(unitB->unitOn, unitA->unitOn, A_was_hit, counterDelay, AttackPhase::Finished, clock);
+        handlePhase(unitB->unitOn, unitA, A_was_hit, counterDelay, AttackPhase::Finished, clock);
         break;
 
     case AttackPhase::Dead:
-        if (unitB->unitOn && unitB->unitOn->hp == 0)  
+
+        if (dead->unitOn && dead->unitOn->hp == 0)
         {
             if (first_time_b)
 			{
 				first_time_b = false;
-				unitB->unitOn->an_sprite.clock.restart();
-				unitB->unitOn->an_sprite.curr_frame = 3;
+                dead->unitOn->an_sprite.clock.restart();
+                dead->unitOn->an_sprite.curr_frame = 3;
 			}
         	if (clock3.getElapsedTime().asSeconds() <= 2.3f)  
         	{
-                unitB->unitOn->an_sprite.sprite_y = 3;
-                unitB->unitOn->an_sprite.swap_interval = 0.25; // sec  
+                dead->unitOn->an_sprite.sprite_y = 3;
+                dead->unitOn->an_sprite.swap_interval = 0.25; // sec  
         	}
 	        else
 	        {
-                remove_dead_unit(unitB);
+                remove_dead_unit(dead);
                 currentPhase = AttackPhase::Finished;
 	        }
         }
-        else if (unitA->unitOn && unitA->unitOn->hp == 0)
-        {
-            if (first_time_b)
-            {
-                first_time_b = false;
-                unitA->unitOn->an_sprite.curr_frame = 3;
-            }
-            if (clock3.getElapsedTime().asSeconds() > 2.3f) 
-            {
-                unitA->unitOn->an_sprite.sprite_y = 3;
-                unitA->unitOn->an_sprite.swap_interval = 0.25; // sec
-            }
-			else
-			{
-				remove_dead_unit(unitA);
-				currentPhase = AttackPhase::Finished;
-			}
-        }
+
         break;
 
     case AttackPhase::Finished:

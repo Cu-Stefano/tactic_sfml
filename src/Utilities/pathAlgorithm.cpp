@@ -101,17 +101,17 @@ void PathAlgorithm::reset_all()
 {
 	//ricolora i currNeighbour delle 3 liste vector
 	for (auto& tile : path)
-	{
-        tile->shape.setFillColor(sf::Color::Transparent);
-	}
+		tile->path_sprite.setColor(sf::Color::Transparent);
+	
 	for (auto& tile : attackBorderPath)
-	{
-        tile->shape.setFillColor(sf::Color::Transparent);
-	}
+		tile->path_sprite.setColor(sf::Color::Transparent);
+	
 	for (auto& tile : attackList)
-	{
-        tile->shape.setFillColor(sf::Color::Transparent);
-	}
+		tile->path_sprite.setColor(sf::Color::Transparent);
+	
+	for (auto& tile : nearEnemies)
+		tile->path_sprite.setColor(sf::Color::Transparent);
+	
 }
 
 int PathAlgorithm::calculate_distance(Tile* tileToReach) const
