@@ -29,8 +29,8 @@ void Button::update(const RenderWindow& window)
     if (shape.getGlobalBounds().contains(mousePos))
     {
         state = hover;
-        shape.setOutlineColor(Color::Black);
-        shape.setOutlineThickness(-2);
+        //shape.setOutlineColor(Color::Black);
+        shape.setOutlineThickness(-3);
 
         if (isAnotherButtonPressed && Mouse::isButtonPressed(Mouse::Button::Left))
         {

@@ -2,6 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 
+class Button;
 class Tile;
 class state;
 
@@ -11,7 +12,7 @@ public:
     AttackGui(state& gState);
     state& gState;
 
-	sf::Sprite* attack_button;
+    Button* attack_button; // Cambiato da sf::Sprite* a Button*
     sf::Text attack_text;
     Tile* unitA;
     Tile* unitB;

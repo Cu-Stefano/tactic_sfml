@@ -1,5 +1,8 @@
 #include "../headers/attackGui.h"
-
+#include "../headers/button.h"
+#include "../headers/turnState.hpp"
+#include "../headers/2_chooseAttack.h"
+#include "../headers/3_attack.h"
 #include <iostream>
 
 #include "../headers/state.hpp"
@@ -9,9 +12,23 @@ using namespace sf;
 
 Texture ui = Texture("resources/Ui/Ui_assets.png");
 
-AttackGui::AttackGui(state& gState): gState(gState), attack_text(gState.font, "ATTACK!", 20)
+AttackGui::AttackGui(state& gState) : gState(gState), attack_text(gState.font, "ATTACK!", 20)
 {
-	attack_button = new Sprite(ui);
+	sf::Sprite buttonSprite(ui);
+	buttonSprite.setTextureRect(sf::IntRect({ 97, 50 }, { 46, 13 }));
+	buttonSprite.setScale({ 4, 4.5 });
+	buttonSprite.setPosition({ gState.menubar_attack_window_x / 4.7f, static_cast<float>(gState.menubar_attack_y) + 68 });
+
+	sf::Vector2f buttonPos = { gState.menubar_attack_window_x / 4.7f, static_cast<float>(gState.menubar_attack_y) + 68 };
+	sf::Vector2f buttonSize = { buttonSprite.getGlobalBounds().size.x, buttonSprite.getGlobalBounds().size.y };
+
+	attack_button = new Button(buttonPos, buttonSize, buttonSprite);
+
+	// Imposta la funzione di click per cambiare lo stato
+	attack_button->set_click_function([&]() {
+		gState.MapLogic.current_turnState->SetActionState(new Attack(gState, gState.MapLogic.current_turnState, unitA, unitB, gState.attackGui.unitAStats, gState.attackGui.unitBStats));
+	});
+
 }
 
 void AttackGui::draw(sf::RenderWindow& window)
@@ -43,8 +60,10 @@ void AttackGui::draw_units()
 	float x = 45.0f;
 	if (attack_initiated)
 		x = 350.0f;
+	else
+		attack_button->draw(gState);
 
-	// Controlla se unitA esiste
+	// Disegna unitA
 	if (unitA && unitA->unitOn)
 	{
 		Sprite unitA_sprite = *unitA->unitOn->an_sprite.sprite;
@@ -53,7 +72,7 @@ void AttackGui::draw_units()
 		gState.window.draw(unitA_sprite);
 	}
 
-	// Controlla se unitB esiste
+	// Disegna unitB
 	if (unitB && unitB->unitOn)
 	{
 		Sprite unitB_sprite = *unitB->unitOn->an_sprite.sprite;
@@ -61,13 +80,7 @@ void AttackGui::draw_units()
 		unitB_sprite.setPosition({ (gState.menubar_attack_window_x - x), static_cast<float>(gState.menubar_attack_y) - 20 });
 		gState.window.draw(unitB_sprite);
 	}
-
-	// Disegna il pulsante di attacco
-	attack_button->setTextureRect(sf::IntRect({ 96, 50 }, { 47, 13 }));
-	attack_button->setScale({ 4, 4.5 });
-	attack_button->setPosition({ gState.menubar_attack_window_x / 4.7f, static_cast<float>(gState.menubar_attack_y) + 68 });
 }
-
 
 void calculate_attack_stats(Unit unita, Unit unitb, std::vector<int>& a_stats, std::vector<int>& b_stats, int& bonus)
 {
@@ -204,4 +217,5 @@ void AttackGui::draw_stats()
 void AttackGui::update()  
 {  
    calculate_attack_stats(*unitA->unitOn, *unitB->unitOn, unitAStats, unitBStats, bonus);
+   attack_button->update(gState.window);
 }

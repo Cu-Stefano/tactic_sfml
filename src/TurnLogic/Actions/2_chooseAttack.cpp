@@ -27,6 +27,9 @@ void ChooseAttack::on_exit()
 
 void ChooseAttack::update()
 {
+	if (gState.attackGui.attack_button)
+		gState.attackGui.attack_button->update(gState.window);
+
 	for (auto enemy : enemyNear)
 	{
 		enemy->shape.setOutlineColor(sf::Color::Red);
@@ -37,41 +40,32 @@ void ChooseAttack::update()
 	{
 		Vector2f mousePos = gState.window.mapPixelToCoords(sf::Mouse::getPosition(gState.window));
 		if (gState.isMouseOutOfRange(sf::Vector2f(mousePos)))
-		{
-			sf::FloatRect bounds = gState.attackGui.attack_text.getGlobalBounds();
+			return;
+		
+		auto clicked_tile = gState.get_tile_from_mouse_position(sf::Vector2f(mousePos));
 
-			if (bounds.contains({ mousePos.x, mousePos.y }))
-				turnState->SetActionState(new Attack(gState, turnState, attackingUnit, gState.attackGui.unitB, gState.attackGui.unitAStats, gState.attackGui.unitBStats));
+		if (std::find(enemyNear.begin(), enemyNear.end(), clicked_tile) != enemyNear.end())
+		{
+			gState.attackGui.unitA = attackingUnit;
+			gState.attackGui.unitB = clicked_tile;
+			gState.attackGui.unitAStats = {};
+			gState.attackGui.unitBStats = {};
+			gState.attackGui.update();
+			preview_selected = clicked_tile->unitOn != nullptr;
 		}
-		else
+		else if (clicked_tile == attackingUnit)
 		{
-			auto clicked_tile = gState.get_tile_from_mouse_position(sf::Vector2f(mousePos));
+			attackingUnit->move_unit(clicked_tile, {});
+			attackingUnit->unitOn->an_sprite.sprite_y = 0;
+			attackingUnit->unitOn->an_sprite.sprite->setColor(UNIT_MOVED);
 
-			if (std::find(enemyNear.begin(), enemyNear.end(), clicked_tile) != enemyNear.end())
-			{
-				gState.attackGui.unitA = attackingUnit;
-				gState.attackGui.unitB = clicked_tile;
-				gState.attackGui.unitAStats = {};
-				gState.attackGui.unitBStats = {};
-				gState.attackGui.update();
-				preview_selected = clicked_tile->unitOn != nullptr;
-			}
-			else if (clicked_tile == attackingUnit)
-			{
-				attackingUnit->move_unit(clicked_tile, {});
-				attackingUnit->unitOn->an_sprite.sprite_y = 0;
-				attackingUnit->unitOn->an_sprite.sprite->setColor(UNIT_MOVED);
+			for (auto enemy : enemyNear)
+				enemy->unitOn->an_sprite.sprite_y = 0;
 
-				for (auto enemy : enemyNear)
-				{
-					enemy->unitOn->an_sprite.sprite_y = 0;
-				}
-
-				turnState->SetActionState(new ChooseTile(gState, turnState));
-			}
+			turnState->SetActionState(new ChooseTile(gState, turnState));
 		}
 	}
-	if (isButtonPressed(sf::Mouse::Button::Right))//back
+	else if (isButtonPressed(sf::Mouse::Button::Right))//back
 	{
 		for (auto enemy : enemyNear)
 		{
@@ -98,7 +92,7 @@ void ChooseAttack::draw(state& gState)
 	if (preview_selected)
 	{
 		gState.attackGui.draw_units();
-		gState.window.draw(*gState.attackGui.attack_button);
+		//gState.window.draw(*gState.attackGui.attack_button);
 		gState.attackGui.draw_stats();
 	}
 }
