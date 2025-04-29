@@ -77,8 +77,11 @@ void TileSelected::move_logic(Tile* hovered_tile, vector<Tile*> route)
 void TileSelected::update()
 {
 	for (auto& tile : pathAlgorithm->path)
+	{
 		tile->path_sprite.setColor(ALLAY_PATH_COLOR);
-	
+		tile->shape.setFillColor(sf::Color::Transparent);
+	}
+
 	for (auto& tile : pathAlgorithm->attackBorderPath)
 		tile->path_sprite.setColor(ALLAY_ATTACK_COLOR);
 
@@ -104,8 +107,7 @@ void TileSelected::update()
 			while (currNode != pathAlgorithm->Onode)
 			{
 				route.push_back(currNode);
-				currNode->shape.setOutlineThickness(-2);
-				currNode->shape.setOutlineColor(Color::Blue);
+				currNode->shape.setFillColor(ROUTE_COLOR);
 				currNode = currNode->Parent;
 			}
 
@@ -115,8 +117,7 @@ void TileSelected::update()
 			{
 				for (auto tile : route)
 				{
-					tile->shape.setOutlineThickness(-0.5);
-					tile->shape.setOutlineColor(sf::Color(255, 255, 255, 75));
+					tile->shape.setFillColor(sf::Color::Transparent);
 				}
 			}
 		}

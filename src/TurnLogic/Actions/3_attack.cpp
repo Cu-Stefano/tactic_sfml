@@ -152,10 +152,10 @@ void Attack::draw(state& gState)
                 dead->unitOn->an_sprite.clock.restart();
                 dead->unitOn->an_sprite.curr_frame = 3;
 			}
-        	if (clock3.getElapsedTime().asSeconds() <= 2.3f)  
+        	if (clock3.getElapsedTime().asSeconds() <= 2.0f)  
         	{
                 dead->unitOn->an_sprite.sprite_y = 3;
-                dead->unitOn->an_sprite.swap_interval = 0.25; // sec  
+                dead->unitOn->an_sprite.swap_interval = 0.15; // sec  
         	}
 	        else
 	        {
