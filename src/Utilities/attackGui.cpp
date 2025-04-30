@@ -5,6 +5,7 @@
 #include "../headers/3_attack.h"
 #include <iostream>
 
+#include "../headers/enemyTurn.h"
 #include "../headers/state.hpp"
 #include "../headers/tile.h"
 #include "../headers/unit.h"

@@ -9,9 +9,9 @@ class Tile;
 constexpr unsigned WINDOW_WIDTH = 1400;
 constexpr unsigned WINDOW_HEIGHT = 840;
 
-constexpr sf::Color ENEMY_ATTACK_COLOR(0xFFFF4500);
+constexpr sf::Color ENEMY_ATTACK_COLOR(190, 52, 52, 190);
 constexpr sf::Color ALLAY_ATTACK_COLOR(52,	151,	163, 190);
-constexpr sf::Color ENEMY_PATH_COLOR(0x23A8FA);
+constexpr sf::Color ENEMY_PATH_COLOR(245, 130, 150, 180);
 constexpr sf::Color ALLAY_PATH_COLOR(173, 220, 245, 180);
 constexpr sf::Color UNIT_MOVED(135, 135, 135, 255);
 constexpr sf::Color ROUTE_COLOR(0, 50, 255, 200);

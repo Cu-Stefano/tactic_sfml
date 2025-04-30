@@ -92,7 +92,6 @@ void ChooseAttack::draw(state& gState)
 	if (preview_selected)
 	{
 		gState.attackGui.draw_units();
-		//gState.window.draw(*gState.attackGui.attack_button);
 		gState.attackGui.draw_stats();
 	}
 }
