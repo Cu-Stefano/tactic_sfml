@@ -175,3 +175,4 @@ std::vector<Unit*> enemy_list = {
     new Unit("Warr2", 1, ClassType::warrior, 17, 5, 5, 4, 2, 3, 3),
     new Unit("Warr3", 1, ClassType::warrior, 17, 5, 5, 3, 3, 3, 3)
 };
+

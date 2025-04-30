@@ -18,9 +18,11 @@ void draw_curr_stats(state& gs)
 	calcStatsText.setFillColor(sf::Color::White);
 
     Texture ui = Texture("resources/Ui/Ui_assets.png");
-    sf::Sprite weapon_traingle(ui);
+    sf::Sprite weapon_triangle(ui);
+    sf::Sprite weapon(ui);
     sf::Sprite nameIcon(ui);
-    weapon_traingle.setTextureRect(sf::IntRect({ 0, 0 }, { 0, 0 }));
+    weapon_triangle.setTextureRect(sf::IntRect({ 0, 0 }, { 0, 0 }));
+	weapon.setTextureRect(sf::IntRect({ 0, 0 }, { 0, 0 }));
     nameIcon.setTextureRect(sf::IntRect({ 0, 0 }, { 0, 0 }));
 
     if (gs.selected_tile != nullptr && gs.selected_tile->unitOn != nullptr)
@@ -63,9 +65,26 @@ void draw_curr_stats(state& gs)
 		nameIcon.setScale({ 4, 3 });
 		nameIcon.setPosition({ static_cast<float>(gs.menubar_attack_window_x) + 13, 45 });
 
-        weapon_traingle.setTextureRect(sf::IntRect({ 155, 9 }, { 44, 38 }));
-        weapon_traingle.setScale({ 3, 3 });
-        weapon_traingle.setPosition({ static_cast<float>(gs.menubar_attack_window_x) + ((WINDOW_WIDTH - static_cast<float>(gs.menubar_attack_window_x)) / 2) - 66, 690 });
+        weapon_triangle.setTextureRect(sf::IntRect({ 154, 8 }, { 46, 42 }));
+        weapon_triangle.setScale({ 3, 3 });
+        weapon_triangle.setPosition({ static_cast<float>(gs.menubar_attack_window_x) + ((WINDOW_WIDTH - static_cast<float>(gs.menubar_attack_window_x)) / 2) - 68, 685 });
+
+        //draw the unit's weapom
+        switch (gs.selected_tile->unitOn->unit_class)
+        {
+		case swordsman:
+            weapon.setTextureRect(sf::IntRect({ 154, 8 }, { 18, 18 }));
+			break;
+		case warrior:
+            weapon.setTextureRect(sf::IntRect({ 182, 8 }, { 18, 18 }));
+			break;
+		case soldier:
+            weapon.setTextureRect(sf::IntRect({ 168, 32 }, {18, 18 }));
+			break;
+        }
+
+        weapon.setPosition({ static_cast<float>(gs.menubar_attack_window_x) + ((WINDOW_WIDTH - static_cast<float>(gs.menubar_attack_window_x)) / 2) - 36, 600 });
+        weapon.setScale({ 4, 4 });
 
     }
     gs.window.draw(nameIcon);
@@ -73,7 +92,8 @@ void draw_curr_stats(state& gs)
     gs.window.draw(maxHP);
     gs.window.draw(statsText);
     gs.window.draw(calcStatsText);
-    gs.window.draw(weapon_traingle);
+    gs.window.draw(weapon_triangle);
+	gs.window.draw(weapon);
 
 }
 

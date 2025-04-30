@@ -99,9 +99,12 @@ void PathAlgorithm::execute(bool near)
 
 void PathAlgorithm::reset_all()
 {
-	//ricolora i currNeighbour delle 3 liste vector
+	//reet dei colori 
 	for (auto& tile : path)
-		tile->path_sprite.setColor(sf::Color::Transparent);
+	{
+        tile->path_sprite.setColor(sf::Color::Transparent);
+        tile->shape.setFillColor(sf::Color::Transparent);
+	}
 	
 	for (auto& tile : attackBorderPath)
 		tile->path_sprite.setColor(sf::Color::Transparent);

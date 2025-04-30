@@ -11,16 +11,17 @@
 #include <ctime>
 #include <iostream>
 
+#include "../../headers/mapBuilder.h"
+
 Attack::Attack(state& state, TurnState* turnState, Tile* unitA, Tile* unitB,
                std::vector<int> aStats, std::vector<int> bStats)
 	: ActionState(state, turnState), unitA(unitA), unitB(unitB),
 	  aStats(aStats), bStats(bStats), dead(nullptr)
 {
 	std::srand(static_cast<unsigned>(std::time(nullptr)));
-	clockfirst = sf::Clock();
 }
 
-void Attack::handleAttack(Tile* target, const std::vector<int>& attackerStats, std::vector<int>& targetStats, bool& wasHit)
+void Attack::handle_attack(Tile* target, const std::vector<int>& attackerStats, std::vector<int>& targetStats, bool& wasHit)
 {
     if (rand() % 100 < attackerStats[2]) // Hit chance 
     {
@@ -36,16 +37,16 @@ void Attack::handleAttack(Tile* target, const std::vector<int>& attackerStats, s
     }
 }
 
-void Attack::handlePhase(Unit* attacker, Tile* target, bool wasHit, float delay, AttackPhase nextPhase, sf::Clock currclock)
+void Attack::handle_phase(Unit* attacker, Tile* target, bool wasHit, float delay, AttackPhase nextPhase, sf::Clock currclock)
 {
-    if (currclock.getElapsedTime().asSeconds() <= flashDuration) {
+    if (currclock.getElapsedTime().asSeconds() <= flash_duration_) {
         attacker->an_sprite.sprite_y = 2;
 		attacker->an_sprite.swap_interval = 0.1; // sec
         if (target) {
             target->unitOn->an_sprite.sprite->setColor(wasHit ? sf::Color::Red : sf::Color(255, 255, 255, 150));
         }
     }
-    else if (currclock.getElapsedTime().asSeconds() <= flashDuration + delay) {
+    else if (currclock.getElapsedTime().asSeconds() <= flash_duration_ + delay) {
         attacker->an_sprite.sprite_y = 0;
         attacker->an_sprite.swap_interval = SWAP_INTERVAL;
         if (target) {
@@ -66,13 +67,11 @@ void Attack::handlePhase(Unit* attacker, Tile* target, bool wasHit, float delay,
 
 void Attack::on_enter()
 {
-	gState.attackGui.first = true;
     gState.attackGui.attack_initiated = true;
-    attackClock.restart();
 
-    handleAttack(unitB, aStats, bStats, B_was_hit);
+    handle_attack(unitB, aStats, bStats, B_was_hit);
     if (unitB->unitOn)
-        handleAttack(unitA, bStats, aStats, A_was_hit);
+        handle_attack(unitA, bStats, aStats, A_was_hit);
 }
 
 void Attack::on_exit()
@@ -97,9 +96,15 @@ bool Attack::remove_dead_unit(Tile* unit)
 	if (!unit->unitOn || unit->unitOn->hp == 0)
 	{
 		if (unit->unitOn->type == 1)
+		{
 			enemy_list.erase(std::remove(enemy_list.begin(), enemy_list.end(), unit->unitOn), enemy_list.end());
-		else
-			allay_list.erase(std::remove(allay_list.begin(), allay_list.end(), unit->unitOn), allay_list.end());
+			enemy_tile_list.erase(std::remove(enemy_tile_list.begin(), enemy_tile_list.end(), unit), enemy_tile_list.end());
+		}
+        else
+        {
+            allay_list.erase(std::remove(allay_list.begin(), allay_list.end(), unit->unitOn), allay_list.end());
+            allay_tile_list.erase(std::remove(allay_tile_list.begin(), allay_tile_list.end(), unit), allay_tile_list.end());
+        }
 
 		delete unit->unitOn;
         unit->unitOn = nullptr;
@@ -119,12 +124,12 @@ void Attack::draw(state& gState)
 
         if (first_time)
         {
-            hitFlashClock = sf::Clock();
+            clock1 = sf::Clock();
             clock2 = sf::Clock();
             first_time = false;
             unitA->unitOn->an_sprite.curr_frame = 3;
         }
-        handlePhase(unitA->unitOn, unitB, B_was_hit, attackDelay, AttackPhase::SecondAttack, hitFlashClock);
+        handle_phase(unitA->unitOn, unitB, B_was_hit, delay_, AttackPhase::SecondAttack, clock1);
         break;
 
     case AttackPhase::SecondAttack:
@@ -134,12 +139,12 @@ void Attack::draw(state& gState)
 
         if (first_time_b)
         {
-            clock = sf::Clock();
+            clock1 = sf::Clock();
             clock3 = sf::Clock();
             first_time_b = false;
             unitB->unitOn->an_sprite.curr_frame = 3;
         }
-        handlePhase(unitB->unitOn, unitA, A_was_hit, counterDelay, AttackPhase::Finished, clock);
+        handle_phase(unitB->unitOn, unitA, A_was_hit, delay_, AttackPhase::Finished, clock1);
         break;
 
     case AttackPhase::Dead:
@@ -155,7 +160,7 @@ void Attack::draw(state& gState)
         	if (clock3.getElapsedTime().asSeconds() <= 2.0f)  
         	{
                 dead->unitOn->an_sprite.sprite_y = 3;
-                dead->unitOn->an_sprite.swap_interval = 0.15; // sec  
+                dead->unitOn->an_sprite.swap_interval = 0.15;
         	}
 	        else
 	        {

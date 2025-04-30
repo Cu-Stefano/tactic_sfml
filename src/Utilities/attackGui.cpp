@@ -19,12 +19,11 @@ AttackGui::AttackGui(state& gState) : gState(gState), attack_text(gState.font, "
 	buttonSprite.setScale({ 4, 4.5 });
 	buttonSprite.setPosition({ gState.menubar_attack_window_x / 4.7f, static_cast<float>(gState.menubar_attack_y) + 68 });
 
-	sf::Vector2f buttonPos = { gState.menubar_attack_window_x / 4.7f, static_cast<float>(gState.menubar_attack_y) + 68 };
-	sf::Vector2f buttonSize = { buttonSprite.getGlobalBounds().size.x, buttonSprite.getGlobalBounds().size.y };
-
+	sf::Vector2f buttonPos = { gState.menubar_attack_window_x / 4.7f , static_cast<float>(gState.menubar_attack_y) + 68 };
+	sf::Vector2f buttonSize = { buttonSprite.getGlobalBounds().size.x , buttonSprite.getGlobalBounds().size.y };
+	
 	attack_button = new Button(buttonPos, buttonSize, buttonSprite);
 
-	// Imposta la funzione di click per cambiare lo stato
 	attack_button->set_click_function([&]() {
 		gState.MapLogic.current_turnState->SetActionState(new Attack(gState, gState.MapLogic.current_turnState, unitA, unitB, gState.attackGui.unitAStats, gState.attackGui.unitBStats));
 	});

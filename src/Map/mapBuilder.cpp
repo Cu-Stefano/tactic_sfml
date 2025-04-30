@@ -11,6 +11,9 @@ using namespace sf;
 const Texture TEXTURE("resources/Tiles/FullTileset.png");
 constexpr Vector2i TEXTURE_TILE_SIZE(16, 16);
 
+std::vector<Tile*> allay_tile_list{};
+std::vector<Tile*> enemy_tile_list{};
+
 std::vector<std::vector<int>> map_generator()
 {
     return
@@ -97,8 +100,8 @@ void initialize_map(state& gs)
                 walkable = true;
                 break;
             }
-
-             Sprite grass_sprite = sf::Sprite(TEXTURE);
+            
+            Sprite grass_sprite = sf::Sprite(TEXTURE);
             set_tile_sprite(grass_sprite, tileName, { x, y });
 
             //path_sprite
@@ -111,6 +114,14 @@ void initialize_map(state& gs)
 
             Tile* new_tile = new Tile(tileName, walkable, unit, { x, y }, { tileSize, tileSize }, grass_sprite, path_spr);
 
+			if (unit != nullptr)
+			{
+                if (unit->type == 0)
+                    allay_tile_list.push_back(new_tile);
+				else
+					enemy_tile_list.push_back(new_tile);
+			}
+
             // Evento di prova
             new_tile->set_click_function([i, j, new_tile]() {
                 std::cout << "Tile clicked at (" << i << ", " << j << ")" << '\n';
@@ -120,7 +131,6 @@ void initialize_map(state& gs)
 				std::cout << "walkable: " << new_tile->walkable << '\n';
 				std::cout << "g: " << new_tile->G << '\n';
 				std::cout << "pass: " << new_tile->passable << "\n\n\n";
-                //stampo le info del tile con cout
                 });
 
 			new_tile->set_hover_function([i, j, &gs]() {

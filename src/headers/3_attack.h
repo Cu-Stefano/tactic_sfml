@@ -27,14 +27,14 @@ private:
         Finished
     };
 
-    void handleAttack(Tile* target, const std::vector<int>& attackerStats, std::vector<int>& targetStats, bool& wasHit);
-	void handlePhase(Unit* attacker, Tile* target, bool wasHit, float delay, AttackPhase nextPhase, sf::Clock currclock);
+    void handle_attack(Tile* target, const std::vector<int>& attackerStats, std::vector<int>& targetStats, bool& wasHit);
+	void handle_phase(Unit* attacker, Tile* target, bool wasHit, float delay, AttackPhase nextPhase, sf::Clock currclock);
+
     Tile* unitA;
     Tile* unitB;
     std::vector<int> aStats;
     std::vector<int> bStats;
 
-    sf::Clock attackClock;
     AttackPhase currentPhase = AttackPhase::FirstAttack;
 
     bool A_was_hit = false;
@@ -42,18 +42,15 @@ private:
 
     Tile* dead;
 
-
-    sf::Clock clock;
     sf::Clock clock2;
     sf::Clock clock3;
-    sf::Clock clockfirst;
-    sf::Clock hitFlashClock;
+    sf::Clock clock1;
+
     bool first_time = true;
     bool first_time_b = true;
     bool attackFinished = false;
 
 
-    const float flashDuration = 0.3f;
-    const float attackDelay = 0.9f;
-    const float counterDelay = 0.9f;
+    const float flash_duration_ = 0.3f;
+    const float delay_ = 0.9f;
 };
