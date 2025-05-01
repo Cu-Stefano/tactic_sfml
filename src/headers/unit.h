@@ -69,6 +69,7 @@ extern std::vector<Unit*> enemy_list;
 constexpr sf::Vector2f BOSS_OFFSET(-16, -21);
 constexpr sf::Vector2f BOSS_MOVE_OFFSET(-11, -11);
 constexpr sf::Vector2f DEFAULT_OFFSET(-12, -12);
+constexpr sf::Vector2f ENEMY_OFFSET(63, 0);
 
 constexpr float SWAP_INTERVAL = 0.3f;
 constexpr float SWAP_INTERVAL_RUN = 0.1f;

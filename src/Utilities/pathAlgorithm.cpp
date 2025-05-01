@@ -1,4 +1,7 @@
 #include "../headers/pathAlgorithm.h"
+
+#include <iostream>
+
 #include "../headers/state.hpp"
 #include "../headers/tile.h"
 #include "../headers/unit.h"
@@ -99,7 +102,8 @@ void PathAlgorithm::execute(bool near)
 
 void PathAlgorithm::reset_all()
 {
-	//reet dei colori 
+	//reet dei colori
+
 	for (auto& tile : path)
 	{
         tile->path_sprite.setColor(sf::Color::Transparent);
@@ -130,11 +134,19 @@ int PathAlgorithm::calculate_distance(Tile* tileToReach) const
 }
 
 vector<vector<Tile*>> PathAlgorithm::initiliazemap()  
-{  
-   auto& basemap = gState.map;
-   vector<vector<Tile*>> result;  
+{
+    for (auto tiles : gState.map)
+    {
+        for (auto tile : tiles)
+        {
+            //reset dei neighbours
+            tile->neighbours.clear();
+        }
+    }
 
-   
+   auto basemap = gState.map;
+   vector<vector<Tile*>> result;
+
    for (int i = 0; i < basemap.size(); i++)  
    {  
        vector<Tile*> row;  

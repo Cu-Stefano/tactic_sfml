@@ -130,9 +130,9 @@ void Unit::update()
         {
             currentTargetPosition = targetRoute.back()->shape.getPosition();
             if (name == "Boss")
-                currentTargetPosition += BOSS_MOVE_OFFSET + BOSS_OFFSET;
+                currentTargetPosition += BOSS_MOVE_OFFSET + BOSS_OFFSET + sf::Vector2f{96, 0};
             else
-                currentTargetPosition += DEFAULT_OFFSET;
+                currentTargetPosition += this->type == 0 ? DEFAULT_OFFSET: DEFAULT_OFFSET + ENEMY_OFFSET;
 
             Vector2f direction = currentTargetPosition - currentPosition;
             float distance = std::sqrt(direction.x * direction.x + direction.y * direction.y);

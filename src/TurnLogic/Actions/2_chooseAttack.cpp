@@ -72,6 +72,8 @@ void ChooseAttack::update()
 			enemy->unitOn->an_sprite.sprite_y = 0;
 		}
 
+		attackingUnit->passable = true;
+		attackingUnit->walkable = true;
 		attackingUnit->unitOn->an_sprite.sprite_y = 0;
 		gState.map[startinPosition.y][startinPosition.x]->unitOn = attackingUnit->unitOn;
 

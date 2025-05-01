@@ -77,7 +77,7 @@ void Attack::on_enter()
 void Attack::on_exit()
 {
     gState.attackGui.attack_initiated = false;
-    if (unitA)
+    if (unitA->unitOn)
     {
 	    unitA->unitOn->has_moved();
 		unitA->unitOn->canMove = false;

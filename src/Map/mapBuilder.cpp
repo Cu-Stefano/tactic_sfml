@@ -62,8 +62,8 @@ void initialize_map(state& gs)
             case -2:
                 //boss
                 unit = enemy_list.at(0);
-                unit->set_sprite_pos({ static_cast<int>(x), static_cast<int>(y) });
-                unit->an_sprite.sprite->setScale({3, 3});
+                unit->set_sprite_pos({ static_cast<int>(x) + 96, static_cast<int>(y) });
+                unit->an_sprite.sprite->setScale({-3, 3});
                 unit->an_sprite.sprite->move(BOSS_OFFSET);
 
                 tileName = "grass";
@@ -72,7 +72,8 @@ void initialize_map(state& gs)
             case -1:
                 //enemy
                 unit = enemy_list.at(enemyIndex);
-                unit->set_sprite_pos({ static_cast<int>(x), static_cast<int>(y) });
+                unit->set_sprite_pos({ static_cast<int>(static_cast<int>(x) + ENEMY_OFFSET.x), static_cast<int>(y) });
+				unit->an_sprite.sprite->setScale({ -2.0f, 2.0f });
                 enemyIndex++;
 
                 tileName = "grass";

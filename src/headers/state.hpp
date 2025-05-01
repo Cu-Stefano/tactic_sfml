@@ -15,6 +15,7 @@ constexpr sf::Color ENEMY_PATH_COLOR(245, 130, 150, 180);
 constexpr sf::Color ALLAY_PATH_COLOR(173, 220, 245, 180);
 constexpr sf::Color UNIT_MOVED(135, 135, 135, 255);
 constexpr sf::Color ROUTE_COLOR(0, 50, 255, 200);
+constexpr sf::Color ENEMY_ROUTE_COLOR(255, 0, 50, 200);
 
 class state
 {
