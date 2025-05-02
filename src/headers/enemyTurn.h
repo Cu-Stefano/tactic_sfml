@@ -1,4 +1,5 @@
 #pragma once
+#include "3_attack.h"
 #include "turnState.hpp"
 #include "MapLogic.h"
 #include "pathAlgorithm.h"
@@ -8,11 +9,12 @@ class EnemyTurn : public TurnState {
 public:
     enum class turn_fase {
         TURN_NAME,
-    	IDLE,           // idle
-        PROCESSING_TURN, // an enemy is choosing what to do
+    	IDLE,           
+        PROCESSING_TURN,
         SHOW_ATTACK_GUI,
-        END,
-    	SHOW_PATH
+    	SHOW_PATH,
+        ATTACK,
+        END
     };
 
     explicit EnemyTurn(MapLogic* map_logic);
@@ -40,7 +42,8 @@ private:
     std::vector<Tile*>::iterator iter;
 
 	sf::Clock showAttackGuiClock = sf::Clock();
-	sf::Clock showPathClock = sf::Clock();
+	sf::Clock clock = sf::Clock();
     bool previewSelected = false;
     std::vector<Tile*> route{};
+    Attack* attackState = nullptr;
 };

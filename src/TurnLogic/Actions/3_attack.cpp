@@ -28,6 +28,7 @@ void Attack::handle_attack(Tile* target, const std::vector<int>& attackerStats, 
         int damage = attackerStats[1];
         if (rand() % 100 < attackerStats[3]) // Crit chance 
         {
+            wasCrit = true;
             damage *= 3;
         }
 
@@ -40,6 +41,11 @@ void Attack::handle_attack(Tile* target, const std::vector<int>& attackerStats, 
 void Attack::handle_phase(Unit* attacker, Tile* target, bool wasHit, float delay, AttackPhase nextPhase, sf::Clock currclock)
 {
     if (currclock.getElapsedTime().asSeconds() <= flash_duration_) {
+        if (wasCrit)
+            attacker->an_sprite.sprite->setColor(sf::Color(255, 255, 255, 200));
+        else
+            attacker->an_sprite.sprite->setColor(sf::Color::White);
+
         attacker->an_sprite.sprite_y = 2;
 		attacker->an_sprite.swap_interval = 0.1; // sec
         if (target) {

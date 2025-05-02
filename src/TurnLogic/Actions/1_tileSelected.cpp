@@ -59,7 +59,7 @@ bool TileSelected::move_logic(Tile* hovered_tile, vector<Tile*> route)
 					return true;
 
 			if (std::find(pathAlgorithm->Onode->neighbours.begin(), pathAlgorithm->Onode->neighbours.end(), hovered_tile) != pathAlgorithm->Onode->neighbours.end() 
-				&& hovered_tile->unitOn->type == 1)
+				&& (hovered_tile->unitOn && hovered_tile->unitOn->type == 1))
 			{
 				std::vector<Tile*> near_enemies{};
 				for (auto& neighbour : pathAlgorithm->Onode->neighbours)

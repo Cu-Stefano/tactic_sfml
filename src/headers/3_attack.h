@@ -19,6 +19,9 @@ public:
     bool remove_dead_unit(Tile* unit);
     void draw(state& gState) override;
 
+    bool attackFinished = false;
+    int wasCrit = false;
+
 private:
     enum class AttackPhase {
         FirstAttack,
@@ -48,7 +51,6 @@ private:
 
     bool first_time = true;
     bool first_time_b = true;
-    bool attackFinished = false;
 
 
     const float flash_duration_ = 0.3f;

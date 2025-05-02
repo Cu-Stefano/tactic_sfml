@@ -81,20 +81,25 @@ void EnemyTurn::update() {
 	switch (current_phase) {
 
 	case turn_fase::TURN_NAME:
-		if (showPathClock.getElapsedTime().asSeconds() <= 3.0f)
+
+		if (clock.getElapsedTime().asSeconds() <= 3.0f)
 			break;
-		showPathClock = sf::Clock();
+		clock = sf::Clock();
 		current_phase = turn_fase::IDLE;
 		break;
+
 	case turn_fase::IDLE:
 
+		Unit::hasSomeActionBeenStared = false;
 		current_enemy = get_next_enemy();
+
 		if (current_enemy && current_enemy->unitOn->canMove) {
 
 			current_phase = turn_fase::SHOW_PATH;
 			initialize_path_algorithm(current_enemy);
 
-			if (pathAlgorithm->nearEnemies[0] != nullptr)
+			// c'è un nemico vicino, attacca quello
+			if (!pathAlgorithm->nearEnemies.empty())
 			{
 				allayToAttack = pathAlgorithm->nearEnemies[0];
 				current_phase = turn_fase::SHOW_ATTACK_GUI;
@@ -102,14 +107,14 @@ void EnemyTurn::update() {
 				break;
 			}
 
-			allayToAttack = pathAlgorithm->attackList[0];
-			if (allayToAttack == nullptr)
+			if (pathAlgorithm->attackList.empty())
 			{
 				end_enemy_turn(current_enemy);
-				current_phase = turn_fase::IDLE;
+				current_phase = turn_fase::END;
 				return;
 			}
 
+			allayToAttack = pathAlgorithm->attackList[0];
 			tileToLand = find_tile_to_land(allayToAttack);
 
 			auto currNode = tileToLand;
@@ -128,6 +133,7 @@ void EnemyTurn::update() {
 			}
 			current_phase = turn_fase::SHOW_PATH;
 		}
+
 		break;
 
 	case turn_fase::SHOW_PATH:
@@ -148,11 +154,11 @@ void EnemyTurn::update() {
 
 		auto routeColor = ENEMY_ROUTE_COLOR;
 
-		if (showPathClock.getElapsedTime().asSeconds() >= 2.0f)
+		if (clock.getElapsedTime().asSeconds() >= 2.0f)
 		{
 			routeColor = sf::Color::Transparent;
 			current_phase = turn_fase::PROCESSING_TURN;
-			showPathClock = sf::Clock();
+			clock = sf::Clock();
 		}
 
 		for (auto tile : route)
@@ -177,6 +183,7 @@ void EnemyTurn::update() {
 			break;
 
 		//he arrived
+		Unit::hasSomeActionBeenStared = false;
 		previewSelected = true;
 		current_enemy = tileToLand;
 
@@ -189,14 +196,32 @@ void EnemyTurn::update() {
 		current_enemy->unitOn->an_sprite.sprite_y = 0;
 		current_enemy->unitOn->an_sprite.swap_interval = SWAP_INTERVAL; // sec
 
-		/*if (showAttackGuiClock.getElapsedTime().asSeconds() <= 10.0f)
-			break;*/
+		if (clock.getElapsedTime().asSeconds() <= 3.0f)
+			break;
 
-		//CurrentActionState = new Attack(gState, this, current_enemy, gState.attackGui.unitB, gState.attackGui.unitAStats, gState.attackGui.unitBStats);
+		clock = sf::Clock();
+		current_phase = turn_fase::ATTACK;
+		gState.attackGui.attack_initiated = true;
+		attackState = new Attack(gState, this, current_enemy, gState.attackGui.unitB, gState.attackGui.unitAStats, gState.attackGui.unitBStats);
+		gState.MapLogic.current_turnState->SetActionState(attackState);
 		break;
 
+	case turn_fase::ATTACK:
+
+		CurrentActionState->update();
+		if (attackState->attackFinished)
+			current_phase = turn_fase::END;
+		break;
 	case turn_fase::END:
+
+		if (clock.getElapsedTime().asSeconds() <= 1.0f)
+			break;
+
+		previewSelected = false;
 		gState.attackGui.attack_initiated = false;
+		current_phase = turn_fase::IDLE;
+		clock = sf::Clock();
+		route.clear();
 		break;
     }
 }  
@@ -249,6 +274,8 @@ void EnemyTurn::draw(state& gState)
 	   }
 	   break;
 
+   case turn_fase::ATTACK:
+	   CurrentActionState->draw(gState);
    case turn_fase::END:
 	   break;
    }

@@ -71,7 +71,7 @@ void PathAlgorithm::execute(bool near)
                         continue;
                     }
 
-                    if (currNeighbour->unitOn)
+                    if (currNeighbour->unitOn)// e onn lo contine da aggiungere ?
                     {
                         if (currNeighbour->unitOn->type == enemyType)
                             attackList.push_back(currNeighbour);
