@@ -7,7 +7,8 @@
 class EnemyTurn : public TurnState {
 public:
     enum class turn_fase {
-        IDLE,           // idle
+        TURN_NAME,
+    	IDLE,           // idle
         PROCESSING_TURN, // an enemy is choosing what to do
         SHOW_ATTACK_GUI,
         END,
@@ -31,7 +32,7 @@ public:
 private:
     MapLogic* map_logic;
     PathAlgorithm* pathAlgorithm;
-    turn_fase current_phase = turn_fase::IDLE;
+    turn_fase current_phase = turn_fase::TURN_NAME;
 	Tile* current_enemy = nullptr;
 	Tile* tileToLand = nullptr;
 	Tile* allayToAttack = nullptr;

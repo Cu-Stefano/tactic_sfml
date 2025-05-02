@@ -2,8 +2,12 @@
 
 #include <string>
 #include <SFML/Graphics.hpp>
+
+#include "0_chooseTile.h"
 #include "MapLogic.h"
 #include "attackGui.h"
+#include "enemyTurn.h"
+#include "unit.h"
 class Tile;
 
 constexpr unsigned WINDOW_WIDTH = 1400;
@@ -63,6 +67,12 @@ public:
     {
        return mousePos.x > menubar_attack_window_x || mousePos.y > menubar_attack_y || mousePos.x < 0 || mousePos.y < 0;
     }
+
+    bool check_all_units_moved()
+	{
+        return std::all_of(allay_list.begin(), allay_list.end(), [](Unit* unit) 
+            {return !unit->canMove;});
+	}
 };
 
 

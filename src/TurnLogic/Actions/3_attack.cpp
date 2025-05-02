@@ -88,7 +88,11 @@ void Attack::on_exit()
 void Attack::update()
 {
     if (attackFinished)
-        turnState->SetActionState(new ChooseTile(gState, turnState));
+    {
+        if (!gState.check_all_units_moved())
+            turnState->SetActionState(new ChooseTile(gState, turnState));
+        else gState.MapLogic.set_state(new EnemyTurn(&gState.MapLogic));
+    }
 }
 
 bool Attack::remove_dead_unit(Tile* unit)

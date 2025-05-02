@@ -16,6 +16,8 @@ ChooseAttack::ChooseAttack(state& gState, TurnState* turnState, const std::vecto
 
 void ChooseAttack::on_enter()
 {
+	attackingUnit->unitOn->an_sprite.sprite_y = 0;
+	attackingUnit->unitOn->an_sprite.swap_interval = SWAP_INTERVAL;
 }
 void ChooseAttack::on_exit()
 {

@@ -40,10 +40,10 @@ void TileSelected::on_exit() {
 	pathAlgorithm = nullptr;
 }
 
-void TileSelected::move_logic(Tile* hovered_tile, vector<Tile*> route)
+bool TileSelected::move_logic(Tile* hovered_tile, vector<Tile*> route)
 {
 	Vector2f mousePos = gState.window.mapPixelToCoords(Mouse::getPosition(gState.window));
-	if (gState.isMouseOutOfRange(mousePos)) return;
+	if (gState.isMouseOutOfRange(mousePos)) return true;
 
 	if (Mouse::isButtonPressed(Mouse::Button::Left) && !Unit::IsAnyUnitMoving)
 	{
@@ -53,25 +53,37 @@ void TileSelected::move_logic(Tile* hovered_tile, vector<Tile*> route)
 			if (hovered_tile == pathAlgorithm->Onode)
 			{
 				c++;
-				if (c < 2) return;
+				if (c < 2) return true;
 			}
-			else
+			else if (!hovered_tile)
+					return true;
+
+			if (std::find(pathAlgorithm->Onode->neighbours.begin(), pathAlgorithm->Onode->neighbours.end(), hovered_tile) != pathAlgorithm->Onode->neighbours.end() 
+				&& hovered_tile->unitOn->type == 1)
 			{
-				// Exit conditions
-				if (!hovered_tile || hovered_tile->unitOn || std::find(pathAlgorithm->path.begin(), pathAlgorithm->path.end(), hovered_tile) == pathAlgorithm->path.end())
-					return;
+				std::vector<Tile*> near_enemies{};
+				for (auto& neighbour : pathAlgorithm->Onode->neighbours)
+				{
+					if (neighbour->unitOn && neighbour->unitOn->type == 1 - pathAlgorithm->Onode->unitOn->type)
+						near_enemies.push_back(neighbour);
+				}
+				turnState->SetActionState(new ChooseAttack(gState, turnState, near_enemies, pathAlgorithm->Onode));
+				return true;
 			}
 
 			currentPosition = gState.getCoordFromTile(hovered_tile);
 			//now hovered_tile is the new position of Onode
 			destination = hovered_tile;
 			pathAlgorithm->Onode->move_unit(hovered_tile, route);
+			if (hovered_tile == pathAlgorithm->Onode)
+				return false;
 		}
 	}
 	else
 	{
 		wasButtonPressed = false; // Resetto lo stato quando il pulsante viene rilasciato
 	}
+	return true;
 }
 
 void TileSelected::update()
@@ -100,18 +112,29 @@ void TileSelected::update()
 	{
 		//hover::Trail
 		if ((std::find(pathAlgorithm->path.begin(), pathAlgorithm->path.end(), hovered_tile) != pathAlgorithm->path.end() 
-			|| hovered_tile == pathAlgorithm->Onode) && destination == nullptr) 
+			|| hovered_tile == pathAlgorithm->Onode) && destination == nullptr
+			|| (std::find(pathAlgorithm->nearEnemies.begin(), pathAlgorithm->nearEnemies.end(), hovered_tile) != pathAlgorithm->nearEnemies.end()))
 		{
-			auto currNode = hovered_tile;
 			std::vector<Tile*> route{};
-			while (currNode != pathAlgorithm->Onode)
+			if (!hovered_tile->unitOn)
 			{
-				route.push_back(currNode);
-				currNode->shape.setFillColor(ROUTE_COLOR);
-				currNode = currNode->Parent;
+				auto currNode = hovered_tile;
+				while (currNode != pathAlgorithm->Onode)
+				{
+					route.push_back(currNode);
+					currNode->shape.setFillColor(ROUTE_COLOR);
+					currNode = currNode->Parent;
+				}
 			}
 
-			move_logic(hovered_tile, route);
+			if (!move_logic(hovered_tile, route))// è falso se finisco il turno senza spostarmi
+			{
+				if (gState.check_all_units_moved()) 
+					gState.MapLogic.set_state(new EnemyTurn(&gState.MapLogic));
+				else
+					turnState->SetActionState(new ChooseTile(gState, turnState));
+				return;
+			}
 
 			if (Unit::IsAnyUnitMoving)
 			{
@@ -140,13 +163,9 @@ void TileSelected::update()
 			{
 				destination->unitOn->canMove = false;
 				destination->unitOn->an_sprite.sprite->setColor(UNIT_MOVED);
-				bool allAlliesCannotMove = std::all_of(allay_list.begin(), allay_list.end(), [](Unit* unit) {
-					return !unit->canMove;
-					});
 
-				if (allAlliesCannotMove) {
+				if (gState.check_all_units_moved()) 
 					gState.MapLogic.set_state(new EnemyTurn(&gState.MapLogic));
-				}
 				else
 					turnState->SetActionState(new ChooseTile(gState, turnState));
 			}

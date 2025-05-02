@@ -60,7 +60,7 @@ void AttackGui::draw_units()
 	float x = 45.0f;
 	if (attack_initiated)
 		x = 350.0f;
-	else
+	else if (unitA->unitOn->type == 0)
 		attack_button->draw(gState);
 
 	// Disegna unitA
@@ -132,11 +132,14 @@ void AttackGui::draw_stats()
     float startY = static_cast<float>(gState.menubar_attack_y) + 27.0f;
     float spacing = 40.0f;
 
-	attack_text.setFillColor(sf::Color::White);
-	attack_text.setOutlineThickness(1);
-	attack_text.setOutlineColor(sf::Color::Transparent);
-	attack_text.setPosition({ gState.menubar_attack_window_x / 4.2f, static_cast<float>(gState.menubar_attack_y) + 85 });
-	gState.window.draw(attack_text);
+	if (unitA->unitOn->type == 0)
+	{
+		attack_text.setFillColor(sf::Color::White);
+		attack_text.setOutlineThickness(1);
+    	attack_text.setOutlineColor(sf::Color::Transparent);
+    	attack_text.setPosition({ gState.menubar_attack_window_x / 4.2f, static_cast<float>(gState.menubar_attack_y) + 85 });
+    	gState.window.draw(attack_text);
+	}
 
     for (int i = 0; i < statNames.size(); ++i)
     {
@@ -215,7 +218,8 @@ void AttackGui::draw_stats()
 
 
 void AttackGui::update()  
-{  
-   calculate_attack_stats(*unitA->unitOn, *unitB->unitOn, unitAStats, unitBStats, bonus);
-   attack_button->update(gState.window);
+{
+	calculate_attack_stats(*unitA->unitOn, *unitB->unitOn, unitAStats, unitBStats, bonus);
+	if (unitA->unitOn->type == 0)
+		attack_button->update(gState.window);
 }

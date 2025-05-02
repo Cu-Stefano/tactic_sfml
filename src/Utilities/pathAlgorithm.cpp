@@ -62,7 +62,10 @@ void PathAlgorithm::execute(bool near)
             {
                 if (currNeighbour->G == 0) 
                 {
-                    if (currNeighbour->unitOn && currNeighbour->unitOn->type == enemyType && curr->G < range && std::find(nearEnemies.begin(), nearEnemies.end(), currNeighbour) == nearEnemies.end())
+                    if (currNeighbour->unitOn 
+                        && currNeighbour->unitOn->type == enemyType 
+                        && curr->G < range 
+                        && std::find(nearEnemies.begin(), nearEnemies.end(), currNeighbour) == nearEnemies.end())
                     {
                         nearEnemies.push_back(currNeighbour);
                         continue;

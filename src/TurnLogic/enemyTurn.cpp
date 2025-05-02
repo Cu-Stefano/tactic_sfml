@@ -80,6 +80,12 @@ void EnemyTurn::update() {
 
 	switch (current_phase) {
 
+	case turn_fase::TURN_NAME:
+		if (showPathClock.getElapsedTime().asSeconds() <= 3.0f)
+			break;
+		showPathClock = sf::Clock();
+		current_phase = turn_fase::IDLE;
+		break;
 	case turn_fase::IDLE:
 
 		current_enemy = get_next_enemy();
@@ -87,6 +93,14 @@ void EnemyTurn::update() {
 
 			current_phase = turn_fase::SHOW_PATH;
 			initialize_path_algorithm(current_enemy);
+
+			if (pathAlgorithm->nearEnemies[0] != nullptr)
+			{
+				allayToAttack = pathAlgorithm->nearEnemies[0];
+				current_phase = turn_fase::SHOW_ATTACK_GUI;
+				tileToLand = current_enemy;
+				break;
+			}
 
 			allayToAttack = pathAlgorithm->attackList[0];
 			if (allayToAttack == nullptr)
@@ -198,9 +212,15 @@ void EnemyTurn::draw(state& gState)
 
    switch (current_phase) {
 
+   case turn_fase::TURN_NAME:{
+   		sf::Text enemy_turn_text = sf::Text(gState.font, "ENEMY TURN", 40);
+   		enemy_turn_text.setPosition({ static_cast<float>(gState.menubar_attack_window_x / 3), static_cast<float>(gState.menubar_attack_y / 3) });
+		enemy_turn_text.setFillColor(sf::Color::Red);
+   		gState.window.draw(enemy_turn_text);
+   }break;
    case turn_fase::IDLE:
-	   break;
 
+	   break;
    case turn_fase::SHOW_PATH:
 
    	for (auto& tile : pathAlgorithm->path)
