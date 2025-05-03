@@ -186,4 +186,23 @@ vector<vector<Tile*>> PathAlgorithm::initiliazemap()
    return result;  
 }
 
+void PathAlgorithm::update()
+{
+	auto path_color = unit->type == 0 ? ALLAY_PATH_COLOR : ENEMY_PATH_COLOR;
+	auto attack_color = unit->type == 0 ? ALLAY_ATTACK_COLOR : ENEMY_ATTACK_COLOR;
+
+    for (auto& tile : path)
+    {
+        tile->path_sprite.setColor(path_color);
+        tile->shape.setFillColor(sf::Color::Transparent);
+    }
+    for (auto& tile : attackBorderPath)
+        tile->path_sprite.setColor(attack_color);
+
+    for (auto tile :attackList)
+        tile->path_sprite.setColor(attack_color);
+
+    for (auto tile : nearEnemies)
+        tile->path_sprite.setColor(attack_color);
+}
 

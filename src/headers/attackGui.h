@@ -22,6 +22,7 @@ public:
 	int bonus = 0;
     bool attack_initiated = false;
 
+	void initializer(Tile* unitA, Tile* unitB);
     void draw_units();
     void draw_stats();
 

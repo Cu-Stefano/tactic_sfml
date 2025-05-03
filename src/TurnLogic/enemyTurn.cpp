@@ -138,19 +138,7 @@ void EnemyTurn::update() {
 
 	case turn_fase::SHOW_PATH:
 	{
-		for (auto& tile : pathAlgorithm->path)
-		{
-			tile->path_sprite.setColor(ENEMY_PATH_COLOR);
-			tile->shape.setFillColor(sf::Color::Transparent);
-		}
-		for (auto& tile : pathAlgorithm->attackBorderPath)
-			tile->path_sprite.setColor(ENEMY_ATTACK_COLOR);
-
-		for (auto tile : pathAlgorithm->attackList)
-			tile->path_sprite.setColor(ENEMY_ATTACK_COLOR);
-
-		for (auto tile : pathAlgorithm->nearEnemies)
-			tile->path_sprite.setColor(ENEMY_ATTACK_COLOR);
+		pathAlgorithm->update();
 
 		auto routeColor = ENEMY_ROUTE_COLOR;
 
@@ -183,14 +171,11 @@ void EnemyTurn::update() {
 			break;
 
 		//he arrived
-		Unit::hasSomeActionBeenStared = false;
-		previewSelected = true;
 		current_enemy = tileToLand;
-
-		gState.attackGui.unitA = current_enemy;
-		gState.attackGui.unitB = allayToAttack;
-		gState.attackGui.unitAStats = {};
-		gState.attackGui.unitBStats = {};
+		Unit::hasSomeActionBeenStared = false;
+		
+		previewSelected = true;
+		gState.attackGui.initializer(current_enemy, allayToAttack);
 		gState.attackGui.update();
 
 		current_enemy->unitOn->an_sprite.sprite_y = 0;
@@ -228,13 +213,6 @@ void EnemyTurn::update() {
 
 void EnemyTurn::draw(state& gState)
 {
-   static bool firstTime = true; // Flag to check if it's the first time entering
-
-   if (firstTime) {
-       firstTime = false; // Set the flag to false after the first entry
-       return; // Exit immediately without doing anything
-   }
-
    switch (current_phase) {
 
    case turn_fase::TURN_NAME:{
@@ -276,6 +254,7 @@ void EnemyTurn::draw(state& gState)
 
    case turn_fase::ATTACK:
 	   CurrentActionState->draw(gState);
+	   break;
    case turn_fase::END:
 	   break;
    }

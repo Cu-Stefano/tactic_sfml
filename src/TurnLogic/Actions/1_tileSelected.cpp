@@ -88,20 +88,7 @@ bool TileSelected::move_logic(Tile* hovered_tile, vector<Tile*> route)
 
 void TileSelected::update()
 {
-	for (auto& tile : pathAlgorithm->path)
-	{
-		tile->path_sprite.setColor(ALLAY_PATH_COLOR);
-		tile->shape.setFillColor(sf::Color::Transparent);
-	}
-
-	for (auto& tile : pathAlgorithm->attackBorderPath)
-		tile->path_sprite.setColor(ALLAY_ATTACK_COLOR);
-
-	for (auto tile : pathAlgorithm->attackList)
-		tile->path_sprite.setColor(ALLAY_ATTACK_COLOR);
-		
-	for (auto tile : pathAlgorithm->nearEnemies)
-		tile->path_sprite.setColor(ALLAY_ATTACK_COLOR);
+	pathAlgorithm->update();
 
 	//mouse actions:
 	Vector2f mousePos = gState.window.mapPixelToCoords(Mouse::getPosition(gState.window));

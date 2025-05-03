@@ -14,14 +14,15 @@ class Turnstate;
 class ActionState;
 class ChooseTile;
 
-AllayTurn::AllayTurn(MapLogic* map_logic) : TurnState(map_logic->gState) 
+AllayTurn::AllayTurn(MapLogic* map_logic) : TurnState(map_logic->gState), allay_turn_text(nullptr)
 {
 	this->map_logic = map_logic;
 	CurrentActionState = nullptr;
 }
 
 void AllayTurn::on_enter()
-{  
+{
+	textClock = sf::Clock();
 	SetActionState(new ChooseTile(gState, this));
 }  
 
@@ -46,10 +47,20 @@ void AllayTurn::SetActionState(ActionState* action)
 
 void AllayTurn::update()
 {
+	if (textClock.getElapsedTime().asSeconds() <= 3.0f)
+	{
+		allay_turn_text = new sf::Text(gState.font, "ALLAY TURN", 40);
+		allay_turn_text->setPosition({ static_cast<float>(gState.menubar_attack_window_x / 3), static_cast<float>(gState.menubar_attack_y / 3) });
+		allay_turn_text->setFillColor(sf::Color::White);
+		return;
+	}
+	allay_turn_text->setFillColor(sf::Color::Transparent);
+	
 	CurrentActionState->update();
 }  
 
 void AllayTurn::draw(state& gState)
-{  
+{
+	gState.window.draw(*allay_turn_text);
 	CurrentActionState->draw(gState);
 }

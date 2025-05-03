@@ -20,6 +20,7 @@ public:
     int calculate_distance(Tile* tileToReach) const;
 
     std::vector<std::vector<Tile*>> initiliazemap();
+    void update();
 
     Tile* Onode;
     vector<Tile*> path;

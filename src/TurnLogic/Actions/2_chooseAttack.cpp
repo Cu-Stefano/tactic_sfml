@@ -48,10 +48,7 @@ void ChooseAttack::update()
 
 		if (std::find(enemyNear.begin(), enemyNear.end(), clicked_tile) != enemyNear.end())
 		{
-			gState.attackGui.unitA = attackingUnit;
-			gState.attackGui.unitB = clicked_tile;
-			gState.attackGui.unitAStats = {};
-			gState.attackGui.unitBStats = {};
+			gState.attackGui.initializer(attackingUnit, clicked_tile);
 			gState.attackGui.update();
 			preview_selected = clicked_tile->unitOn != nullptr;
 		}

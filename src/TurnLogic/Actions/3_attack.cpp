@@ -42,7 +42,7 @@ void Attack::handle_phase(Unit* attacker, Tile* target, bool wasHit, float delay
 {
     if (currclock.getElapsedTime().asSeconds() <= flash_duration_) {
         if (wasCrit)
-            attacker->an_sprite.sprite->setColor(sf::Color(255, 255, 255, 200));
+            attacker->an_sprite.sprite->setColor(sf::Color(255, 255, 0, 230));
         else
             attacker->an_sprite.sprite->setColor(sf::Color::White);
 

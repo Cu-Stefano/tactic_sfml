@@ -55,6 +55,14 @@ void AttackGui::draw(sf::RenderWindow& window)
 	gState.window.draw(right_attack_window);
 }
 
+void AttackGui::initializer(Tile* unitA, Tile* unitB)
+{
+	gState.attackGui.unitA = unitA;
+	gState.attackGui.unitB = unitB;
+	gState.attackGui.unitAStats = {};
+	gState.attackGui.unitBStats = {};
+}
+
 void AttackGui::draw_units()
 {
 	float x = 45.0f;
