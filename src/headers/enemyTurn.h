@@ -28,6 +28,7 @@ public:
     Tile* get_next_enemy();
     Tile* find_tile_to_land(Tile* attackedUnit);
 
+    void move_towards_allay();
     void update() override;
     void draw(state& gState) override;
 

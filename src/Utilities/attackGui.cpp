@@ -37,14 +37,14 @@ void AttackGui::draw(sf::RenderWindow& window)
 	sf::Sprite attack_window(ui);
 	sf::Sprite right_attack_window(ui);
 
-	left_attack_window.setTextureRect(sf::IntRect({ 54, 6 }, { 7, 36 }));
-	left_attack_window.scale({ 5, 5.5 });
+	left_attack_window.setTextureRect(sf::IntRect({ 54, 6}, { 7, 37 }));
+	left_attack_window.scale({ 5, 5.6 });
 
-	attack_window.setTextureRect(sf::IntRect({ 61, 6 }, { 22, 36 }));
-	attack_window.setScale({ 51.5, 5.5 });
+	attack_window.setTextureRect(sf::IntRect({ 61, 6 }, { 22, 37 }));
+	attack_window.setScale({ 51.5, 5.6 });
 
-	right_attack_window.setTextureRect(sf::IntRect({ 81, 6 }, { 8, 36 }));
-	right_attack_window.scale({ 5, 5.5 });
+	right_attack_window.setTextureRect(sf::IntRect({ 81, 6 }, { 8, 37 }));
+	right_attack_window.scale({ 5, 5.6 });
 
 	left_attack_window.setPosition({ 0, static_cast<float>(gState.menubar_attack_y) });
 	attack_window.setPosition({ 35, static_cast<float>(gState.menubar_attack_y) });
@@ -63,6 +63,27 @@ void AttackGui::initializer(Tile* unitA, Tile* unitB)
 	gState.attackGui.unitBStats = {};
 }
 
+// Disegna unitA
+void AttackGui::draw_unit(Tile* unit, float x, bool isUnitA)
+{
+	if (unit && unit->unitOn)
+	{
+		float positionY = static_cast<float>(gState.menubar_attack_y) - 20;
+		Sprite unit_sprite = *unit->unitOn->an_sprite.sprite;
+		if (unit->unitOn->name == "Boss")
+		{
+			unit_sprite.setScale({ static_cast<float>(isUnitA ? 11 : -11), 11 });
+			positionY -= 55;
+		}
+		else
+			unit_sprite.setScale({ static_cast<float>(isUnitA ? 8 : -8), 8 });
+
+		float positionX = isUnitA ? x : (gState.menubar_attack_window_x - x);
+		unit_sprite.setPosition({ positionX, positionY });
+		gState.window.draw(unit_sprite);
+	}
+}
+
 void AttackGui::draw_units()
 {
 	float x = 45.0f;
@@ -71,23 +92,8 @@ void AttackGui::draw_units()
 	else if (unitA->unitOn->type == 0)
 		attack_button->draw(gState);
 
-	// Disegna unitA
-	if (unitA && unitA->unitOn)
-	{
-		Sprite unitA_sprite = *unitA->unitOn->an_sprite.sprite;
-		unitA_sprite.setScale({ 8, 8 });
-		unitA_sprite.setPosition({ x, static_cast<float>(gState.menubar_attack_y) - 20 });
-		gState.window.draw(unitA_sprite);
-	}
-
-	// Disegna unitB
-	if (unitB && unitB->unitOn)
-	{
-		Sprite unitB_sprite = *unitB->unitOn->an_sprite.sprite;
-		unitB_sprite.setScale({ -8, 8 });
-		unitB_sprite.setPosition({ (gState.menubar_attack_window_x - x), static_cast<float>(gState.menubar_attack_y) - 20 });
-		gState.window.draw(unitB_sprite);
-	}
+	draw_unit(unitA, x, true);
+	draw_unit(unitB, x, false);
 }
 
 void calculate_attack_stats(Unit unita, Unit unitb, std::vector<int>& a_stats, std::vector<int>& b_stats, int& bonus)

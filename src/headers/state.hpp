@@ -28,13 +28,17 @@ public:
     int menubar_attack_window_x = WINDOW_WIDTH - 200;
     int menubar_attack_y = WINDOW_HEIGHT - 200;
 
+    int turn = 0;
+    sf::Text* turn_number = nullptr;
     MapLogic MapLogic;
 	AttackGui attackGui;
+    sf::Font font = sf::Font("resources/font/16x16_font.ttf");
     std::vector<std::vector<Tile*>> map;
     Tile* selected_tile;
-    sf::Font font = sf::Font("resources/font/16x16_font.ttf");
+   
 
-	state(unsigned w, unsigned h, const std::string& title) : MapLogic(*this), attackGui(*this), selected_tile(nullptr)
+	state(unsigned w, unsigned h, const std::string& title) : MapLogic(*this), attackGui(*this),
+	                                                          selected_tile(nullptr)
     {
 	    window = sf::RenderWindow(sf::VideoMode({w, h}), title);
     }
@@ -68,10 +72,16 @@ public:
        return mousePos.x > menubar_attack_window_x || mousePos.y > menubar_attack_y || mousePos.x < 0 || mousePos.y < 0;
     }
 
-    bool check_all_units_moved()
+    bool check_all_units_moved(int type)
 	{
-        return std::all_of(allay_list.begin(), allay_list.end(), [](Unit* unit) 
-            {return !unit->canMove;});
+        if (type == 0)
+        {
+	        return std::all_of(allay_list.begin(), allay_list.end(), [](Unit* unit) 
+			   {return !unit->canMove;});
+        }
+
+        return std::all_of(enemy_list.begin(), enemy_list.end(), [](Unit* unit)
+            {return !unit->canMove; });
 	}
 };
 

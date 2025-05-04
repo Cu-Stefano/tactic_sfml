@@ -53,6 +53,7 @@ void Attack::handle_phase(Unit* attacker, Tile* target, bool wasHit, float delay
         }
     }
     else if (currclock.getElapsedTime().asSeconds() <= flash_duration_ + delay) {
+        attacker->an_sprite.sprite->setColor(sf::Color::White);
         attacker->an_sprite.sprite_y = 0;
         attacker->an_sprite.swap_interval = SWAP_INTERVAL;
         if (target) {
@@ -83,19 +84,20 @@ void Attack::on_enter()
 void Attack::on_exit()
 {
     gState.attackGui.attack_initiated = false;
-    if (unitA->unitOn)
-    {
-	    unitA->unitOn->has_moved();
-		unitA->unitOn->canMove = false;
-        unitA->unitOn->an_sprite.sprite->setColor(UNIT_MOVED);
-    }
 }
 
 void Attack::update()
 {
     if (attackFinished)
     {
-        if (!gState.check_all_units_moved())
+        if (unitA->unitOn)
+        {
+            unitA->unitOn->has_moved();
+            unitA->unitOn->canMove = false;
+            unitA->unitOn->an_sprite.sprite->setColor(UNIT_MOVED);
+        }
+
+        if (!gState.check_all_units_moved(0))
             turnState->SetActionState(new ChooseTile(gState, turnState));
         else gState.MapLogic.set_state(new EnemyTurn(&gState.MapLogic));
     }

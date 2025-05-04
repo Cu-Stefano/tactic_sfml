@@ -71,14 +71,17 @@ void ChooseAttack::update()
 			enemy->unitOn->an_sprite.sprite_y = 0;
 		}
 
-		attackingUnit->passable = true;
-		attackingUnit->walkable = true;
-		attackingUnit->unitOn->an_sprite.sprite_y = 0;
-		gState.map[startinPosition.y][startinPosition.x]->unitOn = attackingUnit->unitOn;
+		if (startinPosition != currentPosition)
+		{
+			attackingUnit->passable = true;
+			attackingUnit->walkable = true;
+			attackingUnit->unitOn->an_sprite.sprite_y = 0;
+			gState.map[startinPosition.y][startinPosition.x]->unitOn = attackingUnit->unitOn;
 
-		attackingUnit->unitOn->an_sprite.sprite->setPosition(Vector2f{ static_cast<float>(startinPosition.x * 40), static_cast<float>(startinPosition.y * 40) });
-		attackingUnit->unitOn->an_sprite.sprite->move(DEFAULT_OFFSET);
-		attackingUnit->unitOn = nullptr;
+			attackingUnit->unitOn->an_sprite.sprite->setPosition(Vector2f{ static_cast<float>(startinPosition.x * 40), static_cast<float>(startinPosition.y * 40) });
+			attackingUnit->unitOn->an_sprite.sprite->move(DEFAULT_OFFSET);
+			attackingUnit->unitOn = nullptr;
+		}
 
 		turnState->SetActionState(new ChooseTile(gState, turnState));
 	}

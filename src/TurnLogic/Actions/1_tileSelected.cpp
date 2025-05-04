@@ -116,7 +116,7 @@ void TileSelected::update()
 
 			if (!move_logic(hovered_tile, route))// è falso se finisco il turno senza spostarmi
 			{
-				if (gState.check_all_units_moved()) 
+				if (gState.check_all_units_moved(0)) 
 					gState.MapLogic.set_state(new EnemyTurn(&gState.MapLogic));
 				else
 					turnState->SetActionState(new ChooseTile(gState, turnState));
@@ -151,7 +151,7 @@ void TileSelected::update()
 				destination->unitOn->canMove = false;
 				destination->unitOn->an_sprite.sprite->setColor(UNIT_MOVED);
 
-				if (gState.check_all_units_moved()) 
+				if (gState.check_all_units_moved(0)) 
 					gState.MapLogic.set_state(new EnemyTurn(&gState.MapLogic));
 				else
 					turnState->SetActionState(new ChooseTile(gState, turnState));

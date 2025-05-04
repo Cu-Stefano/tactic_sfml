@@ -22,6 +22,8 @@ AllayTurn::AllayTurn(MapLogic* map_logic) : TurnState(map_logic->gState), allay_
 
 void AllayTurn::on_enter()
 {
+	gState.turn++;
+	gState.turn_number->setString("Turn: " + std::to_string(gState.turn));
 	textClock = sf::Clock();
 	SetActionState(new ChooseTile(gState, this));
 }  
@@ -61,6 +63,8 @@ void AllayTurn::update()
 
 void AllayTurn::draw(state& gState)
 {
-	gState.window.draw(*allay_turn_text);
+	gState.window.draw(*gState.turn_number);
+	if (allay_turn_text)
+		gState.window.draw(*allay_turn_text);
 	CurrentActionState->draw(gState);
 }

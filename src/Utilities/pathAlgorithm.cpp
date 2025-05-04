@@ -43,12 +43,11 @@ void PathAlgorithm::set_origin_tile(Tile* button)
 	priorityQueue.emplace(Onode->G = 0, Onode);
 }
 
-void PathAlgorithm::execute(bool near)
+void PathAlgorithm::execute(int range)
 {
     auto enemyType = unit->type == 0 ? 1 : 0; //the type of units the Onode wants to attack
     int movement = unit->movement;
-    int range = unit->equiped_weapon ? unit->equiped_weapon->range : 0;
-    int totalRange = near ? range : movement + range;
+    int totalRange = movement + range;
 
     while (!priorityQueue.empty())
     {
@@ -85,7 +84,7 @@ void PathAlgorithm::execute(bool near)
             }
         }
 
-        if (curr->G > movement)
+        if (curr->G > totalRange - 1)
         {
             attackBorderPath.push_back(curr);
         }

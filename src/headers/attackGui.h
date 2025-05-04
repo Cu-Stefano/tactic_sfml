@@ -23,6 +23,8 @@ public:
     bool attack_initiated = false;
 
 	void initializer(Tile* unitA, Tile* unitB);
+    void draw_unit(Tile* unit, float x, bool isUnitA);
+    void draw_unit(float x);
     void draw_units();
     void draw_stats();
 

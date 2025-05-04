@@ -14,7 +14,7 @@ public:
     PathAlgorithm(state& gState);
 
     void set_origin_tile(Tile* button);
-    void execute(bool near = false);
+    void execute(int range = 1);
 
     void reset_all();
     int calculate_distance(Tile* tileToReach) const;

@@ -113,11 +113,11 @@ void curr_unit_window_draw(state& gs, Texture ui)
 	curr_unit_window.setTextureRect(sf::IntRect({ 54, 13 }, { 37, 20 }));
 	curr_unit_window.setScale({ 5.6, 40 });
 	bottom_curr_unit_window.setTextureRect(sf::IntRect({ 54, 33 }, { 37, 9 }));
-	bottom_curr_unit_window.scale({ 5.6, 5 });
+	bottom_curr_unit_window.scale({ 5.6, 5.1 });
 
 	top_curr_unit_window.setPosition({ static_cast<float>(gs.menubar_attack_window_x), 0 });
 	curr_unit_window.setPosition({ static_cast<float>(gs.menubar_attack_window_x), 30 });
-	bottom_curr_unit_window.setPosition({ static_cast<float>(gs.menubar_attack_window_x)  , 797});
+	bottom_curr_unit_window.setPosition({ static_cast<float>(gs.menubar_attack_window_x)  , 795});
 
 	gs.window.draw(top_curr_unit_window);
 	gs.window.draw(curr_unit_window);
