@@ -157,11 +157,12 @@ void TileSelected::update()
 					turnState->SetActionState(new ChooseTile(gState, turnState));
 			}
 			Unit::hasSomeActionBeenStared = false;
+			return;
 		}
 	}
 
 	//right_mouse::Back
-	if (Mouse::isButtonPressed(Mouse::Button::Right) && !Unit::IsAnyUnitMoving)
+	if (Mouse::isButtonPressed(Mouse::Button::Right) && !Unit::IsAnyUnitMoving && !Unit::hasSomeActionBeenStared)
 	{
 		if (pathAlgorithm)
 		{

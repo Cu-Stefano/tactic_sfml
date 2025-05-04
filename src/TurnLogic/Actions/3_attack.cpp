@@ -3,6 +3,7 @@
 #include "../../headers/actionState.hpp"
 #include "../../headers/0_chooseTile.h"
 #include "../../headers/turnState.hpp"
+#include "../../headers/GameFinished.h"
 #include "../../headers/enemyTurn.h"
 #include "../../headers/unit.h"
 #include <SFML/Graphics/Color.hpp>
@@ -176,7 +177,17 @@ void Attack::draw(sf::RenderWindow& window)
         	}
 	        else
 	        {
-                remove_dead_unit(dead);
+                if (dead->unitOn->name == "Boss")
+                {
+                    remove_dead_unit(dead);
+                    gState.MapLogic.set_state(new GameFinished(gState, "YOU WON"));
+                }
+                else
+                {
+	                remove_dead_unit(dead);
+                	if (allay_list.empty())
+                		gState.MapLogic.set_state(new GameFinished(gState, "GAME OVER"));
+                }
                 currentPhase = AttackPhase::Finished;
 	        }
         }

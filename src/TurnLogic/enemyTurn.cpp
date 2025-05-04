@@ -262,7 +262,7 @@ void EnemyTurn::update() {
 		if (attackState->attackFinished)
 		{
 			clock.restart();
-			if (!current_enemy->unitOn || current_enemy->unitOn->canMove)// quello prima e' morto
+			if (!current_enemy->unitOn || current_enemy->unitOn->canMove )// quello prima e' morto
 				--curr_enemy_iter;
 			current_phase = turn_fase::END;
 		}

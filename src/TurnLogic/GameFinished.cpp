@@ -15,6 +15,19 @@ GameFinished::GameFinished(state& gs, sf::String state): TurnState(gs)
 	this->win_state->setFillColor(sf::Color::White);
 }
 
+void GameFinished::on_enter()
+{
+}
+
+void GameFinished::on_exit()
+{
+}
+
+void GameFinished::SetActionState(ActionState* action)
+{
+	TurnState::SetActionState(action);
+}
+
 void GameFinished::update()
 {
 

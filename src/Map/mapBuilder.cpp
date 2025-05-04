@@ -71,6 +71,12 @@ void initialize_map(state& gs)
                 break;
             case -1:
                 //enemy
+                if (enemyIndex >= enemy_list.size())
+                {
+                    tileName = "grass";
+                    walkable = true;
+                    break;
+                }
                 unit = enemy_list.at(enemyIndex);
                 unit->set_sprite_pos({ static_cast<int>(static_cast<int>(x) + ENEMY_OFFSET.x), static_cast<int>(y) });
 				unit->an_sprite.sprite->setScale({ -2.0f, 2.0f });
@@ -81,7 +87,13 @@ void initialize_map(state& gs)
                 break;
 			case 0:
                 //alleato
-                unit = allay_list.at(allayIndex);
+                if (allayIndex >= allay_list.size())
+                {
+	                tileName = "grass";
+                	walkable = true;
+                	break;
+                }
+				unit = allay_list.at(allayIndex);
                 unit->set_sprite_pos({ static_cast<int>(x), static_cast<int>(y) });
                 allayIndex++;
 

@@ -156,7 +156,7 @@ void Unit::update()
 }
 
 std::vector<Unit*> allay_list = {
-    new Unit("Ike", 0, ClassType::swordsman, 19, 5, 5, 4, 6, 5, 5), 
+    new Unit("Ike", 0, ClassType::swordsman, 19, 5, 5, 4, 6, 5, 5),
     new Unit("Mia", 0, ClassType::swordsman, 17, 5, 5, 3, 8, 6, 4), 
     new Unit("Oscar", 0, ClassType::warrior, 21, 5, 6, 5, 5, 5, 3), 
     new Unit("Boyd", 0, ClassType::warrior, 23, 5, 7, 4, 4, 4, 2),  
