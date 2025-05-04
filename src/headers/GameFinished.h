@@ -1,15 +1,13 @@
 #pragma once
 #include "turnState.hpp"
-#include "MapLogic.h"
-
 
 class GameFinished : public TurnState {
 public:
-	GameFinished(MapLogic* map_logic, sf::String state);
+	GameFinished(state& gs, sf::String state);
 
     void update() override;
-    void draw(state& gState) override;
+    void draw(sf::RenderWindow& window) override;
 
 private:
-    sf::Text* state;
+    sf::Text* win_state;
 };

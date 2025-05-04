@@ -28,7 +28,7 @@ public:
 	bool firstFrame = true; // Flag per il primo frame di movimento;
     bool isMoving = false;
     bool move_just_started = false;
-    float move_speed = 160.0f; // Speed in pixels per second
+    float move_speed = 170.0f; // Speed in pixels per second
     sf::Clock move_clock; // Clock for movement timing
 
     static bool IsAnyUnitMoving;
@@ -58,7 +58,7 @@ public:
     int get_attack() const;
     int get_crit() const;
 
-    void draw(sf::RenderWindow& window) const;
+    void draw(sf::RenderWindow& window);
     void update();
 };
 

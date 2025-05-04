@@ -158,7 +158,7 @@ void draw_map(state& gs)
             button->draw(gs);
         }
     }
-    gs.MapLogic.current_turnState->draw(gs);
+    gs.MapLogic.current_turnState->draw(gs.window);
     for (auto& allay : allay_list)
     {
         allay->draw(gs.window);

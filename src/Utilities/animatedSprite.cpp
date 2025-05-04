@@ -40,7 +40,7 @@ void AnimatedSprite::update()
     }
 }
 
-void AnimatedSprite::draw(sf::RenderWindow& window) const
+void AnimatedSprite::draw(sf::RenderWindow& window)
 {
 	window.draw(*sprite);
 }

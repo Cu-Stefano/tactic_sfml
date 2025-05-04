@@ -15,5 +15,5 @@ public:
 	bool move_logic(Tile* tile, std::vector<Tile*> route);
 
 	void update() override;
-	void draw(state& gState) override;
+	void draw(sf::RenderWindow& window) override;
 };

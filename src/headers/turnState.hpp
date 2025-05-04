@@ -1,4 +1,5 @@
 #pragma once
+#include "SFML/Graphics/RenderWindow.hpp"
 class state;
 class ActionState;
 
@@ -15,7 +16,7 @@ public:
     virtual void SetActionState(ActionState* action);
 
     virtual void update() = 0;
-    virtual void draw(state& gState) = 0;
+    virtual void draw(sf::RenderWindow& window) = 0;
 
 };
 

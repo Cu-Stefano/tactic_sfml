@@ -1,20 +1,18 @@
 #include "../headers/turnState.hpp"
 #include "../headers/allayTurn.h"  
 #include "../headers/enemyTurn.h"  
-#include "../headers/MapLogic.h"  
 #include "../headers/state.hpp"
-#include "../headers/actionState.hpp"
 #include "../headers/gameFinished.h"
 
 using namespace sf;
 
-GameFinished::GameFinished(MapLogic* map_logic, sf::String state): TurnState(map_logic->gState)
+GameFinished::GameFinished(state& gs, sf::String state): TurnState(gs)
 {
-	this->state = new sf::Text(gState.font, state, 40);
-	this->state->setPosition({
+	this->win_state = new sf::Text(gState.font, state, 40);
+	this->win_state->setPosition({
 		static_cast<float>(gState.menubar_attack_window_x / 3), static_cast<float>(gState.menubar_attack_y / 3)
 	});
-	this->state->setFillColor(sf::Color::White);
+	this->win_state->setFillColor(sf::Color::White);
 }
 
 void GameFinished::update()
@@ -22,7 +20,7 @@ void GameFinished::update()
 
 }
 
-void GameFinished::draw(::state& gState)
+void GameFinished::draw(sf::RenderWindow& window)
 {
-	gState.window.draw(*state);
+	gState.window.draw(*win_state);
 }

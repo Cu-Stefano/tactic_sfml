@@ -10,9 +10,8 @@
 
 class Turnstate;
 
-EnemyTurn::EnemyTurn(MapLogic* map_logic) : TurnState(map_logic->gState), pathAlgorithm(nullptr)
+EnemyTurn::EnemyTurn(state& gs) : TurnState(gs), pathAlgorithm(nullptr)
 {
-	this->map_logic = map_logic;
 }
 
 void EnemyTurn::initialize_path_algorithm(Tile* unit)
@@ -28,15 +27,10 @@ void EnemyTurn::end_enemy_turn(Tile* tile)
 	tile->unitOn->canMove = false;
 }
 
-void EnemyTurn::attack_allay(Tile* tile)
-{
-
-}
-
 void EnemyTurn::on_enter() {
 	gState.turn_number->setString("Turn: " + std::to_string(gState.turn));
-	Unit::hasSomeActionBeenStared = false; // da mettere a true dopo che un nuita di è mossa 
-	iter = enemy_tile_list.begin();
+	Unit::hasSomeActionBeenStared = false; 
+	curr_enemy_iter = enemy_tile_list.begin();
 }  
 
 void EnemyTurn::on_exit() {
@@ -49,16 +43,15 @@ void EnemyTurn::on_exit() {
 
 Tile* EnemyTurn::get_next_enemy()
 {
-	if (iter == enemy_tile_list.end())
-		iter = enemy_tile_list.begin() + 1;
+	if (curr_enemy_iter == enemy_tile_list.end())
+		curr_enemy_iter = enemy_tile_list.begin() + 1;
     else if (enemy_tile_list.empty()) {
-        return nullptr; // Nessun nemico rimasto
+        return nullptr; 
     }
 
-    Tile* next_enemy = *iter;
-    ++iter;
+    Tile* next_enemy = *curr_enemy_iter;
+    ++curr_enemy_iter;
     return next_enemy;
-
 }
 
 Tile* EnemyTurn::find_tile_to_land(Tile* attackedUnit)
@@ -66,7 +59,6 @@ Tile* EnemyTurn::find_tile_to_land(Tile* attackedUnit)
 	int cost = 100;
 	Tile* finalTile = nullptr;
 
-	// Ricorsione sui vicini
 	for (Tile* neighbor : attackedUnit->neighbours)
 	{
 		if (neighbor->walkable && std::find(pathAlgorithm->path.begin(), pathAlgorithm->path.end(), neighbor) != pathAlgorithm->path.end())
@@ -99,12 +91,14 @@ void EnemyTurn::move_towards_allay()
 
 	auto allayToPoint = pathAlgorithm->attackList[0];
 	auto tile = find_tile_to_land(allayToPoint);
+
 	if (!tile)
 	{
 		end_enemy_turn(current_enemy);
 		current_phase = turn_fase::END;
 		return;
 	}
+
 	// set the route
 	auto currNode = tile;
 	std::deque<Tile*> routeAux{};
@@ -114,7 +108,7 @@ void EnemyTurn::move_towards_allay()
 		currNode = currNode->Parent;
 	}
 
-	// tolgo i tile che non puo raggiungere
+	// erase the tiles he can't reach in this turn
 	currNode = routeAux[0];
 	int size = routeAux.size();
     for (int i = 0; i < (size - current_enemy->unitOn->movement); i++)
@@ -124,7 +118,7 @@ void EnemyTurn::move_towards_allay()
     }
 	tileToLand = currNode;
 	route = std::vector(routeAux.begin(), routeAux.end());
-	current_phase = turn_fase::PROCESSING_TURN;
+	current_phase = turn_fase::MOVE;
 }
 
 void EnemyTurn::update() {
@@ -132,20 +126,20 @@ void EnemyTurn::update() {
 	switch (current_phase) {
 
 	case turn_fase::TURN_NAME:
-
 		if (clock.getElapsedTime().asSeconds() <= 3.0f)
 			break;
 		clock = sf::Clock();
-		current_phase = turn_fase::IDLE;
+		current_phase = turn_fase::CHOOSE_ACTION;
 		break;
 
-	case turn_fase::IDLE:
+
+	case turn_fase::CHOOSE_ACTION:
 
 		Unit::hasSomeActionBeenStared = false;
 		current_enemy = get_next_enemy();
 		if (gState.check_all_units_moved(1))
 		{
-			gState.MapLogic.set_state(new AllayTurn(&gState.MapLogic));
+			gState.MapLogic.set_state(new AllayTurn(gState));
 			return;
 		}
 
@@ -154,7 +148,7 @@ void EnemyTurn::update() {
 			current_phase = turn_fase::SHOW_PATH;
 			initialize_path_algorithm(current_enemy);
 
-			// c'e' un nemico vicino, attacca quello
+			// attack first the nighbours
 			if (!pathAlgorithm->nearEnemies.empty())
 			{
 				allayToAttack = pathAlgorithm->nearEnemies[0];
@@ -177,20 +171,19 @@ void EnemyTurn::update() {
 
 			allayToAttack = pathAlgorithm->attackList[0];
 			tileToLand = find_tile_to_land(allayToAttack);
-
+			if (tileToLand == nullptr)
+			{
+				end_enemy_turn(current_enemy);
+				current_phase = turn_fase::END;
+				return;
+			}
+			// set the route
 			auto currNode = tileToLand;
 			while (currNode != pathAlgorithm->Onode)
 			{
 				route.push_back(currNode);
 				currNode->shape.setFillColor(ROUTE_COLOR);
 				currNode = currNode->Parent;
-			}
-
-			if (tileToLand == nullptr)
-			{
-				end_enemy_turn(current_enemy);
-				current_phase = turn_fase::END;
-				return;
 			}
 			current_phase = turn_fase::SHOW_PATH;
 		}
@@ -206,8 +199,8 @@ void EnemyTurn::update() {
 		if (clock.getElapsedTime().asSeconds() >= 2.0f)
 		{
 			routeColor = sf::Color::Transparent;
-			current_phase = turn_fase::PROCESSING_TURN;
-			clock = sf::Clock();
+			current_phase = turn_fase::MOVE;
+			clock.restart();
 		}
 
 		for (auto tile : route)
@@ -217,7 +210,7 @@ void EnemyTurn::update() {
 
 		break;
 	}
-    case turn_fase::PROCESSING_TURN:
+    case turn_fase::MOVE:
 
 		current_enemy->unitOn->an_sprite.swap_interval = SWAP_INTERVAL_RUN;
 		current_enemy->unitOn->an_sprite.sprite_y = 1;
@@ -231,32 +224,32 @@ void EnemyTurn::update() {
 		if (Unit::IsAnyUnitMoving && Unit::hasSomeActionBeenStared)
 			break;
 
-		if (!allayToAttack)// nemico che si è avvicinato 
+		if (!allayToAttack)// the enemy just got closer no need to attack
 		{
 			end_enemy_turn(tileToLand);
-			*(iter - 1) = tileToLand;
+			*(curr_enemy_iter - 1) = tileToLand;
 			Unit::hasSomeActionBeenStared = false;
 			previewSelected = true;
 			current_phase = turn_fase::END;
-			clock = sf::Clock();
+			clock.restart();
 			break;
 		}
 
 		//he arrived
-		*(iter - 1) = tileToLand;
+		*(curr_enemy_iter - 1) = tileToLand;
 		current_enemy = tileToLand;
 		Unit::hasSomeActionBeenStared = false;
-		
+
+		//setup the attack gui
 		previewSelected = true;
 		gState.attackGui.initializer(current_enemy, allayToAttack);
 		gState.attackGui.update();
-
 		current_enemy->unitOn->an_sprite.sprite_y = 0;
 		current_enemy->unitOn->an_sprite.swap_interval = SWAP_INTERVAL; // sec
 
 		if (clock.getElapsedTime().asSeconds() <= 3.0f)
 			break;
-
+		
 		current_phase = turn_fase::ATTACK;
 		gState.attackGui.attack_initiated = true;
 		attackState = new Attack(gState, this, current_enemy, gState.attackGui.unitB, gState.attackGui.unitAStats, gState.attackGui.unitBStats);
@@ -268,9 +261,9 @@ void EnemyTurn::update() {
 		CurrentActionState->update();
 		if (attackState->attackFinished)
 		{
-			clock = sf::Clock();
+			clock.restart();
 			if (!current_enemy->unitOn || current_enemy->unitOn->canMove)// quello prima e' morto
-				--iter;
+				--curr_enemy_iter;
 			current_phase = turn_fase::END;
 		}
 		break;
@@ -283,15 +276,15 @@ void EnemyTurn::update() {
 		gState.attackGui.attack_initiated = false;
 		allayToAttack = nullptr;
 		tileToLand = nullptr;
-		current_phase = turn_fase::IDLE;
-		clock = sf::Clock();
+		current_phase = turn_fase::CHOOSE_ACTION;
+		clock.restart();
 		route.clear();
 		pathAlgorithm->reset_all();
 		break;
     }
 }  
 
-void EnemyTurn::draw(state& gState)
+void EnemyTurn::draw(sf::RenderWindow& window)
 {
 	gState.window.draw(*gState.turn_number);
 
@@ -303,7 +296,7 @@ void EnemyTurn::draw(state& gState)
 		enemy_turn_text.setFillColor(sf::Color::Red);
    		gState.window.draw(enemy_turn_text);
    }break;
-   case turn_fase::IDLE:
+   case turn_fase::CHOOSE_ACTION:
 
 	   break;
    case turn_fase::SHOW_PATH:
@@ -322,7 +315,7 @@ void EnemyTurn::draw(state& gState)
 
 	   break;
 
-   case turn_fase::PROCESSING_TURN:
+   case turn_fase::MOVE:
 	   break;
 
    case turn_fase::SHOW_ATTACK_GUI:
@@ -335,7 +328,7 @@ void EnemyTurn::draw(state& gState)
 	   break;
 
    case turn_fase::ATTACK:
-	   CurrentActionState->draw(gState);
+	   CurrentActionState->draw(gState.window);
 	   break;
    case turn_fase::END:
 	   break;

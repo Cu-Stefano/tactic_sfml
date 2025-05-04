@@ -18,6 +18,6 @@ public:
 	virtual void on_exit() = 0;
 
 	virtual void update() = 0;
-	virtual void draw(state& gState) = 0;
+	virtual void draw(sf::RenderWindow& window) = 0;
 };
 

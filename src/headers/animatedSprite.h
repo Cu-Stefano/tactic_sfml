@@ -19,5 +19,5 @@ public:
 
 	void set_pos(sf::Vector2i coord);
 	void update();
-	void draw(sf::RenderWindow& window) const;
+	void draw(sf::RenderWindow& window);
 };

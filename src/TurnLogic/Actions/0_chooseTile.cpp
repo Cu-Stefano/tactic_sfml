@@ -41,7 +41,7 @@ void ChooseTile::update()
    }
 }
 
-void ChooseTile::draw(state& gState)
+void ChooseTile::draw(sf::RenderWindow& window)
 {
 	
 }

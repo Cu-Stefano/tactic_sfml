@@ -2,7 +2,6 @@
 
 #include "actionState.hpp"
 #include <SFML/System/Clock.hpp>
-
 #include "unit.h"
 
 class Tile;
@@ -17,7 +16,7 @@ public:
     void on_exit() override;
     void update() override;
     bool remove_dead_unit(Tile* unit);
-    void draw(state& gState) override;
+    void draw(sf::RenderWindow& window) override;
 
     bool attackFinished = false;
     int wasCrit = false;

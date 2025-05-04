@@ -3,15 +3,15 @@
 #include "../../headers/actionState.hpp"
 #include "../../headers/0_chooseTile.h"
 #include "../../headers/turnState.hpp"
+#include "../../headers/enemyTurn.h"
 #include "../../headers/unit.h"
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/System/Clock.hpp>
+#include "../../headers/mapBuilder.h"
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
-
-#include "../../headers/mapBuilder.h"
 
 Attack::Attack(state& state, TurnState* turnState, Tile* unitA, Tile* unitB,
                std::vector<int> aStats, std::vector<int> bStats)
@@ -99,7 +99,7 @@ void Attack::update()
 
         if (!gState.check_all_units_moved(0))
             turnState->SetActionState(new ChooseTile(gState, turnState));
-        else gState.MapLogic.set_state(new EnemyTurn(&gState.MapLogic));
+        else gState.MapLogic.set_state(new EnemyTurn(gState));
     }
 }
 
@@ -128,7 +128,7 @@ bool Attack::remove_dead_unit(Tile* unit)
 	return false;
 }
 
-void Attack::draw(state& gState)
+void Attack::draw(sf::RenderWindow& window)
 {
     switch (currentPhase) {
 

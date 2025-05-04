@@ -87,7 +87,7 @@ void ChooseAttack::update()
 	}
 }
 
-void ChooseAttack::draw(state& gState)
+void ChooseAttack::draw(sf::RenderWindow& window)
 {
 	for (auto enemy : enemyNear)
 	{

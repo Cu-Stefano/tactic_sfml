@@ -2,11 +2,8 @@
 
 #include <string>
 #include <SFML/Graphics.hpp>
-
-#include "0_chooseTile.h"
 #include "MapLogic.h"
 #include "attackGui.h"
-#include "enemyTurn.h"
 #include "unit.h"
 class Tile;
 

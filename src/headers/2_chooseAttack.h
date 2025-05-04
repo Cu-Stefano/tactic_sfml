@@ -15,5 +15,5 @@ public:
 	void on_exit() override;
 
 	void update() override;
-	void draw(state& gState) override;
+	void draw(sf::RenderWindow& window) override;
 };

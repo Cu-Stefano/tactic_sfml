@@ -1,4 +1,6 @@
 #pragma once  
+#include "SFML/Graphics/RenderWindow.hpp"
+
 class state;  
 class TurnState;
 
@@ -11,6 +13,6 @@ public:
 
 	void set_state(TurnState* newTurnState);  
 
-	void draw(state& gState) const;  
-	void update() const;  
+	void draw(sf::RenderWindow& window);  
+	void update();  
 };

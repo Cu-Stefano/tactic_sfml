@@ -1,7 +1,6 @@
 #include "../headers/turnState.hpp"
 #include "../headers/allayTurn.h"  
 #include "../headers/enemyTurn.h"  
-#include "../headers/MapLogic.h"  
 #include "../headers/state.hpp"
 #include "../headers/actionState.hpp"
 #include "../headers/0_chooseTile.h"
@@ -14,9 +13,8 @@ class Turnstate;
 class ActionState;
 class ChooseTile;
 
-AllayTurn::AllayTurn(MapLogic* map_logic) : TurnState(map_logic->gState), allay_turn_text(nullptr)
+AllayTurn::AllayTurn(state& gs) : TurnState(gs), allay_turn_text(nullptr)
 {
-	this->map_logic = map_logic;
 	CurrentActionState = nullptr;
 }
 
@@ -61,10 +59,10 @@ void AllayTurn::update()
 	CurrentActionState->update();
 }  
 
-void AllayTurn::draw(state& gState)
+void AllayTurn::draw(sf::RenderWindow& window)
 {
 	gState.window.draw(*gState.turn_number);
 	if (allay_turn_text)
 		gState.window.draw(*allay_turn_text);
-	CurrentActionState->draw(gState);
+	CurrentActionState->draw(window);
 }

@@ -117,7 +117,7 @@ void TileSelected::update()
 			if (!move_logic(hovered_tile, route))// è falso se finisco il turno senza spostarmi
 			{
 				if (gState.check_all_units_moved(0)) 
-					gState.MapLogic.set_state(new EnemyTurn(&gState.MapLogic));
+					gState.MapLogic.set_state(new EnemyTurn(gState));
 				else
 					turnState->SetActionState(new ChooseTile(gState, turnState));
 				return;
@@ -152,7 +152,7 @@ void TileSelected::update()
 				destination->unitOn->an_sprite.sprite->setColor(UNIT_MOVED);
 
 				if (gState.check_all_units_moved(0)) 
-					gState.MapLogic.set_state(new EnemyTurn(&gState.MapLogic));
+					gState.MapLogic.set_state(new EnemyTurn(gState));
 				else
 					turnState->SetActionState(new ChooseTile(gState, turnState));
 			}
@@ -172,7 +172,7 @@ void TileSelected::update()
 	}
 }
 
-void TileSelected::draw(state& gState)
+void TileSelected::draw(sf::RenderWindow& window)
 {
 	if (!Unit::IsAnyUnitMoving && !Unit::hasSomeActionBeenStared)
 	{

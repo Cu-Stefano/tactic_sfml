@@ -103,7 +103,7 @@ void Unit::has_moved()
     firstFrame = true;
 }
 
-void Unit::draw(RenderWindow& window) const
+void Unit::draw(RenderWindow& window)
 {
 	an_sprite.draw(window);
 }
