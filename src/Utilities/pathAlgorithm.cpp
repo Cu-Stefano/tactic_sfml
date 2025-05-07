@@ -16,9 +16,9 @@ PathAlgorithm::PathAlgorithm(Tile* Onode, state& gState): gState(gState)
 	attackBorderPath = {};
 	attackList = {};
 	nearEnemies = {};
-
 	this->Onode = Onode;
 	unit = Onode->unitOn;
+    enemyType = unit->type == 0 ? 1 : 0; //the type of units the Onode wants to attack
 	Onode->G = 0; 
 	Onode->Parent = nullptr; 
     priorityQueue.emplace(Onode->G = 0, Onode);
@@ -45,7 +45,7 @@ void PathAlgorithm::set_origin_tile(Tile* button)
 
 void PathAlgorithm::execute(int range)
 {
-    auto enemyType = unit->type == 0 ? 1 : 0; //the type of units the Onode wants to attack
+    
     int movement = unit->movement;
     int totalRange = movement + range;
 
@@ -73,7 +73,11 @@ void PathAlgorithm::execute(int range)
                     if (currNeighbour->unitOn)
                     {
                         if (currNeighbour->unitOn->type == enemyType)
-                            attackList.push_back(currNeighbour);
+                        {
+	                        attackList.push_back(currNeighbour);
+                            continue;
+                        }
+                        
                     }
 
                     currNeighbour->G = curr->G + 1;
@@ -155,7 +159,7 @@ vector<vector<Tile*>> PathAlgorithm::initiliazemap()
        {  
            Tile* tile = basemap[i][j];  
            tile->G = 0;
-           tile->passable = tile->unitOn != nullptr ? true: tile->walkable;
+           tile->passable = tile->unitOn && tile->unitOn->type != enemyType ? true: tile->walkable;
            row.push_back(tile);
        }  
        result.push_back(row);  

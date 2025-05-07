@@ -5,6 +5,7 @@
 #include "MapLogic.h"
 #include "attackGui.h"
 #include "unit.h"
+#include "SFML/Audio.hpp"
 class Tile;
 
 constexpr unsigned WINDOW_WIDTH = 1400;
@@ -31,12 +32,24 @@ public:
 	AttackGui attackGui;
     sf::Font font = sf::Font("resources/font/16x16_font.ttf");
     std::vector<std::vector<Tile*>> map;
+    sf::SoundBuffer allayBuffer = sf::SoundBuffer("resources/Sounds/allay.mp3");
+    sf::SoundBuffer enemyBuffer = sf::SoundBuffer("resources/Sounds/allay.mp3");
+    sf::SoundBuffer missBuffer = sf::SoundBuffer("resources/Sounds/miss.wav");
+    sf::SoundBuffer hitBuffer = sf::SoundBuffer("resources/Sounds/hit.wav");
+    sf::SoundBuffer critBuffer = sf::SoundBuffer("resources/Sounds/crit.wav");
+    sf::SoundBuffer clickBuffer = sf::SoundBuffer("resources/Sounds/click.wav");
+    sf::SoundBuffer no_damageBuffer = sf::SoundBuffer("resources/Sounds/no_damage.wav");
+	sf::Sound attackSound = sf::Sound(hitBuffer);
+	sf::Sound turnsoundSound = sf::Sound(allayBuffer);
+	sf::Sound clickSound = sf::Sound(clickBuffer);
     Tile* selected_tile;
-   
 
 	state(unsigned w, unsigned h, const std::string& title) : MapLogic(*this), attackGui(*this),
 	                                                          selected_tile(nullptr)
     {
+        turnsoundSound.setBuffer(allayBuffer);
+		turnsoundSound.setVolume(25);
+        turnsoundSound.play();
 	    window = sf::RenderWindow(sf::VideoMode({w, h}), title);
     }
 

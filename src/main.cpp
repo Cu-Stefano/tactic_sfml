@@ -3,6 +3,7 @@
 #include "headers/tile.h"
 #include "headers/unit.h"
 
+
 using namespace sf;
 
 ////////////////////////////////////////////////////////////
@@ -168,6 +169,7 @@ int main()
 
     initialize_map(gs);
     gs.selected_tile = gs.map[0][1];
+
 
     while (gs.window.isOpen()) // main loop
     {

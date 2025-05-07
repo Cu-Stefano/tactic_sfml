@@ -27,6 +27,7 @@ public:
     vector<Tile*> attackBorderPath;//i bordi d'attacco del path
     vector<Tile*> attackList;//tutti i nemici dentro al path, ma fuori da nearEnemies
     vector<Tile*> nearEnemies;//nemici nel range di attacco da fermo
+    int enemyType;
 
 private:
     state& gState;

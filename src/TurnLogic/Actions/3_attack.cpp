@@ -35,18 +35,23 @@ void Attack::handle_attack(Tile* target, Tile* attacker, const std::vector<int>&
                 CritB = true;
             damage *= 3;
         }
-
         targetStats[0] -= damage;
         wasHit = true;
         target->unitOn->hp = std::max(0, targetStats[0]);
     }
 }
 
+
 void Attack::handle_phase(Unit* attacker, Tile* target, bool wasHit, float delay, AttackPhase nextPhase, sf::Clock currclock, bool crit)
 {
     if (currclock.getElapsedTime().asSeconds() <= flash_duration_) {
         if (crit)
-            attacker->an_sprite.sprite->setColor(sf::Color(255, 255, 0, 230));
+        {
+            //attackSound.setBuffer(attackBuffer);
+            //// Riproduzione del suono
+            //attackSound.play();
+	        attacker->an_sprite.sprite->setColor(sf::Color(255, 255, 0, 230));
+        }
         else
             attacker->an_sprite.sprite->setColor(sf::Color::White);
 
@@ -144,6 +149,16 @@ void Attack::draw(sf::RenderWindow& window)
             clock2 = sf::Clock();
             first_time = false;
             unitA->unitOn->an_sprite.curr_frame = 3;
+            if (B_was_hit)
+            {
+                if (CritA)
+					gState.attackSound.setBuffer(gState.critBuffer);
+				else
+					gState.attackSound.setBuffer(gState.hitBuffer);
+            }
+            else
+				gState.attackSound.setBuffer(gState.missBuffer);
+            gState.attackSound.play();
         }
         handle_phase(unitA->unitOn, unitB, B_was_hit, delay_, AttackPhase::SecondAttack, clock1, CritA);
         break;
@@ -158,7 +173,17 @@ void Attack::draw(sf::RenderWindow& window)
             clock1 = sf::Clock();
             clock3 = sf::Clock();
             first_time_b = false;
-            unitB->unitOn->an_sprite.curr_frame = 3;
+            unitB->unitOn->an_sprite.curr_frame = 3;           
+            if (A_was_hit)
+			{
+				if (CritB)
+					gState.attackSound.setBuffer(gState.critBuffer);
+				else
+					gState.attackSound.setBuffer(gState.hitBuffer);
+			}
+			else
+				gState.attackSound.setBuffer(gState.missBuffer);
+			gState.attackSound.play();
         }
         handle_phase(unitB->unitOn, unitA, A_was_hit, delay_, AttackPhase::Finished, clock1, CritB);
         break;

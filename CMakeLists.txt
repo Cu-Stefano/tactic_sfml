@@ -21,4 +21,4 @@ file(GLOB_RECURSE HEADER_FILES ${CMAKE_SOURCE_DIR}/src/*.h)
 
 # Aggiungi l'eseguibile principale con tutti i file trovati
 add_executable(TacticSFML ${SOURCE_FILES} ${HEADER_FILES})
-target_link_libraries(TacticSFML PRIVATE SFML::Graphics)
+target_link_libraries(TacticSFML PRIVATE SFML::Graphics sfml-audio)
