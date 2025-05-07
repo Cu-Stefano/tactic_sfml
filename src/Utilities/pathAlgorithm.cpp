@@ -70,11 +70,10 @@ void PathAlgorithm::execute(int range)
                         continue;
                     }
 
-                    if (currNeighbour->unitOn)// e onn lo contine da aggiungere ?
+                    if (currNeighbour->unitOn)
                     {
                         if (currNeighbour->unitOn->type == enemyType)
                             attackList.push_back(currNeighbour);
-                        continue;
                     }
 
                     currNeighbour->G = curr->G + 1;

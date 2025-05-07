@@ -12,7 +12,7 @@ Tile::Tile(const std::string& tileName, bool walkable, Unit* unitOn,
 
 void Tile::draw(::state& gState) const
 {
-	Button::draw(gState);
+	Button::draw(gState.window);
 }
 
 void Tile::move_unit(Tile* b, std::vector<Tile*> route)

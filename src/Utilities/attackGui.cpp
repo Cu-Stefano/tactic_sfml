@@ -90,7 +90,7 @@ void AttackGui::draw_units()
 	if (attack_initiated)
 		x = 350.0f;
 	else if (unitA->unitOn->type == 0)
-		attack_button->draw(gState);
+		attack_button->draw(gState.window);
 
 	draw_unit(unitA, x, true);
 	draw_unit(unitB, x, false);
@@ -108,20 +108,24 @@ void calculate_attack_stats(Unit unita, Unit unitb, std::vector<int>& a_stats, s
 	if (b_weapon_type == (a_weapon_type + 1) % 3)
 	{
 		bonus = 1; // unitA ha il vantaggio
-		bonus_a_att = 3;
-		bonus_a_hit = 10;
+		bonus_a_att = 2;
+		bonus_a_hit = 15;
 
-		bonus_b_hit = -10;
+		bonus_b_hit = -15;
 		bonus_b_att = -2;
 	}
 	else if (a_weapon_type == (b_weapon_type + 1) % 3)
 	{
-		bonus = 2; // unitA ha lo svantaggio
-		bonus_b_att = 3;
-		bonus_b_hit = 10;
+		bonus = 2; // unitB ha lo svantaggio
+		bonus_b_att = 2;
+		bonus_b_hit = 15;
 
-		bonus_a_hit = -10;
+		bonus_a_hit = -15;
 		bonus_a_att = -2;
+	}
+	else
+	{
+		bonus = 0; // nessun vantaggio
 	}
 
 	a_stats.push_back(unita.hp); // hp rimasti  

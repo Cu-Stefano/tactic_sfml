@@ -66,7 +66,7 @@ public:
 
     bool isMouseOutOfRange(const sf::Vector2f mousePos) const
     {
-       return mousePos.x > menubar_attack_window_x || mousePos.y > menubar_attack_y || mousePos.x < 0 || mousePos.y < 0;
+       return mousePos.x >= menubar_attack_window_x || mousePos.y >= menubar_attack_y || mousePos.x < 0 || mousePos.y < 0;
     }
 
     bool check_all_units_moved(int type)

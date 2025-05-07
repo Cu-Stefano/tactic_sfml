@@ -22,14 +22,17 @@ Attack::Attack(state& state, TurnState* turnState, Tile* unitA, Tile* unitB,
 	std::srand(static_cast<unsigned>(std::time(nullptr)));
 }
 
-void Attack::handle_attack(Tile* target, const std::vector<int>& attackerStats, std::vector<int>& targetStats, bool& wasHit)
+void Attack::handle_attack(Tile* target, Tile* attacker, const std::vector<int>& attackerStats, std::vector<int>& targetStats, bool& wasHit)
 {
     if (rand() % 100 < attackerStats[2]) // Hit chance 
     {
         int damage = attackerStats[1];
         if (rand() % 100 < attackerStats[3]) // Crit chance 
         {
-            wasCrit = true;
+			if (attacker == unitA)
+				CritA = true;
+			else
+                CritB = true;
             damage *= 3;
         }
 
@@ -39,10 +42,10 @@ void Attack::handle_attack(Tile* target, const std::vector<int>& attackerStats, 
     }
 }
 
-void Attack::handle_phase(Unit* attacker, Tile* target, bool wasHit, float delay, AttackPhase nextPhase, sf::Clock currclock)
+void Attack::handle_phase(Unit* attacker, Tile* target, bool wasHit, float delay, AttackPhase nextPhase, sf::Clock currclock, bool crit)
 {
     if (currclock.getElapsedTime().asSeconds() <= flash_duration_) {
-        if (wasCrit)
+        if (crit)
             attacker->an_sprite.sprite->setColor(sf::Color(255, 255, 0, 230));
         else
             attacker->an_sprite.sprite->setColor(sf::Color::White);
@@ -77,9 +80,9 @@ void Attack::on_enter()
 {
     gState.attackGui.attack_initiated = true;
 
-    handle_attack(unitB, aStats, bStats, B_was_hit);
-    if (unitB->unitOn)
-        handle_attack(unitA, bStats, aStats, A_was_hit);
+    handle_attack(unitB, unitA, aStats, bStats, B_was_hit);
+    if (unitB->unitOn && unitB->unitOn->hp != 0)
+        handle_attack(unitA, unitB, bStats, aStats, A_was_hit);
 }
 
 void Attack::on_exit()
@@ -142,7 +145,7 @@ void Attack::draw(sf::RenderWindow& window)
             first_time = false;
             unitA->unitOn->an_sprite.curr_frame = 3;
         }
-        handle_phase(unitA->unitOn, unitB, B_was_hit, delay_, AttackPhase::SecondAttack, clock1);
+        handle_phase(unitA->unitOn, unitB, B_was_hit, delay_, AttackPhase::SecondAttack, clock1, CritA);
         break;
 
     case AttackPhase::SecondAttack:
@@ -157,7 +160,7 @@ void Attack::draw(sf::RenderWindow& window)
             first_time_b = false;
             unitB->unitOn->an_sprite.curr_frame = 3;
         }
-        handle_phase(unitB->unitOn, unitA, A_was_hit, delay_, AttackPhase::Finished, clock1);
+        handle_phase(unitB->unitOn, unitA, A_was_hit, delay_, AttackPhase::Finished, clock1, CritB);
         break;
 
     case AttackPhase::Dead:

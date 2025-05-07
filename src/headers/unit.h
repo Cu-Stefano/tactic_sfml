@@ -6,6 +6,10 @@
 
 class Tile;
 
+static float UNITS_SPEED = 170.0f;
+static float SWAP_INTERVAL = 0.3f;
+static float SWAP_INTERVAL_RUN = 0.1f;
+
 enum ClassType
 {
     swordsman = 0,
@@ -20,7 +24,7 @@ public:
     bool canMove;
     ClassType unit_class;
     std::optional<Weapon> equiped_weapon;
-
+    bool unguento = true;
     AnimatedSprite an_sprite;
 
     sf::Vector2f currentTargetPosition; // Posizione di destinazione
@@ -28,7 +32,7 @@ public:
 	bool firstFrame = true; // Flag per il primo frame di movimento;
     bool isMoving = false;
     bool move_just_started = false;
-    float move_speed = 170.0f; // Speed in pixels per second
+    static float move_speed; // Speed in pixels per second
     sf::Clock move_clock; // Clock for movement timing
 
     static bool IsAnyUnitMoving;
@@ -71,7 +75,5 @@ constexpr sf::Vector2f BOSS_MOVE_OFFSET(-11, -11);
 constexpr sf::Vector2f DEFAULT_OFFSET(-12, -12);
 constexpr sf::Vector2f ENEMY_OFFSET(63, 0);
 
-constexpr float SWAP_INTERVAL = 0.3f;
-constexpr float SWAP_INTERVAL_RUN = 0.1f;
 
 

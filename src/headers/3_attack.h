@@ -19,18 +19,21 @@ public:
     void draw(sf::RenderWindow& window) override;
 
     bool attackFinished = false;
-    int wasCrit = false;
+    int CritA = false;
+    int CritB = false;
+    
 
 private:
     enum class AttackPhase {
         FirstAttack,
         SecondAttack,
         Dead,
-        Finished
+        Finished,
+    	DoubleAttack
     };
 
-    void handle_attack(Tile* target, const std::vector<int>& attackerStats, std::vector<int>& targetStats, bool& wasHit);
-	void handle_phase(Unit* attacker, Tile* target, bool wasHit, float delay, AttackPhase nextPhase, sf::Clock currclock);
+    void handle_attack(Tile* target, Tile* attacker, const std::vector<int>& attackerStats, std::vector<int>& targetStats, bool& wasHit);
+	void handle_phase(Unit* attacker, Tile* target, bool wasHit, float delay, AttackPhase nextPhase, sf::Clock currclock, bool crit);
 
     Tile* unitA;
     Tile* unitB;
@@ -50,7 +53,7 @@ private:
 
     bool first_time = true;
     bool first_time_b = true;
-
+    bool first_time_d = true;
 
     const float flash_duration_ = 0.3f;
     const float delay_ = 0.9f;

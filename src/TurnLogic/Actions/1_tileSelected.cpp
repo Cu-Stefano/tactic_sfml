@@ -17,9 +17,35 @@ int c;// contatore usato per saltare il primo click che viene registrato per sba
 bool wasButtonPressed;
 
 TileSelected::TileSelected(state& gState, TurnState* turnState, Tile* tile)
-	: ActionState(gState, turnState), destination(nullptr)
+	: ActionState(gState, turnState), destination(nullptr), tile(tile)
 {
+	this->tile = tile;
 	pathAlgorithm = new PathAlgorithm(tile, gState);
+	if (!ui.loadFromFile("resources/Ui/Ui_assets.png")) {
+		throw std::runtime_error("Failed to load texture");
+	}
+	sf::Sprite ung_sprite(ui);
+	ung_sprite.setTextureRect(sf::IntRect({ 1, 130 }, { 47, 12 }));
+	ung_sprite.setScale({ 3.5, 3.5 });
+	ung_sprite.setPosition({ static_cast<float>(gState.menubar_attack_window_x / 2.4) , static_cast<float>(gState.menubar_attack_y) });
+
+	sf::Vector2f buttonPos = { static_cast<float>(gState.menubar_attack_window_x / 2.4) , static_cast<float>(gState.menubar_attack_y) };
+	sf::Vector2f buttonSize = { ung_sprite.getGlobalBounds().size.x , ung_sprite.getGlobalBounds().size.y };
+
+	unguento = new Button(buttonPos, buttonSize, ung_sprite);
+	unguento->set_click_function([tile, turnState, &gState]() {
+		if (tile->unitOn->unguento && tile->unitOn->hp != tile->unitOn->max_hp)
+		{
+			tile->unitOn->hp = tile->unitOn->max_hp - tile->unitOn->hp <= 5 ? tile->unitOn->max_hp : tile->unitOn->hp + 5;
+			tile->unitOn->unguento = false;
+			tile->unitOn->has_moved();
+			tile->unitOn->an_sprite.sprite->setColor(UNIT_MOVED);
+			tile->unitOn->canMove = false;
+			tile->unitOn->an_sprite.sprite_y = 0;
+			tile->unitOn->an_sprite.swap_interval = SWAP_INTERVAL; // sec
+			turnState->SetActionState(new ChooseTile(gState, turnState));
+		}
+		});
 }
 
 void TileSelected::on_enter() {
@@ -27,10 +53,10 @@ void TileSelected::on_enter() {
 	wasButtonPressed = false;
 	c = 0;
 	pathAlgorithm->execute();
-	if (!pathAlgorithm->Onode->unitOn->isMoving)
+	if (!tile->unitOn->isMoving)
 	{
-		pathAlgorithm->Onode->unitOn->an_sprite.swap_interval = SWAP_INTERVAL_RUN;
-		pathAlgorithm->Onode->unitOn->an_sprite.sprite_y = 1;
+		tile->unitOn->an_sprite.swap_interval = SWAP_INTERVAL_RUN;
+		tile->unitOn->an_sprite.sprite_y = 1;
 	}
 }
 
@@ -50,32 +76,32 @@ bool TileSelected::move_logic(Tile* hovered_tile, vector<Tile*> route)
 		if (!wasButtonPressed)//entra al primo click e poi di nuovo soltanto quando si rilascia left mouse
 		{
 			wasButtonPressed = true;
-			if (hovered_tile == pathAlgorithm->Onode)
+			if (hovered_tile == tile)
 			{
 				c++;
 				if (c < 2) return true;
 			}
-			else if (!hovered_tile)
+			else if (!hovered_tile || (hovered_tile->unitOn && hovered_tile->unitOn->type == 0))
 					return true;
 
-			if (std::find(pathAlgorithm->Onode->neighbours.begin(), pathAlgorithm->Onode->neighbours.end(), hovered_tile) != pathAlgorithm->Onode->neighbours.end() 
+			if (std::find(tile->neighbours.begin(), tile->neighbours.end(), hovered_tile) != tile->neighbours.end() 
 				&& (hovered_tile->unitOn && hovered_tile->unitOn->type == 1))
 			{
 				std::vector<Tile*> near_enemies{};
-				for (auto& neighbour : pathAlgorithm->Onode->neighbours)
+				for (auto& neighbour : tile->neighbours)
 				{
-					if (neighbour->unitOn && neighbour->unitOn->type == 1 - pathAlgorithm->Onode->unitOn->type)
+					if (neighbour->unitOn && neighbour->unitOn->type == 1 - tile->unitOn->type)
 						near_enemies.push_back(neighbour);
 				}
-				turnState->SetActionState(new ChooseAttack(gState, turnState, near_enemies, pathAlgorithm->Onode));
+				turnState->SetActionState(new ChooseAttack(gState, turnState, near_enemies, tile));
 				return true;
 			}
 
 			currentPosition = gState.getCoordFromTile(hovered_tile);
 			//now hovered_tile is the new position of Onode
 			destination = hovered_tile;
-			pathAlgorithm->Onode->move_unit(hovered_tile, route);
-			if (hovered_tile == pathAlgorithm->Onode)
+			tile->move_unit(hovered_tile, route);
+			if (hovered_tile == tile)
 				return false;
 		}
 	}
@@ -88,7 +114,10 @@ bool TileSelected::move_logic(Tile* hovered_tile, vector<Tile*> route)
 
 void TileSelected::update()
 {
-	pathAlgorithm->update();
+	if (unguento)
+		unguento->update(gState.window);
+	if (pathAlgorithm)
+		pathAlgorithm->update();
 
 	//mouse actions:
 	Vector2f mousePos = gState.window.mapPixelToCoords(Mouse::getPosition(gState.window));
@@ -99,14 +128,14 @@ void TileSelected::update()
 	{
 		//hover::Trail
 		if ((std::find(pathAlgorithm->path.begin(), pathAlgorithm->path.end(), hovered_tile) != pathAlgorithm->path.end() 
-			|| hovered_tile == pathAlgorithm->Onode) && destination == nullptr
+			|| hovered_tile == tile) && destination == nullptr
 			|| (std::find(pathAlgorithm->nearEnemies.begin(), pathAlgorithm->nearEnemies.end(), hovered_tile) != pathAlgorithm->nearEnemies.end()))
 		{
 			std::vector<Tile*> route{};
 			if (!hovered_tile->unitOn)
 			{
 				auto currNode = hovered_tile;
-				while (currNode != pathAlgorithm->Onode)
+				while (currNode != tile)
 				{
 					route.push_back(currNode);
 					currNode->shape.setFillColor(ROUTE_COLOR);
@@ -166,8 +195,8 @@ void TileSelected::update()
 	{
 		if (pathAlgorithm)
 		{
-			pathAlgorithm->Onode->unitOn->an_sprite.sprite_y = 0;
-			pathAlgorithm->Onode->unitOn->an_sprite.swap_interval = SWAP_INTERVAL; // sec
+			tile->unitOn->an_sprite.sprite_y = 0;
+			tile->unitOn->an_sprite.swap_interval = SWAP_INTERVAL; // sec
 			turnState->SetActionState(new ChooseTile(gState, turnState));
 		}
 	}
@@ -177,6 +206,7 @@ void TileSelected::draw(sf::RenderWindow& window)
 {
 	if (!Unit::IsAnyUnitMoving && !Unit::hasSomeActionBeenStared)
 	{
+
 		for (auto& tile : pathAlgorithm->path)
 			gState.window.draw(tile->path_sprite);
 		
@@ -188,7 +218,8 @@ void TileSelected::draw(sf::RenderWindow& window)
 		
 		for (auto tile : pathAlgorithm->nearEnemies)
 			gState.window.draw(tile->path_sprite);
-		
+		if (tile->unitOn->unguento)
+			unguento->draw(gState.window);
 	}
 }
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "actionState.hpp"
+#include "button.h"
 
 class Tile;
 class PathAlgorithm;
@@ -8,6 +9,10 @@ class PathAlgorithm;
 class TileSelected : public ActionState {
 	Tile* destination;
 	PathAlgorithm* pathAlgorithm;
+	sf::Texture ui;
+	Button* unguento;
+	Tile* tile;    
+
 public:
 	TileSelected(state& gState, TurnState* turnState, Tile* tile);
 	void on_enter() override;

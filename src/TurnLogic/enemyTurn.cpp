@@ -10,7 +10,7 @@
 
 class Turnstate;
 
-EnemyTurn::EnemyTurn(state& gs) : TurnState(gs), pathAlgorithm(nullptr)
+EnemyTurn::EnemyTurn(state& gs) : TurnState(gs), pathAlgorithm(nullptr), curr_enemy_index(0)
 {
 }
 
@@ -29,9 +29,9 @@ void EnemyTurn::end_enemy_turn(Tile* tile)
 
 void EnemyTurn::on_enter() {
 	gState.turn_number->setString("Turn: " + std::to_string(gState.turn));
-	Unit::hasSomeActionBeenStared = false; 
-	curr_enemy_iter = enemy_tile_list.begin();
-}  
+	Unit::hasSomeActionBeenStared = false;
+	curr_enemy_index = 0; // Inizializza l'indice al primo elemento
+}
 
 void EnemyTurn::on_exit() {
 	for (auto unit : enemy_list)
@@ -43,15 +43,17 @@ void EnemyTurn::on_exit() {
 
 Tile* EnemyTurn::get_next_enemy()
 {
-	if (curr_enemy_iter == enemy_tile_list.end())
-		curr_enemy_iter = enemy_tile_list.begin() + 1;
-    else if (enemy_tile_list.empty()) {
-        return nullptr; 
-    }
+	if (enemy_tile_list.empty()) {
+		return nullptr; // Nessun nemico nella lista
+	}
 
-    Tile* next_enemy = *curr_enemy_iter;
-    ++curr_enemy_iter;
-    return next_enemy;
+	if (curr_enemy_index >= enemy_tile_list.size()) {
+		curr_enemy_index = 0; // Ricomincia dall'inizio
+	}
+
+	Tile* next_enemy = enemy_tile_list[curr_enemy_index];
+	++curr_enemy_index; // Passa al prossimo nemico
+	return next_enemy;
 }
 
 Tile* EnemyTurn::find_tile_to_land(Tile* attackedUnit)
@@ -134,7 +136,7 @@ void EnemyTurn::update() {
 
 
 	case turn_fase::CHOOSE_ACTION:
-
+		gState.attackGui.attack_initiated = false;
 		Unit::hasSomeActionBeenStared = false;
 		current_enemy = get_next_enemy();
 		if (gState.check_all_units_moved(1))
@@ -227,7 +229,7 @@ void EnemyTurn::update() {
 		if (!allayToAttack)// the enemy just got closer no need to attack
 		{
 			end_enemy_turn(tileToLand);
-			*(curr_enemy_iter - 1) = tileToLand;
+			enemy_tile_list[curr_enemy_index - 1] = tileToLand;
 			Unit::hasSomeActionBeenStared = false;
 			previewSelected = true;
 			current_phase = turn_fase::END;
@@ -236,7 +238,7 @@ void EnemyTurn::update() {
 		}
 
 		//he arrived
-		*(curr_enemy_iter - 1) = tileToLand;
+		enemy_tile_list[curr_enemy_index - 1] = tileToLand;
 		current_enemy = tileToLand;
 		Unit::hasSomeActionBeenStared = false;
 
@@ -263,7 +265,7 @@ void EnemyTurn::update() {
 		{
 			clock.restart();
 			if (!current_enemy->unitOn || current_enemy->unitOn->canMove )// quello prima e' morto
-				--curr_enemy_iter;
+				--curr_enemy_index;
 			current_phase = turn_fase::END;
 		}
 		break;

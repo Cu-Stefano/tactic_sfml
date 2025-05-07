@@ -44,4 +44,5 @@ private:
     bool previewSelected = false;
     std::vector<Tile*> route{};
     Attack* attackState = nullptr;
+    int curr_enemy_index;
 };

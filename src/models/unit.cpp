@@ -4,11 +4,12 @@
 #include "../headers/tile.h"
 
 bool Unit::IsAnyUnitMoving = false;
+float Unit::move_speed = UNITS_SPEED;
 bool Unit::hasSomeActionBeenStared = false;
 using namespace sf;
 
 Unit::Unit(std::string n, bool t, ClassType c, int mh, int mv, int str, int def, int spe, int skl, int lck)
-    : name(n), type(t), unit_class(c), max_hp(mh), movement(mv), hp(mh),
+    : name(n), type(t), unit_class(c), max_hp(mh), movement(mv), hp(mh-1),
     strength(str), defense(def), speed(spe), skill(skl), luck(lck), canMove(true)
 {
     equiped_weapon = initialize_weapon(c);
@@ -19,11 +20,11 @@ Unit::Unit(std::string n, bool t, ClassType c, int mh, int mv, int str, int def,
 Weapon Unit::initialize_weapon(ClassType c) const {
     switch (c) {
     case ClassType::swordsman:
-        return Weapon(1, 7, 80, 10, WeaponType::sword);
+        return Weapon(1, 7, 85, 10, WeaponType::sword);
     case ClassType::warrior:
-        return Weapon(1, 8, 70, 8, WeaponType::axe);
+        return Weapon(1, 8, 75, 8, WeaponType::axe);
     case ClassType::soldier:
-        return Weapon(1, 6, 100, 5, WeaponType::lance);
+        return Weapon(1, 6, 95, 5, WeaponType::lance);
     }
     throw std::invalid_argument("Invalid ClassType");
 }
@@ -156,12 +157,12 @@ void Unit::update()
 }
 
 std::vector<Unit*> allay_list = {
-    new Unit("Ike", 0, ClassType::swordsman, 19, 5, 5, 4, 6, 5, 5),
+    new Unit("Ike", 0, ClassType::swordsman, 50, 5, 5, 4, 6, 5, 5),
     new Unit("Mia", 0, ClassType::swordsman, 17, 5, 5, 3, 8, 6, 4), 
     new Unit("Oscar", 0, ClassType::warrior, 21, 5, 6, 5, 5, 5, 3), 
     new Unit("Boyd", 0, ClassType::warrior, 23, 5, 7, 4, 4, 4, 2),  
-    new Unit("Rhys", 0, ClassType::soldier, 14, 5, 3, 2, 3, 5, 6),  
-    new Unit("Soren", 0, ClassType::soldier, 15, 5, 4, 3, 4, 6, 5)  
+    new Unit("Rhys", 0, ClassType::soldier, 14, 5, 3, 3, 3, 5, 6),  
+    new Unit("Soren", 0, ClassType::soldier, 15, 5, 4, 2, 4, 6, 5)  
 };
 
 std::vector<Unit*> enemy_list = {

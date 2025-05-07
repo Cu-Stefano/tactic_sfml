@@ -151,11 +151,11 @@ void update(state& gs)
 	gs.MapLogic.update();
     for (auto& allay : allay_list)
     {
-        allay->update();
+            allay->update();
     }
     for (auto& enemy : enemy_list)
     {
-        enemy->update();
+			enemy->update();
     }
 }
 ////////////////////////////////////////////////////////////
