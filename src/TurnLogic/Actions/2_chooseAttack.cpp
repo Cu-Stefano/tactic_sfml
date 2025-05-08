@@ -4,6 +4,7 @@
 #include "../../headers/tile.h"
 #include "../../headers/turnState.hpp"
 #include "../../headers/unit.h"
+#include "../../headers/enemyTurn.h"
 
 using namespace sf;
 
@@ -48,11 +49,12 @@ void ChooseAttack::update()
 
 		if (std::find(enemyNear.begin(), enemyNear.end(), clicked_tile) != enemyNear.end())
 		{
+			//setup the visual window showing the attack
 			gState.attackGui.initializer(attackingUnit, clicked_tile);
 			gState.attackGui.update();
 			preview_selected = clicked_tile->unitOn != nullptr;
 		}
-		else if (clicked_tile == attackingUnit)
+		else if (clicked_tile == attackingUnit)// if you click the attacking allay his turn ends
 		{
 			attackingUnit->move_unit(clicked_tile, {});
 			attackingUnit->unitOn->an_sprite.sprite_y = 0;
@@ -61,7 +63,10 @@ void ChooseAttack::update()
 			for (auto enemy : enemyNear)
 				enemy->unitOn->an_sprite.sprite_y = 0;
 
-			turnState->SetActionState(new ChooseTile(gState, turnState));
+			if (gState.check_all_units_moved(0))
+				gState.TurnSM.set_state(new EnemyTurn(gState));
+			else
+				turnState->SetActionState(new ChooseTile(gState, turnState));
 		}
 	}
 	else if (isButtonPressed(sf::Mouse::Button::Right))//back

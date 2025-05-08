@@ -33,7 +33,6 @@ void Tile::move_unit(Tile* b, std::vector<Tile*> route)
 
         b->unitOn = unitOn;
 
-        // Imposta la posizione di destinazione
         b->unitOn->targetRoute = route;
         b->unitOn->isMoving = true;
         unitOn = nullptr;

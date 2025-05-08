@@ -1,10 +1,9 @@
 #include "../headers/turnState.hpp"
 #include "../headers/enemyTurn.h"  
-
 #include "../headers/3_attack.h"
 #include "../headers/allayTurn.h"
 #include "../headers/mapBuilder.h"
-#include "../headers/MapLogic.h"  
+#include "../headers/TurnSM.h"  
 #include "../headers/tile.h"
 #include "../headers/unit.h"
 
@@ -28,9 +27,9 @@ void EnemyTurn::end_enemy_turn(Tile* tile)
 }
 
 void EnemyTurn::on_enter() {
-	gState.turn_number->setString("Turn: " + std::to_string(gState.turn));
+	gState.turnNumber->setString("Turn: " + std::to_string(gState.turn));
 	Unit::hasSomeActionBeenStared = false;
-	curr_enemy_index = 0; // Inizializza l'indice al primo elemento
+	curr_enemy_index = 0;
 }
 
 void EnemyTurn::on_exit() {
@@ -44,26 +43,26 @@ void EnemyTurn::on_exit() {
 Tile* EnemyTurn::get_next_enemy()
 {
 	if (enemy_tile_list.empty()) {
-		return nullptr; // Nessun nemico nella lista
+		return nullptr; 
 	}
 
 	if (curr_enemy_index >= enemy_tile_list.size()) {
-		curr_enemy_index = 0; // Ricomincia dall'inizio
+		curr_enemy_index = 0; // return to the beggining
 	}
 
 	Tile* next_enemy = enemy_tile_list[curr_enemy_index];
-	++curr_enemy_index; // Passa al prossimo nemico
+	++curr_enemy_index;
 	return next_enemy;
 }
 
-Tile* EnemyTurn::find_tile_to_land(Tile* attackedUnit)
+Tile* EnemyTurn::find_tile_to_land(Tile* attackedUnit) const
 {
 	int cost = 100;
 	Tile* finalTile = nullptr;
 
 	for (Tile* neighbor : attackedUnit->neighbours)
 	{
-		if (neighbor->walkable && std::find(pathAlgorithm->path.begin(), pathAlgorithm->path.end(), neighbor) != pathAlgorithm->path.end())
+		if (!neighbor->unitOn && neighbor->walkable && std::find(pathAlgorithm->path.begin(), pathAlgorithm->path.end(), neighbor) != pathAlgorithm->path.end())
 		{
 			int currentCost = pathAlgorithm->calculate_distance(neighbor);
 			if (currentCost < cost)
@@ -118,8 +117,17 @@ void EnemyTurn::move_towards_allay()
 		routeAux.pop_front();
 		currNode = routeAux[0];
     }
-	tileToLand = currNode;
-	route = std::vector(routeAux.begin(), routeAux.end());
+
+	auto curr = find_tile_to_land(currNode);
+	std::deque<Tile*> route{};
+	while (curr != pathAlgorithm->Onode)
+	{
+		route.push_back(curr);
+		curr = curr->Parent;
+	}
+
+	tileToLand = find_tile_to_land(currNode);
+	this->route = std::vector(route.begin(), route.end());
 	current_phase = turn_fase::MOVE;
 }
 
@@ -141,10 +149,10 @@ void EnemyTurn::update() {
 		current_enemy = get_next_enemy();
 		if (gState.check_all_units_moved(1))
 		{
-			gState.MapLogic.set_state(new AllayTurn(gState));
+			gState.TurnSM.set_state(new AllayTurn(gState));
 			return;
 		}
-
+			
 		if (current_enemy && current_enemy->unitOn && current_enemy->unitOn->canMove) {
 
 			current_phase = turn_fase::SHOW_PATH;
@@ -161,7 +169,7 @@ void EnemyTurn::update() {
 
 			if (pathAlgorithm->attackList.empty())
 			{
-				if (gState.turn >= 3)
+				if (gState.turn >= 1)
 				{
 					move_towards_allay();
 					break;
@@ -255,7 +263,7 @@ void EnemyTurn::update() {
 		current_phase = turn_fase::ATTACK;
 		gState.attackGui.attack_initiated = true;
 		attackState = new Attack(gState, this, current_enemy, gState.attackGui.unitB, gState.attackGui.unitAStats, gState.attackGui.unitBStats);
-		gState.MapLogic.current_turnState->SetActionState(attackState);
+		gState.TurnSM.current_turnState->SetActionState(attackState);
 		break;
 
 	case turn_fase::ATTACK:
@@ -288,7 +296,7 @@ void EnemyTurn::update() {
 
 void EnemyTurn::draw(sf::RenderWindow& window)
 {
-	gState.window.draw(*gState.turn_number);
+	gState.window.draw(*gState.turnNumber);
 
    switch (current_phase) {
 

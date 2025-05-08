@@ -1,7 +1,4 @@
 #include "../headers/animatedSprite.h"
-
-#include <iostream>
-
 #include "../headers/unit.h"
 
 AnimatedSprite::AnimatedSprite(sf::Texture t)
@@ -16,7 +13,7 @@ AnimatedSprite::AnimatedSprite(sf::Texture t)
 	sprite_y = 0;
 }
 
-void AnimatedSprite::set_pos(sf::Vector2i coord)
+void AnimatedSprite::set_pos(sf::Vector2i coord) const
 {
 	sprite->move(sf::Vector2f(coord));
 }
@@ -35,12 +32,13 @@ void AnimatedSprite::update()
 		{
 			this->curr_frame = 0;
 		}
+		// chaging sprite_y the animation changes
         sprite->setTextureRect(sf::IntRect({ this->curr_frame * sprite_width, sprite_y*32 }, { sprite_width, sprite_width }));
         clock.restart();
     }
 }
 
-void AnimatedSprite::draw(sf::RenderWindow& window)
+void AnimatedSprite::draw(sf::RenderWindow& window) const
 {
 	window.draw(*sprite);
 }

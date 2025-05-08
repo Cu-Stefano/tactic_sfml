@@ -1,41 +1,42 @@
 #include "../headers/attackGui.h"
 #include "../headers/button.h"
 #include "../headers/turnState.hpp"
-#include "../headers/2_chooseAttack.h"
 #include "../headers/3_attack.h"
-#include <iostream>
-
 #include "../headers/enemyTurn.h"
 #include "../headers/state.hpp"
 #include "../headers/tile.h"
 #include "../headers/unit.h"
 using namespace sf;
 
-Texture ui = Texture("resources/Ui/Ui_assets.png");
-
-AttackGui::AttackGui(state& gState) : gState(gState), attack_text(gState.font, "ATTACK!", 20)
+AttackGui::AttackGui(state& gState) : gState(gState), attack_text(gState.font, "ATTACK!", 20), unitA(nullptr),
+                                      unitB(nullptr)
 {
-	sf::Sprite buttonSprite(ui);
-	buttonSprite.setTextureRect(sf::IntRect({ 97, 50 }, { 46, 13 }));
-	buttonSprite.setScale({ 4, 4.5 });
-	buttonSprite.setPosition({ gState.menubar_attack_window_x / 4.7f, static_cast<float>(gState.menubar_attack_y) + 68 });
-
-	sf::Vector2f buttonPos = { gState.menubar_attack_window_x / 4.7f , static_cast<float>(gState.menubar_attack_y) + 68 };
-	sf::Vector2f buttonSize = { buttonSprite.getGlobalBounds().size.x , buttonSprite.getGlobalBounds().size.y };
-	
-	attack_button = new Button(buttonPos, buttonSize, buttonSprite);
-
-	attack_button->set_click_function([&]() {
-		gState.MapLogic.current_turnState->SetActionState(new Attack(gState, gState.MapLogic.current_turnState, unitA, unitB, gState.attackGui.unitAStats, gState.attackGui.unitBStats));
+	//setup the attack button
+	sf::Sprite buttonSprite(gState.ui);
+	buttonSprite.setTextureRect(sf::IntRect({97, 50}, {46, 13}));
+	buttonSprite.setScale({4, 4.5});
+	buttonSprite.setPosition({
+		static_cast<float>(gState.menubar_attack_window_x) / 4.7f, static_cast<float>(gState.menubar_attack_y) + 68
 	});
 
+	sf::Vector2f buttonPos = {
+		static_cast<float>(gState.menubar_attack_window_x) / 4.7f, static_cast<float>(gState.menubar_attack_y) + 68
+	};
+	sf::Vector2f buttonSize = {buttonSprite.getGlobalBounds().size.x, buttonSprite.getGlobalBounds().size.y};
+
+	attack_button = new Button(buttonPos, buttonSize, buttonSprite);
+	attack_button->set_click_function([&]()
+	{
+		gState.TurnSM.current_turnState->
+		SetActionState(new Attack(gState, gState.TurnSM.current_turnState, unitA,unitB, gState.attackGui.unitAStats,gState.attackGui.unitBStats));
+	});
 }
 
-void AttackGui::draw(sf::RenderWindow& window)
+void AttackGui::draw(sf::RenderWindow& window) const
 {
-	sf::Sprite left_attack_window(ui);
-	sf::Sprite attack_window(ui);
-	sf::Sprite right_attack_window(ui);
+	sf::Sprite left_attack_window(gState.ui);
+	sf::Sprite attack_window(gState.ui);
+	sf::Sprite right_attack_window(gState.ui);
 
 	left_attack_window.setTextureRect(sf::IntRect({ 54, 6}, { 7, 37 }));
 	left_attack_window.scale({ 5, 5.6 });
@@ -55,7 +56,7 @@ void AttackGui::draw(sf::RenderWindow& window)
 	gState.window.draw(right_attack_window);
 }
 
-void AttackGui::initializer(Tile* unitA, Tile* unitB)
+void AttackGui::initializer(Tile* unitA, Tile* unitB) const
 {
 	gState.attackGui.unitA = unitA;
 	gState.attackGui.unitB = unitB;
@@ -63,8 +64,7 @@ void AttackGui::initializer(Tile* unitA, Tile* unitB)
 	gState.attackGui.unitBStats = {};
 }
 
-// Disegna unitA
-void AttackGui::draw_unit(Tile* unit, float x, bool isUnitA)
+void AttackGui::draw_unit(Tile* unit, float x, bool isUnitA) const
 {
 	if (unit && unit->unitOn)
 	{
@@ -78,13 +78,13 @@ void AttackGui::draw_unit(Tile* unit, float x, bool isUnitA)
 		else
 			unit_sprite.setScale({ static_cast<float>(isUnitA ? 8 : -8), 8 });
 
-		float positionX = isUnitA ? x : (gState.menubar_attack_window_x - x);
+		float positionX = isUnitA ? x : static_cast<float>(gState.menubar_attack_window_x) - x;
 		unit_sprite.setPosition({ positionX, positionY });
 		gState.window.draw(unit_sprite);
 	}
 }
 
-void AttackGui::draw_units()
+void AttackGui::draw_units() const
 {
 	float x = 45.0f;
 	if (attack_initiated)
@@ -101,13 +101,13 @@ void calculate_attack_stats(Unit unita, Unit unitb, std::vector<int>& a_stats, s
 	int bonus_a_att = 0, bonus_a_hit = 0;
 	int bonus_b_att = 0, bonus_b_hit = 0;
 
-	//triangolo delle armi spada > ascia > lancia > spada ...
+	// weapon triangle spada > ascia > lancia > spada >...
 	int a_weapon_type = unita.equiped_weapon->type;
 	int b_weapon_type = unitb.equiped_weapon->type;
 
 	if (b_weapon_type == (a_weapon_type + 1) % 3)
 	{
-		bonus = 1; // unitA ha il vantaggio
+		bonus = 1; // unitA has the advantage
 		bonus_a_att = 2;
 		bonus_a_hit = 15;
 
@@ -116,7 +116,7 @@ void calculate_attack_stats(Unit unita, Unit unitb, std::vector<int>& a_stats, s
 	}
 	else if (a_weapon_type == (b_weapon_type + 1) % 3)
 	{
-		bonus = 2; // unitB ha lo svantaggio
+		bonus = 2; // unitB has the advantage
 		bonus_b_att = 2;
 		bonus_b_hit = 15;
 
@@ -125,15 +125,15 @@ void calculate_attack_stats(Unit unita, Unit unitb, std::vector<int>& a_stats, s
 	}
 	else
 	{
-		bonus = 0; // nessun vantaggio
+		bonus = 0; // no advantage
 	}
 
-	a_stats.push_back(unita.hp); // hp rimasti  
+	a_stats.push_back(unita.hp); 
     a_stats.push_back(std::max(0, unita.get_attack() - unitb.defense + bonus_a_att));
     a_stats.push_back(std::min(100, unita.get_hit() - unitb.get_dodge() + bonus_a_hit));  
     a_stats.push_back(unita.get_crit());  
 
-	b_stats.push_back(unitb.hp); // hp rimasti  
+	b_stats.push_back(unitb.hp); 
     b_stats.push_back(std::max(0, unitb.get_attack() - unita.defense + bonus_b_att));
     b_stats.push_back(std::min(100, unitb.get_hit() - unita.get_dodge() + bonus_b_hit));  
     b_stats.push_back(unitb.get_crit());
@@ -145,28 +145,28 @@ void AttackGui::draw_stats()
 
     sf::Text text { gState.font, "", 16};
     text.setFillColor(sf::Color::White);
-    // positions
-    float centerX = gState.menubar_attack_window_x / 2.0f;
-    float startY = static_cast<float>(gState.menubar_attack_y) + 27.0f;
-    float spacing = 40.0f;
 
-	if (unitA->unitOn->type == 0)
+    float centerX = gState.menubar_attack_window_x / 2.0f;
+    float startY = gState.menubar_attack_y + 27.0f;
+
+    if (unitA->unitOn->type == 0)
 	{
 		attack_text.setFillColor(sf::Color::White);
 		attack_text.setOutlineThickness(1);
     	attack_text.setOutlineColor(sf::Color::Transparent);
-    	attack_text.setPosition({ gState.menubar_attack_window_x / 4.2f, static_cast<float>(gState.menubar_attack_y) + 85 });
+    	attack_text.setPosition({ gState.menubar_attack_window_x / 4.2f, gState.menubar_attack_y + 85 });
     	gState.window.draw(attack_text);
 	}
 
     for (int i = 0; i < statNames.size(); ++i)
     {
-        float currentY = startY + i * spacing;
+	    float spacing = 40.0f;
+	    float currentY = startY + i * spacing;
 
 		text.setOutlineThickness(1);
 		text.setOutlineColor(sf::Color::Transparent);
 
-        if (i == 0)
+        if (i == 0) // the HPs are bigger
         {
 			text.setOutlineThickness(1);
 			text.setCharacterSize(20);
@@ -187,11 +187,11 @@ void AttackGui::draw_stats()
 			text.setFillColor(sf::Color::White);
 			switch (bonus)  
 			{
-			case 1: //unitA ha il vantagggio sul triangolo
+			case 1: //unitA has the advantage
 				text.setOutlineThickness(1);
 				text.setOutlineColor(sf::Color::Green);
 				break;  
-			case 2:  //unitA ha il svantagggio sul triangolo
+			case 2:  //unitA has the disadvantage
 				text.setOutlineThickness(1);
 				text.setOutlineColor(sf::Color::Red);
 				break;  
@@ -212,11 +212,11 @@ void AttackGui::draw_stats()
 			text.setFillColor(sf::Color::White);
 			switch (bonus)
 			{
-			case 1: //unitB ha il svantagggio sul triangolo
+			case 1: //unitB has the disadvantage
 				text.setOutlineThickness(1);
 				text.setOutlineColor(sf::Color::Red);
 				break;
-			case 2:  //unitB ha il vantagggio sul triangolo
+			case 2:  //unitB has the advantage
 				text.setOutlineThickness(1);
 				text.setOutlineColor(sf::Color::Green);
 				break;

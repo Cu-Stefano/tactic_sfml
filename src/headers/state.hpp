@@ -2,7 +2,7 @@
 
 #include <string>
 #include <SFML/Graphics.hpp>
-#include "MapLogic.h"
+#include "TurnSM.h"
 #include "attackGui.h"
 #include "unit.h"
 #include "SFML/Audio.hpp"
@@ -23,33 +23,40 @@ class state
 {
 public:
     sf::RenderWindow window;
-    int menubar_attack_window_x = WINDOW_WIDTH - 200;
-    int menubar_attack_y = WINDOW_HEIGHT - 200;
+    const float menubar_attack_window_x = WINDOW_WIDTH - 200;
+    const float menubar_attack_y = WINDOW_HEIGHT - 200;
 
     int turn = 0;
-    sf::Text* turn_number = nullptr;
-    MapLogic MapLogic;
+    sf::Text* turnNumber = nullptr;
+    TurnSM TurnSM;
 	AttackGui attackGui;
-    sf::Font font = sf::Font("resources/font/16x16_font.ttf");
     std::vector<std::vector<Tile*>> map;
+    Tile* selectedTile;
+
+    sf::Font font = sf::Font("resources/font/16x16_font.ttf");
+    sf::Texture ui = sf::Texture("resources/Ui/Ui_assets.png");
+
     sf::SoundBuffer allayBuffer = sf::SoundBuffer("resources/Sounds/allay.mp3");
-    sf::SoundBuffer enemyBuffer = sf::SoundBuffer("resources/Sounds/allay.mp3");
+    sf::SoundBuffer winBuffer = sf::SoundBuffer("resources/Sounds/win.mp3");
+    sf::SoundBuffer gameoverBuffer = sf::SoundBuffer("resources/Sounds/gameover.mp3");
     sf::SoundBuffer missBuffer = sf::SoundBuffer("resources/Sounds/miss.wav");
     sf::SoundBuffer hitBuffer = sf::SoundBuffer("resources/Sounds/hit.wav");
     sf::SoundBuffer critBuffer = sf::SoundBuffer("resources/Sounds/crit.wav");
     sf::SoundBuffer clickBuffer = sf::SoundBuffer("resources/Sounds/click.wav");
-    sf::SoundBuffer no_damageBuffer = sf::SoundBuffer("resources/Sounds/no_damage.wav");
+    sf::SoundBuffer healBuffer = sf::SoundBuffer("resources/Sounds/heal.wav");
 	sf::Sound attackSound = sf::Sound(hitBuffer);
 	sf::Sound turnsoundSound = sf::Sound(allayBuffer);
 	sf::Sound clickSound = sf::Sound(clickBuffer);
-    Tile* selected_tile;
+	sf::Sound healSound = sf::Sound(healBuffer);
 
-	state(unsigned w, unsigned h, const std::string& title) : MapLogic(*this), attackGui(*this),
-	                                                          selected_tile(nullptr)
+	state(unsigned w, unsigned h, const std::string& title) : TurnSM(*this), attackGui(*this),
+	                                                          selectedTile(nullptr)
     {
         turnsoundSound.setBuffer(allayBuffer);
-		turnsoundSound.setVolume(25);
+        turnsoundSound.setVolume(25);
+        turnsoundSound.setLooping(true);
         turnsoundSound.play();
+
 	    window = sf::RenderWindow(sf::VideoMode({w, h}), title);
     }
 
@@ -82,7 +89,7 @@ public:
        return mousePos.x >= menubar_attack_window_x || mousePos.y >= menubar_attack_y || mousePos.x < 0 || mousePos.y < 0;
     }
 
-    bool check_all_units_moved(int type)
+    static bool check_all_units_moved(int type)
 	{
         if (type == 0)
         {

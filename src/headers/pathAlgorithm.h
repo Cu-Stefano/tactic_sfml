@@ -11,27 +11,25 @@ class state;
 class PathAlgorithm {
 public:
     PathAlgorithm(Tile* Onode, state& gState);
-    PathAlgorithm(state& gState);
 
-    void set_origin_tile(Tile* button);
     void execute(int range = 1);
+    void reset_all() const;
+    int calculate_distance(const Tile* tileToReach) const;
 
-    void reset_all();
-    int calculate_distance(Tile* tileToReach) const;
-
-    std::vector<std::vector<Tile*>> initiliazemap();
-    void update();
+    std::vector<std::vector<Tile*>> initiliazemap() const;
+    void update() const;
 
     Tile* Onode;
     vector<Tile*> path;
-    vector<Tile*> attackBorderPath;//i bordi d'attacco del path
-    vector<Tile*> attackList;//tutti i nemici dentro al path, ma fuori da nearEnemies
-    vector<Tile*> nearEnemies;//nemici nel range di attacco da fermo
-    int enemyType;
+    vector<Tile*> attackBorderPath; //the border of the path 
+    vector<Tile*> attackList;// all the enemies in his range
+    vector<Tile*> nearEnemies; // the enemies that are neighbours to oNode
+    
 
 private:
     state& gState;
     Unit* unit;
+    int enemyType;
     vector<vector<Tile*>> map;
     std::priority_queue<pair<int, Tile*>, vector<pair<int, Tile*>>, greater<>> priorityQueue;
 };

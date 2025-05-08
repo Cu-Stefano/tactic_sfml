@@ -22,11 +22,11 @@ public:
 	int bonus = 0;
     bool attack_initiated = false;
 
-	void initializer(Tile* unitA, Tile* unitB);
-    void draw_unit(Tile* unit, float x, bool isUnitA);
-    void draw_units();
+	void initializer(Tile* unitA, Tile* unitB) const;
+    void draw_unit(Tile* unit, float x, bool isUnitA) const;
+    void draw_units() const;
     void draw_stats();
 
-    void draw(sf::RenderWindow& window);
+    void draw(sf::RenderWindow& window) const;
     void update();
 };

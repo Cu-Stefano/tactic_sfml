@@ -24,7 +24,7 @@ public:
     void initialize_path_algorithm(Tile* unit);
     void end_enemy_turn(Tile* tile);
     Tile* get_next_enemy();
-    Tile* find_tile_to_land(Tile* attackedUnit);
+    Tile* find_tile_to_land(Tile* attackedUnit) const;
 
     void move_towards_allay();
     void update() override;

@@ -4,8 +4,8 @@
 #include <SFML/Graphics.hpp>
 
 using sf::Sprite, sf::RectangleShape, sf::Vector2f, sf::RenderWindow;
-
 class state;
+
 enum button_state
 {
 	not_pressed = 0,
@@ -28,7 +28,6 @@ class Button
         Button(Vector2f pos, Vector2f size, Sprite spr);
 
 		bool is_pressed() const;
-		bool is_released() const;
 		bool is_hover() const;
 
         void update(const RenderWindow& window);

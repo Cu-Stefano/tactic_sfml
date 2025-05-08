@@ -9,7 +9,6 @@ class PathAlgorithm;
 class TileSelected : public ActionState {
 	Tile* destination;
 	PathAlgorithm* pathAlgorithm;
-	sf::Texture ui;
 	Button* unguento;
 	Tile* tile;    
 

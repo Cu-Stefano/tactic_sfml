@@ -13,7 +13,7 @@
 
 using namespace sf;
 
-int c;// contatore usato per saltare il primo click che viene registrato per sbaglio dallo stato precedente:chooseTile
+int c; // contatore usato per saltare il primo click che viene registrato per sbaglio dallo stato precedente:chooseTile
 bool wasButtonPressed;
 
 TileSelected::TileSelected(state& gState, TurnState* turnState, Tile* tile)
@@ -21,16 +21,15 @@ TileSelected::TileSelected(state& gState, TurnState* turnState, Tile* tile)
 {
 	this->tile = tile;
 	pathAlgorithm = new PathAlgorithm(tile, gState);
-	if (!ui.loadFromFile("resources/Ui/Ui_assets.png")) {
-		throw std::runtime_error("Failed to load texture");
-	}
-	sf::Sprite ung_sprite(ui);
-	ung_sprite.setTextureRect(sf::IntRect({ 1, 130 }, { 47, 12 }));
+
+	//setup the heal button
+	sf::Sprite ung_sprite(gState.ui);
+	ung_sprite.setTextureRect(sf::IntRect({ 1, 130 }, { 47, 13 }));
 	ung_sprite.setScale({ 3.5, 3.5 });
 	ung_sprite.setPosition({ static_cast<float>(gState.menubar_attack_window_x / 2.4) , static_cast<float>(gState.menubar_attack_y) });
 
-	sf::Vector2f buttonPos = { static_cast<float>(gState.menubar_attack_window_x / 2.4) , static_cast<float>(gState.menubar_attack_y) };
-	sf::Vector2f buttonSize = { ung_sprite.getGlobalBounds().size.x , ung_sprite.getGlobalBounds().size.y };
+	sf::Vector2f buttonPos = { static_cast<float>(gState.menubar_attack_window_x / 2.4) - 3.0f , static_cast<float>(gState.menubar_attack_y) - 2.5f};
+	sf::Vector2f buttonSize = { ung_sprite.getGlobalBounds().size.x + 5 , ung_sprite.getGlobalBounds().size.y + 5 };
 
 	unguento = new Button(buttonPos, buttonSize, ung_sprite);
 	unguento->set_click_function([tile, turnState, &gState]() {
@@ -44,6 +43,10 @@ TileSelected::TileSelected(state& gState, TurnState* turnState, Tile* tile)
 			tile->unitOn->an_sprite.sprite_y = 0;
 			tile->unitOn->an_sprite.swap_interval = SWAP_INTERVAL; // sec
 			turnState->SetActionState(new ChooseTile(gState, turnState));
+
+			gState.healSound.setBuffer(gState.healBuffer);
+			gState.healSound.setVolume(25);
+			gState.healSound.play();
 		}
 		});
 }
@@ -119,14 +122,12 @@ void TileSelected::update()
 	if (pathAlgorithm)
 		pathAlgorithm->update();
 
-	//mouse actions:
 	Vector2f mousePos = gState.window.mapPixelToCoords(Mouse::getPosition(gState.window));
 	auto hovered_tile = gState.get_tile_from_mouse_position(mousePos);
 	if (!hovered_tile) return;
 
 	if (!Unit::IsAnyUnitMoving)
 	{
-		//hover::Trail
 		if ((std::find(pathAlgorithm->path.begin(), pathAlgorithm->path.end(), hovered_tile) != pathAlgorithm->path.end() 
 			|| hovered_tile == tile) && destination == nullptr
 			|| (std::find(pathAlgorithm->nearEnemies.begin(), pathAlgorithm->nearEnemies.end(), hovered_tile) != pathAlgorithm->nearEnemies.end()))
@@ -143,10 +144,10 @@ void TileSelected::update()
 				}
 			}
 
-			if (!move_logic(hovered_tile, route))// è falso se finisco il turno senza spostarmi
+			if (!move_logic(hovered_tile, route))// it's false if the unit ends the turn without moving
 			{
 				if (gState.check_all_units_moved(0)) 
-					gState.MapLogic.set_state(new EnemyTurn(gState));
+					gState.TurnSM.set_state(new EnemyTurn(gState));
 				else
 					turnState->SetActionState(new ChooseTile(gState, turnState));
 				return;
@@ -163,7 +164,7 @@ void TileSelected::update()
 
 		if (Unit::hasSomeActionBeenStared)
 		{
-			//controllo i nighbours per vedere se ci sono nemici.
+			// check the neighbours to see if there are enemiesw
 			std::vector<Tile*> near_enemies{};
 			for (auto& neighbour : destination->neighbours)
 			{
@@ -181,7 +182,7 @@ void TileSelected::update()
 				destination->unitOn->an_sprite.sprite->setColor(UNIT_MOVED);
 
 				if (gState.check_all_units_moved(0)) 
-					gState.MapLogic.set_state(new EnemyTurn(gState));
+					gState.TurnSM.set_state(new EnemyTurn(gState));
 				else
 					turnState->SetActionState(new ChooseTile(gState, turnState));
 			}

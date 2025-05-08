@@ -1,21 +1,18 @@
 #include "../headers/pathAlgorithm.h"
-
-#include <iostream>
-
 #include "../headers/state.hpp"
 #include "../headers/tile.h"
 #include "../headers/unit.h"
-#include "../headers/weapon.h"
+
 #include <random>
 
 PathAlgorithm::PathAlgorithm(Tile* Onode, state& gState): gState(gState)
 {
 	map = initiliazemap();
-	priorityQueue = {}; // emplace, top, pop
+	priorityQueue = {};
 	path = {};
-	attackBorderPath = {};
-	attackList = {};
-	nearEnemies = {};
+	attackBorderPath = {}; //the border of the path 
+	attackList = {};// all the enemies in his range
+	nearEnemies = {}; // the enemies that are neighbours to oNode
 	this->Onode = Onode;
 	unit = Onode->unitOn;
     enemyType = unit->type == 0 ? 1 : 0; //the type of units the Onode wants to attack
@@ -23,35 +20,15 @@ PathAlgorithm::PathAlgorithm(Tile* Onode, state& gState): gState(gState)
 	Onode->Parent = nullptr; 
     priorityQueue.emplace(Onode->G = 0, Onode);
 }
-PathAlgorithm::PathAlgorithm(state& gState) : gState(gState)
-{
-	map = initiliazemap();
-	priorityQueue = {};
-	path = {};
-	attackBorderPath = {};
-	attackList = {};
-	nearEnemies = {};
-	this->Onode = nullptr;
-	unit = nullptr;
-}
-void PathAlgorithm::set_origin_tile(Tile* button)
-{
-	this->Onode = Onode;
-	unit = Onode->unitOn;
-	Onode->G = 0;
-	Onode->Parent = nullptr;
-	priorityQueue.emplace(Onode->G = 0, Onode);
-}
 
 void PathAlgorithm::execute(int range)
 {
-    
     int movement = unit->movement;
     int totalRange = movement + range;
 
     while (!priorityQueue.empty())
     {
-        auto curr = priorityQueue.top().second;// Implementa GetNextNode per ottenere il prossimo nodo
+        auto curr = priorityQueue.top().second;
         if (!curr) continue;
         priorityQueue.pop();
 
@@ -105,10 +82,9 @@ void PathAlgorithm::execute(int range)
     }
 }
 
-void PathAlgorithm::reset_all()
+void PathAlgorithm::reset_all() const
 {
-	//reet dei colori
-
+	//reset dei colori
 	for (auto& tile : path)
 	{
         tile->path_sprite.setColor(sf::Color::Transparent);
@@ -123,10 +99,9 @@ void PathAlgorithm::reset_all()
 	
 	for (auto& tile : nearEnemies)
 		tile->path_sprite.setColor(sf::Color::Transparent);
-	
 }
 
-int PathAlgorithm::calculate_distance(Tile* tileToReach) const
+int PathAlgorithm::calculate_distance(const Tile* tileToReach) const
 {
 	auto c = 0;
 	auto currNode = tileToReach;
@@ -138,7 +113,7 @@ int PathAlgorithm::calculate_distance(Tile* tileToReach) const
 	return c;
 }
 
-vector<vector<Tile*>> PathAlgorithm::initiliazemap()  
+vector<vector<Tile*>> PathAlgorithm::initiliazemap() const
 {
     for (auto tiles : gState.map)
     {
@@ -165,7 +140,7 @@ vector<vector<Tile*>> PathAlgorithm::initiliazemap()
        result.push_back(row);  
    }  
 
-   //neighbours
+   // setup of the neighbours
    for (int k = 0; k < basemap.size(); k++)  
    {  
        for (int l = 0; l < basemap[0].size(); l++)  
@@ -188,7 +163,7 @@ vector<vector<Tile*>> PathAlgorithm::initiliazemap()
    return result;  
 }
 
-void PathAlgorithm::update()
+void PathAlgorithm::update() const
 {
 	auto path_color = unit->type == 0 ? ALLAY_PATH_COLOR : ENEMY_PATH_COLOR;
 	auto attack_color = unit->type == 0 ? ALLAY_ATTACK_COLOR : ENEMY_ATTACK_COLOR;

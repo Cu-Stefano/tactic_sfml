@@ -30,7 +30,6 @@ private:
         SecondAttack,
         Dead,
         Finished,
-    	DoubleAttack
     };
 
     void handle_attack(Tile* target, Tile* attacker, const std::vector<int>& attackerStats, std::vector<int>& targetStats, bool& wasHit);

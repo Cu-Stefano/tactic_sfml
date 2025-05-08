@@ -8,7 +8,7 @@ Button::Button(Vector2f pos, Vector2f size, Sprite spr) : sprite(spr)
 	shape.setSize(size);
 	shape.setPosition(pos);
 	shape.setFillColor(Color::Transparent);
-	shape.setOutlineColor(Color(0, 0, 10, 255));
+	shape.setOutlineColor(Color::Transparent);
 	shape.setOutlineThickness(-0.5);
 }
 

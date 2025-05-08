@@ -5,7 +5,6 @@ class AnimatedSprite
 {
 	int n_frames = 4;
 	int sprite_width = 32;
-	
 
 public:
 	float swap_interval = 0.25; // sec
@@ -17,7 +16,7 @@ public:
 	AnimatedSprite(sf::Texture t);
 	AnimatedSprite();
 
-	void set_pos(sf::Vector2i coord);
+	void set_pos(sf::Vector2i coord) const;
 	void update();
-	void draw(sf::RenderWindow& window);
+	void draw(sf::RenderWindow& window) const;
 };

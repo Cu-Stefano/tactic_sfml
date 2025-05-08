@@ -44,23 +44,21 @@ void Attack::handle_attack(Tile* target, Tile* attacker, const std::vector<int>&
 
 void Attack::handle_phase(Unit* attacker, Tile* target, bool wasHit, float delay, AttackPhase nextPhase, sf::Clock currclock, bool crit)
 {
+    // flash the hit
     if (currclock.getElapsedTime().asSeconds() <= flash_duration_) {
         if (crit)
-        {
-            //attackSound.setBuffer(attackBuffer);
-            //// Riproduzione del suono
-            //attackSound.play();
-	        attacker->an_sprite.sprite->setColor(sf::Color(255, 255, 0, 230));
-        }
+        	attacker->an_sprite.sprite->setColor(sf::Color(255, 255, 0, 230));
+        
         else
             attacker->an_sprite.sprite->setColor(sf::Color::White);
 
         attacker->an_sprite.sprite_y = 2;
 		attacker->an_sprite.swap_interval = 0.1; // sec
-        if (target) {
+        if (target) 
             target->unitOn->an_sprite.sprite->setColor(wasHit ? sf::Color::Red : sf::Color(255, 255, 255, 150));
-        }
+        
     }
+    // return normal after the attack
     else if (currclock.getElapsedTime().asSeconds() <= flash_duration_ + delay) {
         attacker->an_sprite.sprite->setColor(sf::Color::White);
         attacker->an_sprite.sprite_y = 0;
@@ -69,6 +67,7 @@ void Attack::handle_phase(Unit* attacker, Tile* target, bool wasHit, float delay
             target->unitOn->an_sprite.sprite->setColor(sf::Color::White);
         }
     }
+    //attack finished
     else {
         if (!target || target->unitOn->hp == 0)
         {
@@ -106,9 +105,9 @@ void Attack::update()
             unitA->unitOn->an_sprite.sprite->setColor(UNIT_MOVED);
         }
 
-        if (!gState.check_all_units_moved(0))
+        if (!state::check_all_units_moved(0))
             turnState->SetActionState(new ChooseTile(gState, turnState));
-        else gState.MapLogic.set_state(new EnemyTurn(gState));
+        else gState.TurnSM.set_state(new EnemyTurn(gState));
     }
 }
 
@@ -170,7 +169,7 @@ void Attack::draw(sf::RenderWindow& window)
 
         if (first_time_b)
         {
-            clock1 = sf::Clock();
+            clock1.restart();
             clock3 = sf::Clock();
             first_time_b = false;
             unitB->unitOn->an_sprite.curr_frame = 3;           
@@ -183,6 +182,7 @@ void Attack::draw(sf::RenderWindow& window)
 			}
 			else
 				gState.attackSound.setBuffer(gState.missBuffer);
+            gState.attackSound.setVolume(25);
 			gState.attackSound.play();
         }
         handle_phase(unitB->unitOn, unitA, A_was_hit, delay_, AttackPhase::Finished, clock1, CritB);
@@ -208,13 +208,13 @@ void Attack::draw(sf::RenderWindow& window)
                 if (dead->unitOn->name == "Boss")
                 {
                     remove_dead_unit(dead);
-                    gState.MapLogic.set_state(new GameFinished(gState, "YOU WON"));
+                    gState.TurnSM.set_state(new GameFinished(gState, "YOU WON"));
                 }
                 else
                 {
 	                remove_dead_unit(dead);
                 	if (allay_list.empty())
-                		gState.MapLogic.set_state(new GameFinished(gState, "GAME OVER"));
+                		gState.TurnSM.set_state(new GameFinished(gState, "GAME OVER"));
                 }
                 currentPhase = AttackPhase::Finished;
 	        }
@@ -228,6 +228,9 @@ void Attack::draw(sf::RenderWindow& window)
             return;
 
         attackFinished = true;
+        break;
+
+	default: 
         break;
     }
 

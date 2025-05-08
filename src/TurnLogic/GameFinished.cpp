@@ -13,6 +13,15 @@ GameFinished::GameFinished(state& gs, sf::String state): TurnState(gs)
 		static_cast<float>(gState.menubar_attack_window_x / 3), static_cast<float>(gState.menubar_attack_y / 3)
 	});
 	this->win_state->setFillColor(sf::Color::White);
+
+	if (state == "GAME OVER")
+		gs.turnsoundSound.setBuffer(gs.gameoverBuffer);
+	else
+		gs.turnsoundSound.setBuffer(gs.winBuffer);
+
+	gs.turnsoundSound.setVolume(25);
+	gs.turnsoundSound.setLooping(true);
+	gs.turnsoundSound.play();
 }
 
 void GameFinished::on_enter()
